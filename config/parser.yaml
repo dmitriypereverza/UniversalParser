@@ -23,6 +23,8 @@ dnor:
 
   items_list_url: http://dnor.ru
   items_list_selector: //div[@class='row']//a[@class='app-ad-item__link']
+  request_dalay: 100
+  session_result: 20
   selectors:
       brand: //*[@id='adz_consumer_proposal_on_paid_search_carMake']/option[@selected='selected'][2]
       model: //*[@id='adz_consumer_proposal_on_paid_search_carModification']/option[@selected='selected'][2]
