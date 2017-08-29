@@ -4,24 +4,54 @@ dnor:
   url: dnor.ru
   class: App\Parser\Spider\DefaultSpider
   work_time:
-      day_of_week:
-        time_from: '10:00'
-        time_to: '20:00'
-  items_list_url: dnor.ru/ad/
+    Monday:
+      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '21:00', time_to: '22:00'}
+    Tuesday:
+      - {time_from: '10:00', time_to: '12:00'}
+      - {time_from: '12:00', time_to: '22:00'}
+    Wednesday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Thursday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Friday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Saturday:
+     - {time_from: '10:00', time_to: '20:00'}
+    Sunday:
+      - {time_from: '10:00', time_to: '20:00'}
+
+  items_list_url: http://dnor.ru
+  items_list_selector: //div[@class='row']//a[@class='app-ad-item__link']
   selectors:
       brand: //*[@id='adz_consumer_proposal_on_paid_search_carMake']/option[@selected='selected'][2]
       model: //*[@id='adz_consumer_proposal_on_paid_search_carModification']/option[@selected='selected'][2]
       detail: //*[@id="adz_consumer_proposal_on_paid_search_text"]
 
+
 zapcasti:
-  active: true
+  active: false
   url: zapcasti.club
   class: App\Parser\Spider\DefaultSpider
   work_time:
-    day_of_week:
-      time_from: '10:00'
-      time_to: '20:00'
+    Monday:
+      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '21:00', time_to: '22:00'}
+    Tuesday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Wednesday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Thursday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Friday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Saturday:
+     - {time_from: '10:00', time_to: '20:00'}
+    Sunday:
+      - {time_from: '10:00', time_to: '20:00'}
+
   items_list_url: zapcasti.club/car/
+  items_list_selector: //div[@class='row']//a[@class='app-ad-item__link']
   selectors:
       title: //div[@id='catalogs']//a
       links: //div[@id='catalogs']
