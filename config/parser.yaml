@@ -1,6 +1,6 @@
 # Parser config
 dnor:
-  active: true
+  active: false
   url: dnor.ru
   class: App\Parser\Spider\DefaultSpider
   work_time:
@@ -29,6 +29,70 @@ dnor:
       brand: //*[@id='adz_consumer_proposal_on_paid_search_carMake']/option[@selected='selected'][2]
       model: //*[@id='adz_consumer_proposal_on_paid_search_carModification']/option[@selected='selected'][2]
       detail: //*[@id="adz_consumer_proposal_on_paid_search_text"]
+
+razbor-nt.:
+  active: false
+  url: http://razbor-nt.ru/
+  class: App\Parser\Spider\DefaultSpider
+  work_time:
+    Monday:
+      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '21:00', time_to: '22:00'}
+    Tuesday:
+      - {time_from: '10:00', time_to: '12:00'}
+      - {time_from: '12:00', time_to: '22:00'}
+    Wednesday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Thursday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Friday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Saturday:
+     - {time_from: '10:00', time_to: '20:00'}
+    Sunday:
+      - {time_from: '10:00', time_to: '20:00'}
+
+  items_list_url: http://razbor-nt.ru/
+  items_list_selector: .//div[@class="news-view-table"]/*/a
+  request_dalay: 100
+  session_result: 20
+  max_query_size: 100
+  selectors:
+      title: //*[@id="content"]/div/h1
+      url: //*[@id="image"]
+      price: //*[@id="content"]/div/div[2]/div[2]/div[2]
+
+autoinfo51:
+  active: true
+  url: http://www.autoinfo51.ru/
+  class: App\Parser\Spider\DefaultSpider
+  work_time:
+    Monday:
+      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '21:00', time_to: '22:00'}
+    Tuesday:
+      - {time_from: '10:00', time_to: '12:00'}
+      - {time_from: '12:00', time_to: '22:00'}
+    Wednesday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Thursday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Friday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Saturday:
+     - {time_from: '10:00', time_to: '20:00'}
+    Sunday:
+      - {time_from: '10:00', time_to: '20:00'}
+
+  items_list_url: https://xn--80aacxqbhucbnep.xn--p1ai/
+  items_list_selector: //li/a
+  request_dalay: 100
+  session_result: 20
+  max_query_size: 100
+  selectors:
+      title: //*[@id="content"]/div/h1
+      url: //*[@id="image"]
+      price: //*[@id="content"]/div/div[2]/div[2]/div[2]
 
 
 zapcasti:

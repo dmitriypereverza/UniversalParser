@@ -3,23 +3,29 @@
 namespace App\Parser\Spider;
 
 use App\Models\TemporarySearchResults;
+use App\Parser\Spider\PersistenceHandler\DBPersistenceHandler;
+use App\Parser\Spider\PersistenceHandler\MemoryPersistenceHandler;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
+use Symfony\Component\EventDispatcher\Event;
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
 use VDB\Spider\EventListener\PolitenessPolicyListener;
+use VDB\Spider\Filter\Prefetch\UriFilter;
+use VDB\Spider\QueueManager\InMemoryQueueManager;
 use VDB\Spider\Spider;
+use VDB\Spider\StatsHandler;
 
 class DefaultSpider implements SpiderInterface {
     const DEFAULT_REQUEST_DELAY = 350;
-    const DEFAULT_MAX_DEPTH = 1;
+    const DEFAULT_MAX_DEPTH = 3;
     const DEFAULT_QUERY_SIZE = 10;
     const DEFAULT_SESSION_RESULT = 100;
 
+    private $id_session;
     private $countProcessedResults;
     private $countSessionResult;
     private $config;
-    private $id_session;
     /** @var Spider $spider  */
     private $spider;
 
@@ -28,37 +34,50 @@ class DefaultSpider implements SpiderInterface {
             throw new InvalidArgumentExcept('Не переданы конфигурационные данные');
         }
         $this->config = $config;
-        $this->id_session = $this->getSessionId();
         $this->spider = $this->getSpider();
+        $this->id_session = $this->getSessionId();
+
         $this->countProcessedResults = 0;
 
-        $this->setCountSessionResult($this->config['session_result'] ?: self::DEFAULT_SESSION_RESULT);
+        $this->spider->getDownloader()->setPersistenceHandler(
+            new DBPersistenceHandler(
+                $this->config['selectors'],
+                $this->config['url'],
+                $this->id_session
+            )
+        );
+
+        $this->setCountSessionResults($this->config['session_result'] ?: self::DEFAULT_SESSION_RESULT);
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
         $this->setMaxQueueSize($this->config['max_query_size'] ?? self::DEFAULT_QUERY_SIZE);
         $this->setReuestDelay($this->config['reuest_delay'] ?? self::DEFAULT_REQUEST_DELAY);
     }
 
     public function crawl() {
-        $querySize = $this->config['max_query_size'] ?? self::DEFAULT_QUERY_SIZE;
-        while ($this->countProcessedResults + $querySize <= $this->countSessionResult) {
-            try {
-                $this->spider->crawl();
-                if ($resourse = $this->getSearchResourses()) {
-                    $this->insertToTempTable($resourse);
-                }
-            } catch (\Exception $e) {
+        $statsHandler = new StatsHandler();
+        $this->spider->getQueueManager()->getDispatcher()->addSubscriber($statsHandler);
+        $this->spider->getDispatcher()->addSubscriber($statsHandler);
 
-            }
+        try {
+            $this->spider->crawl();
 
+            echo "\n\nSPIDER ID: " . $statsHandler->getSpiderId();
+            echo "\n  ENQUEUED:  " . count($statsHandler->getQueued());
+            echo "\n  SKIPPED:   " . count($statsHandler->getFiltered());
+            echo "\n  FAILED:    " . count($statsHandler->getFailed());
+            echo "\n  PERSISTED:    " . count($statsHandler->getPersisted());
+
+            TemporarySearchResults::setVersion(1, $this->id_session);
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
     }
 
     private function getSpider() {
         $spider = new Spider($this->config['items_list_url']);
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer($this->config['items_list_selector']));
-        $spider->getDownloader()->setPersistenceHandler(
-            new \VDB\Spider\PersistenceHandler\MemoryPersistenceHandler()
-        );
+        $spider->getQueueManager()->setTraversalAlgorithm(InMemoryQueueManager::ALGORITHM_DEPTH_FIRST);
+        $spider->getDiscovererSet()->addFilter(new UriFilter(['/http:\/\/razbor-nt.ru\/.+\/.+\/(.+).html/']));
         return $spider;
     }
 
@@ -70,63 +89,6 @@ class DefaultSpider implements SpiderInterface {
             SpiderEvents::SPIDER_CRAWL_PRE_REQUEST,
             [new PolitenessPolicyListener($delay), 'onCrawlPreRequest']
         );
-    }
-
-    /**
-     * @param $resource
-     * @param $selector
-     * @return mixed
-     */
-    private function getSelectorContent($resource, $selector) {
-        $item = $resource->getCrawler()->filterXpath($selector);
-        if ($item->count()) {
-            return $item->text();
-        }
-    }
-
-    private function getPageUrl($resource) {
-        return $resource->getCrawler()->getUri();
-    }
-
-    private function getSearchResourses() {
-        $resultList = [];
-        foreach ($this->spider->getDownloader()->getPersistenceHandler() as $resource) {
-            $result['url'] = $this->getPageUrl($resource);
-            foreach ($this->config['selectors'] as $key => $selector) {
-                if (!$content = $this->getSelectorContent($resource, $selector)) {
-                    unset($result);
-                    continue;
-                }
-                $result[$key] = $content;
-            }
-
-            if (isset($result)) {
-                $resultList[] = $result;
-            }
-        }
-
-        return $resultList;
-    }
-
-    /**
-     * @param array $results
-     * @return bool
-     */
-    private function insertToTempTable($results) {
-        if (!is_array($results)) {
-            throw new InvalidArgumentException('Передан неверный аргумент при записи во временную таблицу');
-        }
-        foreach ($results as $result) {
-            $tmpTable = new TemporarySearchResults();
-            $tmpTable->config_site_name = $this->config['url'];
-            $tmpTable->id_session = $this->id_session;
-            $tmpTable->content = json_encode($result);
-            $tmpTable->hash = md5(serialize($result));
-
-            if ($tmpTable->save()) {
-                $this->countProcessedResults ++;
-            }
-        }
     }
 
     /**
@@ -143,14 +105,12 @@ class DefaultSpider implements SpiderInterface {
         $this->spider->getQueueManager()->maxQueueSize = $maxQueueSize;
     }
 
-    /**
-     * @return string
-     */
-    private function getSessionId(): string {
-        return md5($this->config['items_list_url'] . microtime(true));
+
+    private function setCountSessionResults($count) {
+        $this->countSessionResult = $count;
     }
 
-    private function setCountSessionResult($count) {
-        $this->countSessionResult = $count;
+    private function getSessionId() {
+        return md5($this->config['items_list_url'] . microtime(true));
     }
 }
