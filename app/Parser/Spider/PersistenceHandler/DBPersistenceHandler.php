@@ -60,6 +60,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      */
     private function getSelectorContent($resource, $selector) {
         $item = $resource->getCrawler()->filterXpath($selector);
+        echo $item->getUri() . "\n";
         if ($item->count()) {
             return $item->text();
         }
@@ -70,6 +71,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      */
     public function current()
     {
+        return current($this->resources);
     }
 
     /**
@@ -77,6 +79,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      */
     public function next()
     {
+        next($this->resources);
     }
 
     /**
@@ -84,6 +87,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      */
     public function key()
     {
+        return key($this->resources);
     }
 
     /**
@@ -91,6 +95,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      */
     public function valid()
     {
+        return (bool)current($this->resources);
     }
 
     /**
@@ -98,7 +103,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      */
     public function rewind()
     {
-
+        reset($this->resources);
     }
 
     /**
@@ -108,5 +113,14 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      */
     public function setIdsession($spiderId) {
 
+    }
+
+    /**
+     * @param string $spiderId
+     *
+     * @return void
+     */
+    public function setSpiderId($spiderId) {
+        // TODO: Implement setSpiderId() method.
     }
 }

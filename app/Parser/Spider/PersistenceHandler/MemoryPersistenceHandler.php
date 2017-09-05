@@ -67,4 +67,13 @@ class MemoryPersistenceHandler implements PersistenceHandlerInterface
     {
         reset($this->resources);
     }
+
+    /**
+     * @param string $spiderId
+     *
+     * @return void
+     */
+    public function setSpiderId($spiderId) {
+        // TODO: Implement setSpiderId() method.
+    }
 }

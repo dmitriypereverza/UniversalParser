@@ -3,22 +3,19 @@
 namespace App\Parser\Spider;
 
 use App\Models\TemporarySearchResults;
+use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceHandler;
-use App\Parser\Spider\PersistenceHandler\MemoryPersistenceHandler;
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
-use Symfony\Component\EventDispatcher\Event;
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
 use VDB\Spider\EventListener\PolitenessPolicyListener;
-use VDB\Spider\Filter\Prefetch\UriFilter;
 use VDB\Spider\QueueManager\InMemoryQueueManager;
 use VDB\Spider\Spider;
 use VDB\Spider\StatsHandler;
 
 class DefaultSpider implements SpiderInterface {
     const DEFAULT_REQUEST_DELAY = 350;
-    const DEFAULT_MAX_DEPTH = 3;
+    const DEFAULT_MAX_DEPTH = 4;
     const DEFAULT_QUERY_SIZE = 10;
     const DEFAULT_SESSION_RESULT = 100;
 
@@ -76,8 +73,8 @@ class DefaultSpider implements SpiderInterface {
     private function getSpider() {
         $spider = new Spider($this->config['items_list_url']);
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer($this->config['items_list_selector']));
-        $spider->getQueueManager()->setTraversalAlgorithm(InMemoryQueueManager::ALGORITHM_DEPTH_FIRST);
-        $spider->getDiscovererSet()->addFilter(new UriFilter(['/http:\/\/razbor-nt.ru\/.+\/.+\/(.+).html/']));
+//        $spider->getQueueManager()->setTraversalAlgorithm(InMemoryQueueManager::ALGORITHM_DEPTH_FIRST);
+        $spider->getDiscovererSet()->addFilter(new UriFilter(['/https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/[^\/]+\/$/']));
         return $spider;
     }
 
