@@ -58,6 +58,9 @@ sv-company:
   session_result: 100
   selectors:
       title: .//h1[@class="product__title"]
+      img: .//img[@class="gallery__img"][1]/@src
+      price: .//span[@class="product__price"]
+      isAvalable: .//tbody/tr[td='Статус']/td[2]
 
 autoinfo51:
   active: false

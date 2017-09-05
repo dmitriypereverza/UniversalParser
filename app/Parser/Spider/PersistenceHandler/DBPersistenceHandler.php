@@ -40,6 +40,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
 
     private function getSelectorValues($resource) {
         $result['url'] = $resource->getCrawler()->getUri();
+        echo $result['url'] . "\n";
         foreach ($this->selectors as $key => $selector) {
             if (!$content = $this->getSelectorContent($resource, $selector)) {
                 unset($result);
@@ -54,15 +55,14 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
     }
 
     /**
-     * @param $resource
+     * @param Resource $resource
      * @param $selector
      * @return mixed
      */
     private function getSelectorContent($resource, $selector) {
         $item = $resource->getCrawler()->filterXpath($selector);
-        echo $item->getUri() . "\n";
         if ($item->count()) {
-            return $item->text();
+            return trim($item->html());
         }
     }
 
