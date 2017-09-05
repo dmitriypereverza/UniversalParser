@@ -74,7 +74,7 @@ class DefaultSpider implements SpiderInterface {
         $spider = new Spider($this->config['items_list_url']);
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer($this->config['items_list_selector']));
 //        $spider->getQueueManager()->setTraversalAlgorithm(InMemoryQueueManager::ALGORITHM_DEPTH_FIRST);
-        $spider->getDiscovererSet()->addFilter(new UriFilter(['/https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/[^\/]+\/$/']));
+        $spider->getDiscovererSet()->addFilter(new UriFilter([$this->config['url_pattern']]));
         return $spider;
     }
 
