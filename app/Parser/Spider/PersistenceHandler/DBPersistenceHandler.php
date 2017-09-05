@@ -3,7 +3,9 @@
 namespace App\Parser\Spider\PersistenceHandler;
 
 use App\Models\TemporarySearchResults;
+use App\Parser\Spider\Filter\UriFilter;
 use InvalidArgumentException;
+use VDB\Spider\Filter\PreFetchFilterInterface;
 use VDB\Spider\PersistenceHandler\PersistenceHandlerInterface;
 use VDB\Spider\Resource;
 
@@ -18,11 +20,16 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
     private $selectors;
     private $siteUrl;
     private $sessionId;
+    /**
+     * @var $urlFilter UriFilter
+     */
+    private $urlFilter;
 
-    public function __construct($selectors, $siteUrl, $sessionId) {
+    public function __construct($selectors, $siteUrl, $sessionId, $urlFilter) {
         $this->selectors = $selectors;
         $this->siteUrl = $siteUrl;
         $this->sessionId = $sessionId;
+        $this->urlFilter = $urlFilter;
     }
 
     public function count()
@@ -32,6 +39,10 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
 
     public function persist(Resource $resource)
     {
+        if(!$this->urlFilter->match($resource->getUri())) {
+            return;
+        }
+
         if ($selectorVals = $this->getSelectorValues($resource)) {
             $insertSuccess = TemporarySearchResults::insertToTempTable($selectorVals, $this->siteUrl, $this->sessionId);
             $insertSuccess && $this->resources[] = $resource;

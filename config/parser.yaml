@@ -32,7 +32,7 @@ sv-company:
       isAvalable: .//tbody/tr[td='Статус']/td[2]
 
 razbor-nt:
-  active: true
+  active: false
   url: http://razbor-nt.ru/
   class: App\Parser\Spider\DefaultSpider
   work_time:
@@ -63,3 +63,37 @@ razbor-nt:
       title: //*[@id="content"]/div[@class="b1c-good"]/h1
       url: //*[@id="image"]/@src
       price: //div[@class="price"]
+
+разборкасокол:
+  active: true
+  url: https://разборкасокол.рф/
+  class: App\Parser\Spider\DefaultSpider
+  work_time:
+    Monday:
+      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '21:00', time_to: '22:00'}
+    Tuesday:
+      - {time_from: '10:00', time_to: '12:00'}
+      - {time_from: '12:00', time_to: '22:00'}
+    Wednesday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Thursday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Friday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Saturday:
+     - {time_from: '10:00', time_to: '20:00'}
+    Sunday:
+      - {time_from: '10:00', time_to: '20:00'}
+
+  items_list_url: https://разборкасокол.рф/
+  items_list_selector: .//a
+  url_pattern: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai\/.+/
+  url_pattern_detail: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai\/[^\/]+\/[^\/]+.html$/
+  max_depth: 7
+  max_query_size: 200
+  session_result: 200
+  selectors:
+      title: //*[@id="content"]/h1
+      url: //*[@id="image"]/@src
+      price: //div[@class="price"][1]

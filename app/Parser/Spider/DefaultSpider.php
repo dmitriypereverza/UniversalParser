@@ -3,6 +3,7 @@
 namespace App\Parser\Spider;
 
 use App\Models\TemporarySearchResults;
+use App\Parser\Spider\Filter\UriFilter as SimpleUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceHandler;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
@@ -40,9 +41,11 @@ class DefaultSpider implements SpiderInterface {
             new DBPersistenceHandler(
                 $this->config['selectors'],
                 $this->config['url'],
-                $this->id_session
+                $this->id_session,
+                new SimpleUriFilter([$this->config['url_pattern_detail']])
             )
         );
+
 
         $this->setCountSessionResults($this->config['session_result'] ?: self::DEFAULT_SESSION_RESULT);
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
