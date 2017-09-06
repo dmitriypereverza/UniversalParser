@@ -3,6 +3,8 @@
 namespace App\Parser\Spider;
 
 use App\Models\TemporarySearchResults;
+use App\Parser\Spider\Attributes\DetailPageParser;
+use App\Parser\Spider\Attributes\TableParser;
 use App\Parser\Spider\Filter\UriFilter as SimpleUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceHandler;
@@ -34,18 +36,17 @@ class DefaultSpider implements SpiderInterface {
         $this->config = $config;
         $this->spider = $this->getSpider();
         $this->id_session = $this->getSessionId();
-
         $this->countProcessedResults = 0;
 
+        $selectorParser = isset($this->config['selectors']['row']) ? new TableParser($this->config['selectors']) : new DetailPageParser($this->config['selectors']);
         $this->spider->getDownloader()->setPersistenceHandler(
             new DBPersistenceHandler(
-                $this->config['selectors'],
+                $selectorParser,
                 $this->config['url'],
                 $this->id_session,
                 new SimpleUriFilter([$this->config['url_pattern_detail']])
             )
         );
-
 
         $this->setCountSessionResults($this->config['session_result'] ?: self::DEFAULT_SESSION_RESULT);
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);

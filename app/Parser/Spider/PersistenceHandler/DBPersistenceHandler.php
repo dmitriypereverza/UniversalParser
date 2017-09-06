@@ -1,119 +1,83 @@
 <?php
-
 namespace App\Parser\Spider\PersistenceHandler;
 
 use App\Models\TemporarySearchResults;
+use App\Parser\Spider\Attributes\AttributeParserInterface;
 use App\Parser\Spider\Filter\UriFilter;
-use InvalidArgumentException;
-use VDB\Spider\Filter\PreFetchFilterInterface;
 use VDB\Spider\PersistenceHandler\PersistenceHandlerInterface;
 use VDB\Spider\Resource;
 
-
-class DBPersistenceHandler implements PersistenceHandlerInterface
-{
-    /**
-     * @var Resource[]
-     */
+class DBPersistenceHandler implements PersistenceHandlerInterface {
+    /** @var Resource[] */
     private $resources = array();
-
-    private $selectors;
     private $siteUrl;
     private $sessionId;
-    /**
-     * @var $urlFilter UriFilter
-     */
+    /** @var $urlFilter UriFilter */
     private $urlFilter;
+    /** @var $attributeParser AttributeParserInterface */
+    private $attributeParser;
 
-    public function __construct($selectors, $siteUrl, $sessionId, $urlFilter) {
-        $this->selectors = $selectors;
+    public function __construct(AttributeParserInterface $attributeParser, $siteUrl, $sessionId, $urlFilter) {
         $this->siteUrl = $siteUrl;
         $this->sessionId = $sessionId;
         $this->urlFilter = $urlFilter;
+        $this->attributeParser = $attributeParser;
     }
 
-    public function count()
-    {
+    public function count() {
         return count($this->resources);
     }
 
-    public function persist(Resource $resource)
-    {
+    public function persist(Resource $resource) {
         if(!$this->urlFilter->match($resource->getUri())) {
             return;
         }
 
-        if ($selectorVals = $this->getSelectorValues($resource)) {
-            $insertSuccess = TemporarySearchResults::insertToTempTable($selectorVals, $this->siteUrl, $this->sessionId);
-            $insertSuccess && $this->resources[] = $resource;
-        }
-    }
-
-    private function getSelectorValues($resource) {
-        $result['url'] = $resource->getCrawler()->getUri();
-        echo $result['url'] . "\n";
-        foreach ($this->selectors as $key => $selector) {
-            if (!$content = $this->getSelectorContent($resource, $selector)) {
-                unset($result);
-                continue;
+        if ($selectorVals = $this->attributeParser->getSelectorsValue($resource)) {
+            if (!$this->attributeParser->isMultipleElements()) {
+                $insertSuccess = TemporarySearchResults::insertToTempTable($selectorVals, $this->siteUrl, $this->sessionId);
+                $insertSuccess && $this->resources[] = $resource;
+            } else {
+                foreach ($selectorVals as $rowValues) {
+                    $insertSuccess = TemporarySearchResults::insertToTempTable($rowValues, $this->siteUrl, $this->sessionId);
+                    $insertSuccess && $this->resources[] = $resource;
+                }
             }
-            $result[$key] = $content;
-        }
-
-        if (isset($result)) {
-            return $result;
-        }
-    }
-
-    /**
-     * @param Resource $resource
-     * @param $selector
-     * @return mixed
-     */
-    private function getSelectorContent($resource, $selector) {
-        $item = $resource->getCrawler()->filterXpath($selector);
-        if ($item->count()) {
-            return trim($item->html());
         }
     }
 
     /**
      * @return Resource
      */
-    public function current()
-    {
+    public function current() {
         return current($this->resources);
     }
 
     /**
      * @return Resource|false
      */
-    public function next()
-    {
+    public function next() {
         next($this->resources);
     }
 
     /**
      * @return int
      */
-    public function key()
-    {
+    public function key() {
         return key($this->resources);
     }
 
     /**
      * @return boolean
      */
-    public function valid()
-    {
+    public function valid() {
         return (bool)current($this->resources);
     }
 
     /**
      * @return void
      */
-    public function rewind()
-    {
+    public function rewind() {
         reset($this->resources);
     }
 
@@ -122,16 +86,6 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      *
      * @return void
      */
-    public function setIdsession($spiderId) {
-
-    }
-
-    /**
-     * @param string $spiderId
-     *
-     * @return void
-     */
     public function setSpiderId($spiderId) {
-        // TODO: Implement setSpiderId() method.
     }
 }

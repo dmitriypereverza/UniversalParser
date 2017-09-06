@@ -21,7 +21,8 @@ sv-company:
       - {time_from: '10:00', time_to: '20:00'}
 
   items_list_url: https://sv-company.ru/avtozapchasti/avtozapchasti-b-u/
-  url_pattern: /https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/[^\/]+\/$/
+  url_pattern: /https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/.+/
+  url_pattern_detail: /https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/[^\/]+\/$/
   items_list_selector: .//a
   max_query_size: 100
   session_result: 100
@@ -65,7 +66,7 @@ razbor-nt:
       price: //div[@class="price"]
 
 разборкасокол:
-  active: true
+  active: false
   url: https://разборкасокол.рф/
   class: App\Parser\Spider\DefaultSpider
   work_time:
@@ -97,3 +98,39 @@ razbor-nt:
       title: //*[@id="content"]/h1
       url: //*[@id="image"]/@src
       price: //div[@class="price"][1]
+
+
+autoinfo51:
+  active: true
+  url: http://www.autoinfo51.ru
+  class: App\Parser\Spider\DefaultSpider
+  work_time:
+    Monday:
+      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '21:00', time_to: '22:00'}
+    Tuesday:
+      - {time_from: '10:00', time_to: '12:00'}
+      - {time_from: '12:00', time_to: '22:00'}
+    Wednesday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Thursday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Friday:
+      - {time_from: '10:00', time_to: '20:00'}
+    Saturday:
+     - {time_from: '10:00', time_to: '20:00'}
+    Sunday:
+      - {time_from: '10:00', time_to: '20:00'}
+
+  items_list_url: http://www.autoinfo51.ru
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/www.autoinfo51.ru\/catalog\/.+/
+  url_pattern_detail: /^http:\/\/www.autoinfo51.ru\/catalog\/[\d]+\/[\d]+\/$/
+  max_depth: 4
+  max_query_size: 100
+  session_result: 100
+  selectors:
+      row: //table[@class="catalog"]/tr[position() >= 2]
+      title: //td[3]
+      price: //td[6]
+      img: //td[7]/a/@href
