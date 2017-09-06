@@ -12,7 +12,6 @@ use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgum
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
 use VDB\Spider\EventListener\PolitenessPolicyListener;
-use VDB\Spider\QueueManager\InMemoryQueueManager;
 use VDB\Spider\Spider;
 use VDB\Spider\StatsHandler;
 
@@ -24,7 +23,6 @@ class DefaultSpider implements SpiderInterface {
 
     private $id_session;
     private $countProcessedResults;
-    private $countSessionResult;
     private $config;
     /** @var Spider $spider  */
     private $spider;
@@ -48,7 +46,6 @@ class DefaultSpider implements SpiderInterface {
             )
         );
 
-        $this->setCountSessionResults($this->config['session_result'] ?: self::DEFAULT_SESSION_RESULT);
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
         $this->setMaxQueueSize($this->config['max_query_size'] ?? self::DEFAULT_QUERY_SIZE);
         $this->setReuestDelay($this->config['reuest_delay'] ?? self::DEFAULT_REQUEST_DELAY);
@@ -68,7 +65,7 @@ class DefaultSpider implements SpiderInterface {
             echo "\n  FAILED:    " . count($statsHandler->getFailed());
             echo "\n  PERSISTED:    " . count($statsHandler->getPersisted());
 
-            TemporarySearchResults::setVersion(1, $this->id_session);
+            TemporarySearchResults::setNewVersion($this->config['url'], $this->id_session);
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
@@ -104,11 +101,6 @@ class DefaultSpider implements SpiderInterface {
      */
     private function setMaxQueueSize($maxQueueSize) {
         $this->spider->getQueueManager()->maxQueueSize = $maxQueueSize;
-    }
-
-
-    private function setCountSessionResults($count) {
-        $this->countSessionResult = $count;
     }
 
     private function getSessionId() {

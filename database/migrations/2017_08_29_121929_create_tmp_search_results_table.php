@@ -19,7 +19,7 @@ class CreateTmpSearchResultsTable extends Migration
             $table->string('id_session');
             $table->text('content');
             $table->string('hash');
-            $table->integer('version');
+            $table->integer('version')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
         });

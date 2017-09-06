@@ -8,14 +8,15 @@ use InvalidArgumentException;
 class TemporarySearchResults extends Model {
     protected $table = 'tmp_search_results';
 
-    public static function setVersion($version, $sessionId) {
-        return self::where('id_session', $sessionId)->update(['version' => $version]);
-    }
-
-
+    /**
+     * @param $result
+     * @param $siteUrl
+     * @param $sessionId
+     * @return bool
+     */
     public static function insertToTempTable($result, $siteUrl, $sessionId) {
         if (!is_array($result)) {
-            throw new InvalidArgumentException('Передан неверный аргумент при записи во временную таблицу');
+            throw new InvalidArgumentException('Не найдены данные для записи во временную таблицу');
         }
         $tmpTable = new TemporarySearchResults;
         $tmpTable->config_site_name = $siteUrl;
@@ -23,7 +24,25 @@ class TemporarySearchResults extends Model {
         $tmpTable->content = json_encode($result);
         $tmpTable->hash = md5(serialize($result));
 
-        $raw = self::where('hash', $tmpTable->hash)->first();
-        return !$raw && $tmpTable->save();
+        if (!self::isRowExist($tmpTable)) {
+           return $tmpTable->save();
+        }
+    }
+
+    /**
+     * @param $tmpTable
+     * @return Model|null|static
+     */
+    private static function isRowExist($tmpTable) {
+        return self::where('hash', $tmpTable->hash)->first();
+    }
+
+
+    public static function setNewVersion($siteUrl, $sessionId) {
+        self::where('id_session', $sessionId)->update(['version' => self::getCurrentVersion($siteUrl) + 1]);
+    }
+
+    public static function getCurrentVersion($siteUrl) {
+        return self::where('config_site_name', $siteUrl)->max('version');
     }
 }
