@@ -24,7 +24,7 @@ sv-company:
   url_pattern: /https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/.+/
   url_pattern_detail: /https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/[^\/]+\/$/
   items_list_selector: .//a
-  max_query_size: 100
+  max_query_size: 0
   selectors:
       title: .//h1[@class="product__title"]
       img: .//img[@class="gallery__img"][1]/@src
@@ -56,8 +56,8 @@ razbor-nt:
   items_list_url: http://razbor-nt.ru/
   items_list_selector: .//a
   url_pattern: /http:\/\/razbor-nt.ru\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+.html$/
-  request_dalay: 50
-  max_query_size: 50
+  request_dalay: 500
+  max_query_size: 0
   selectors:
       title: //*[@id="content"]/div[@class="b1c-good"]/h1
       url: //*[@id="image"]/@src
@@ -90,7 +90,7 @@ razbor-nt:
   url_pattern: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai\/.+/
   url_pattern_detail: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai\/[^\/]+\/[^\/]+.html$/
   max_depth: 7
-  max_query_size: 200
+  max_query_size: 0
   selectors:
       title: //*[@id="content"]/h1
       url: //*[@id="image"]/@src
@@ -111,20 +111,20 @@ autoinfo51:
     Wednesday:
       - {time_from: '10:00', time_to: '20:00'}
     Thursday:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '10:00', time_to: '13:20'}
     Friday:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '10:00', time_to: '14:00'}
     Saturday:
-     - {time_from: '10:00', time_to: '20:00'}
+     - {time_from: '00:00', time_to: '00:00'}
     Sunday:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '00:00'}
 
   items_list_url: http://www.autoinfo51.ru
   items_list_selector: .//a
   url_pattern: /^http:\/\/www.autoinfo51.ru\/catalog\/.+/
   url_pattern_detail: /^http:\/\/www.autoinfo51.ru\/catalog\/[\d]+\/[\d]+\/$/
   max_depth: 4
-  max_query_size: 32
+  max_query_size: 0
   selectors:
       row: //table[@class="catalog"]/tr[position() >= 2]
       title: //td[3]

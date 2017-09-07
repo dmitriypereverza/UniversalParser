@@ -41,7 +41,7 @@ class StartParser extends Command
     {
         $this->line('Starting...');
 
-        $scheduler = new Scheduler();
+        $scheduler = Scheduler::getInstance();
         $scheduler->run(new Parser());
     }
 }

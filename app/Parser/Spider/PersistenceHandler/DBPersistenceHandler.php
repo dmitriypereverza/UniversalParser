@@ -32,15 +32,13 @@ class DBPersistenceHandler implements PersistenceHandlerInterface {
         if(!$this->urlFilter->match($resource->getUri())) {
             return;
         }
-
+        $this->resources[] = $resource->getUri();
         if ($selectorVals = $this->attributeParser->getSelectorsValue($resource)) {
             if (!$this->attributeParser->isMultipleElements()) {
-                $insertSuccess = TemporarySearchResults::insertToTempTable($selectorVals, $this->siteUrl, $this->sessionId);
-                $insertSuccess && $this->resources[] = $resource;
+                TemporarySearchResults::insertToTempTable($selectorVals, $this->siteUrl, $this->sessionId);
             } else {
                 foreach ($selectorVals as $rowValues) {
-                    $insertSuccess = TemporarySearchResults::insertToTempTable($rowValues, $this->siteUrl, $this->sessionId);
-                    $insertSuccess && $this->resources[] = $resource;
+                    TemporarySearchResults::insertToTempTable($rowValues, $this->siteUrl, $this->sessionId);
                 }
             }
         }

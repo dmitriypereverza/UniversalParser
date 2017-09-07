@@ -21,8 +21,6 @@ class TableParser implements AttributeParserInterface {
      */
     public function getSelectorsValue(Resource $resource) {
         $result['url'] = $resource->getCrawler()->getUri();
-        echo $result['url'] . "\n";
-
         $selectors = $this->selectors;
         $rowSelector = $selectors['row'];
         unset($selectors['row']);
