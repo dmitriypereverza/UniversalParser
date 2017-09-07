@@ -106,4 +106,18 @@ class DefaultSpider implements SpiderInterface {
     private function getSessionId() {
         return md5($this->config['items_list_url'] . microtime(true));
     }
+
+    public function onPersistEvent(callable $callback) {
+        $this->spider->getDispatcher()->addListener(
+            SpiderEvents::SPIDER_CRAWL_RESOURCE_PERSISTED,
+            $callback
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig() {
+        return $this->config;
+    }
 }

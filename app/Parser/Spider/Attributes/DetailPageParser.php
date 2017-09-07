@@ -15,7 +15,6 @@ class DetailPageParser implements AttributeParserInterface {
 
     public function getSelectorsValue(Resource $resource) {
         $result['url'] = $resource->getCrawler()->getUri();
-        echo $result['url'] . "\n";
         foreach ($this->selectors as $key => $selector) {
             if (!$content = $this->getSelectorContent($resource, $selector)) {
                 unset($result);

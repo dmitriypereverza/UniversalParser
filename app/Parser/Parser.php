@@ -15,7 +15,6 @@ class Parser {
         if (file_exists(sprintf('%s/%s.yaml', config_path(), $this->configName))) {
             $this->configPath = sprintf('%s/%s.yaml', config_path(), $this->configName);
         }
-
     }
 
     public function getArrayConfig() {
