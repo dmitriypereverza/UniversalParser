@@ -5,15 +5,18 @@ namespace App\Parser;
 use App\Parser\Spider\SpiderInterface;
 use App\Parser\Spider\SpiderManager;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 use Symfony\Component\EventDispatcher\Event;
 
 class Scheduler {
     private static $_instance = null;
+    private static $timeZone;
     private static $dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     /** @var SpiderInterface $parserInWork */
     private $parserInWork = false;
 
     private function __construct() {
+        self::$timeZone = Config::get('app.timezone');
     }
 
     static public function getInstance() {
@@ -42,8 +45,6 @@ class Scheduler {
         $parser->onPostPersistEvent(function (Event $event) {
             if (!$this->isMustWork($this->parserInWork->getConfig())) {
                 $event->getSubject()->setDownloadLimit(1);
-                // TODO Log
-                echo "Parser time expired!\n";
             }
         });
     }
@@ -57,7 +58,7 @@ class Scheduler {
         if (!$siteConfig['active']) {
             return false;
         }
-        $nowTime = Carbon::now('Europe/Moscow');
+        $nowTime = Carbon::now(self::$timeZone);
         foreach ($this->getWorkTimeForCurrentDay($siteConfig, $nowTime->dayOfWeek) as $timeDiff) {
             if ($this->isMatch($nowTime, $timeDiff)) {
                 $mustWork = true;
@@ -77,7 +78,7 @@ class Scheduler {
         $timeFromParts = explode(':', $time_from);
         /** @var string $time_to */
         $timeToParts = explode(':', $time_to);
-        return $time->between(Carbon::today('Europe/Moscow')->addHours($timeFromParts[0])->addMinutes($timeFromParts[1]), Carbon::today('Europe/Moscow')->addHours($timeToParts[0])->addMinutes($timeToParts[1]));
+        return $time->between(Carbon::today(self::$timeZone)->addHours($timeFromParts[0])->addMinutes($timeFromParts[1]), Carbon::today(self::$timeZone)->addHours($timeToParts[0])->addMinutes($timeToParts[1]));
     }
 
     /**
