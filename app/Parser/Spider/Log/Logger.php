@@ -1,5 +1,5 @@
 <?php
-namespace App\Parser\Log;
+namespace App\Parser\Spider\Log;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;

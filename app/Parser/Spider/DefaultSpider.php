@@ -2,6 +2,7 @@
 
 namespace App\Parser\Spider;
 
+use App\Events\ParserInfoEvent;
 use App\Models\TemporarySearchResults;
 use App\Parser\Spider\Attributes\DetailPageParser;
 use App\Parser\Spider\Attributes\TableParser;
@@ -14,6 +15,7 @@ use VDB\Spider\Event\SpiderEvents;
 use VDB\Spider\EventListener\PolitenessPolicyListener;
 use VDB\Spider\Spider;
 use VDB\Spider\StatsHandler;
+use Illuminate\Support\Facades\Event as laravelEvent;
 
 class DefaultSpider implements SpiderInterface {
     const DEFAULT_REQUEST_DELAY = 350;
@@ -54,27 +56,23 @@ class DefaultSpider implements SpiderInterface {
     public function crawl() {
         $statsHandler = new StatsHandler();
         $this->spider->getQueueManager()->getDispatcher()->addSubscriber($statsHandler);
-        $this->spider->getDispatcher()->addSubscriber($statsHandler);
 
         try {
             $this->spider->crawl();
-
-            echo "\n\nSPIDER ID: " . $statsHandler->getSpiderId();
-            echo "\n  ENQUEUED:  " . count($statsHandler->getQueued());
-            echo "\n  SKIPPED:   " . count($statsHandler->getFiltered());
-            echo "\n  FAILED:    " . count($statsHandler->getFailed());
-            echo "\n  PERSISTED:    " . count($statsHandler->getPersisted());
-
+            laravelEvent::fire(new ParserInfoEvent(
+                sprintf("PERSISTED url: %d", count($statsHandler->getPersisted()))
+            ));
             TemporarySearchResults::setNewVersion($this->config['url'], $this->id_session);
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            laravelEvent::fire(new ParserInfoEvent(
+                sprintf("Crawl ended with error: %s", $e->getMessage())
+            ));
         }
     }
 
     private function getSpider() {
         $spider = new Spider($this->config['items_list_url']);
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer($this->config['items_list_selector']));
-//        $spider->getQueueManager()->setTraversalAlgorithm(InMemoryQueueManager::ALGORITHM_DEPTH_FIRST);
         $spider->getDiscovererSet()->addFilter(new UriFilter([$this->config['url_pattern']]));
         return $spider;
     }

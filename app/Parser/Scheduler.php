@@ -2,11 +2,13 @@
 
 namespace App\Parser;
 
+use App\Events\ParserInfoEvent;
 use App\Parser\Spider\SpiderInterface;
 use App\Parser\Spider\SpiderManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\EventDispatcher\Event;
+use Illuminate\Support\Facades\Event as laravelEvent;
 
 class Scheduler {
     private static $_instance = null;
@@ -33,10 +35,18 @@ class Scheduler {
     public function run($parser) {
         foreach ($parser->getArrayConfig() as $site) {
             if ($this->isMustWork($site)) {
+                laravelEvent::fire(new ParserInfoEvent(
+                    sprintf('Start parsing site: %s', $site['url']), [
+                        'test' => 111
+                    ]
+                ));
                 $this->parserInWork = SpiderManager::getSpiderFromConfig($site);
                 $this->setParserLoop($this->parserInWork);
                 $this->parserInWork->crawl();
                 $this->parserInWork = Null;
+                laravelEvent::fire(new ParserInfoEvent(
+                    sprintf('End parsing site: %s', $site['url'])
+                ));
             }
         }
     }
