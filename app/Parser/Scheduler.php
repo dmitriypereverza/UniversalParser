@@ -36,9 +36,7 @@ class Scheduler {
         foreach ($parser->getArrayConfig() as $site) {
             if ($this->isMustWork($site)) {
                 laravelEvent::fire(new ParserInfoEvent(
-                    sprintf('Start parsing site: %s', $site['url']), [
-                        'test' => 111
-                    ]
+                    sprintf('Start parsing site: %s', $site['url'])
                 ));
                 $this->parserInWork = SpiderManager::getSpiderFromConfig($site);
                 $this->setParserLoop($this->parserInWork);

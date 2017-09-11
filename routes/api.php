@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => 'api', 'prefix' => 'parser', 'namespace' => 'Parser'], function () {
+    Route::get('current_version', 'ParserController@getVersion')->name('parser.version');
+    Route::post('get_resource', 'ParserController@getResource')->name('parser.resource');
 });

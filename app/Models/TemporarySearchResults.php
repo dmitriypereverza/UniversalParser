@@ -42,7 +42,14 @@ class TemporarySearchResults extends Model {
         self::where('id_session', $sessionId)->update(['version' => self::getCurrentVersion($siteUrl) + 1]);
     }
 
-    public static function getCurrentVersion($siteUrl) {
-        return self::where('config_site_name', $siteUrl)->max('version');
+    public static function getCurrentVersion() {
+        return self::max('version');
+    }
+
+    public static function getSliceResultByVersion($versionFrom, $versionTo) {
+        if ($versionTo <= $versionFrom) {
+            return null;
+        }
+        return self::whereBetween('version', [$versionFrom, $versionTo])->get()->toJson();
     }
 }

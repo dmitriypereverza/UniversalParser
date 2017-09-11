@@ -60,7 +60,7 @@ class DefaultSpider implements SpiderInterface {
         try {
             $this->spider->crawl();
             laravelEvent::fire(new ParserInfoEvent(
-                sprintf("PERSISTED url: %d", count($statsHandler->getPersisted()))
+                sprintf("PERSISTED: %d", count($statsHandler->getPersisted()))
             ));
             TemporarySearchResults::setNewVersion($this->config['url'], $this->id_session);
         } catch (\Exception $e) {
