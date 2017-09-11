@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +12,15 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('auth/app', 'Auth\AppAuthController@authenticateApp');
 
-Route::group(['middleware' => 'api', 'prefix' => 'parser', 'namespace' => 'Parser'], function () {
-    Route::get('current_version', 'ParserController@getVersion')->name('parser.version');
-    Route::post('get_resource', 'ParserController@getResource')->name('parser.resource');
+Route::group(['prefix' => 'parser', 'namespace' => 'Parser'], function () {
+    Route::get('current_version', 'ParserController@getVersion')
+        ->name('parser.version')
+    ->middleware('auth.api');
+
+    Route::post('get_resource', 'ParserController@getResource')
+        ->name('parser.resource')
+        ->middleware('auth.api');
 });
+
