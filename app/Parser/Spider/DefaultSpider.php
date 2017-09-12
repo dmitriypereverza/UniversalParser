@@ -2,6 +2,7 @@
 
 namespace App\Parser\Spider;
 
+use App\Events\ParserErrorEvent;
 use App\Events\ParserInfoEvent;
 use App\Models\TemporarySearchResults;
 use App\Parser\Spider\Attributes\DetailPageParser;
@@ -54,6 +55,9 @@ class DefaultSpider implements SpiderInterface {
     }
 
     public function crawl() {
+        laravelEvent::fire(new ParserInfoEvent(
+            sprintf("Start crawl: %s", $this->config['url'])
+        ));
         $statsHandler = new StatsHandler();
         $this->spider->getQueueManager()->getDispatcher()->addSubscriber($statsHandler);
 
@@ -62,9 +66,12 @@ class DefaultSpider implements SpiderInterface {
             laravelEvent::fire(new ParserInfoEvent(
                 sprintf("PERSISTED: %d", count($statsHandler->getPersisted()))
             ));
-            TemporarySearchResults::setNewVersion($this->config['url'], $this->id_session);
-        } catch (\Exception $e) {
+            TemporarySearchResults::setNewVersion($this->id_session);
             laravelEvent::fire(new ParserInfoEvent(
+                sprintf("End crawl: %s", $this->config['url'])
+            ));
+        } catch (\Exception $e) {
+            laravelEvent::fire(new ParserErrorEvent(
                 sprintf("Crawl ended with error: %s", $e->getMessage())
             ));
         }

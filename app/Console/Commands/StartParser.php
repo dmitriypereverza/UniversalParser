@@ -2,9 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Parser\Parser;
+use App\Events\ParserErrorEvent;
+use App\Parser\ParsersConfig;
 use App\Parser\Scheduler;
+use App\Parser\Spider\SpiderManager;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Event;
 
 class StartParser extends Command
 {
@@ -13,14 +16,14 @@ class StartParser extends Command
      *
      * @var string
      */
-    protected $signature = 'parser:start';
+    protected $signature = 'parser:start {siteName}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Parser start';
+    protected $description = 'ParsersConfig start';
 
     /**
      * Create a new command instance.
@@ -39,9 +42,20 @@ class StartParser extends Command
      */
     public function handle()
     {
-        $this->line('Starting...');
+        $siteName = $userId = $this->argument('siteName');
+        $this->line('Starting parse site:' . $siteName);
+        try {
+            $parser = new ParsersConfig();
+            $siteConfig = $parser->getSiteConfig($siteName);
+            $spider = SpiderManager::getSpiderFromConfig($siteConfig);
+            $scheduler = new Scheduler($siteConfig);
+            $scheduler->setParserLoop($spider);
 
-        $scheduler = Scheduler::getInstance();
-        $scheduler->run(new Parser());
+            $spider->crawl();
+        } catch (\Exception $e) {
+            Event::fire(new ParserErrorEvent(
+                sprintf('Parse error: %s', $e->getMessage())
+            ));
+        }
     }
 }

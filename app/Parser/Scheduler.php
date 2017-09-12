@@ -1,57 +1,26 @@
 <?php
-
 namespace App\Parser;
 
-use App\Events\ParserInfoEvent;
 use App\Parser\Spider\SpiderInterface;
-use App\Parser\Spider\SpiderManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\EventDispatcher\Event;
-use Illuminate\Support\Facades\Event as laravelEvent;
 
 class Scheduler {
-    private static $_instance = null;
     private static $timeZone;
+    private $siteConfig;
     private static $dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    /** @var SpiderInterface $parserInWork */
-    private $parserInWork = false;
+    /** @var SpiderInterface $spider */
 
-    private function __construct() {
+    public function __construct($siteConfig) {
         self::$timeZone = Config::get('app.timezone');
+        $this->siteConfig = $siteConfig;
     }
 
-    static public function getInstance() {
-        if(is_null(self::$_instance)) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
-
-    /**
-     * Проверка исполнения пауков.
-     * @param Parser $parser
-     */
-    public function run($parser) {
-        foreach ($parser->getArrayConfig() as $site) {
-            if ($this->isMustWork($site)) {
-                laravelEvent::fire(new ParserInfoEvent(
-                    sprintf('Start parsing site: %s', $site['url'])
-                ));
-                $this->parserInWork = SpiderManager::getSpiderFromConfig($site);
-                $this->setParserLoop($this->parserInWork);
-                $this->parserInWork->crawl();
-                $this->parserInWork = Null;
-                laravelEvent::fire(new ParserInfoEvent(
-                    sprintf('End parsing site: %s', $site['url'])
-                ));
-            }
-        }
-    }
-
-    private function setParserLoop(SpiderInterface $parser) {
+    public function setParserLoop(SpiderInterface $parser) {
+        echo "Check\n";
         $parser->onPostPersistEvent(function (Event $event) {
-            if (!$this->isMustWork($this->parserInWork->getConfig())) {
+            if (!$this->isMustWork($this->siteConfig)) {
                 $event->getSubject()->setDownloadLimit(1);
             }
         });
@@ -61,7 +30,7 @@ class Scheduler {
      * @param $siteConfig
      * @return bool
      */
-    function isMustWork($siteConfig) {
+     private function isMustWork($siteConfig) {
         $mustWork = false;
         if (!$siteConfig['active']) {
             return false;
@@ -95,10 +64,7 @@ class Scheduler {
      * @return array
      */
     private function getWorkTimeForCurrentDay($siteConfig, $currentDayOfWeek) {
-        return $siteConfig['work_time'][self::$dayOfWeek[$currentDayOfWeek - 1]];
+        return $siteConfig['work_time'][self::$dayOfWeek[$currentDayOfWeek - 1] . 's'];
     }
 
-    public function isParserWorks() {
-        return is_null($this->parserInWork);
-    }
 }

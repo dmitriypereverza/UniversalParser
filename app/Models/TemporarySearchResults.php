@@ -1,10 +1,18 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
+/**
+ * @property \Carbon\Carbon $created_at
+ * @property int $id
+ * @property string $config_site_name
+ * @property string $id_session
+ * @property string $content
+ * @property string $hash
+ * @property \Carbon\Carbon $updated_at
+ */
 class TemporarySearchResults extends Model {
     protected $table = 'tmp_search_results';
 
@@ -14,9 +22,9 @@ class TemporarySearchResults extends Model {
      * @param $sessionId
      * @return bool
      */
-    public static function insertToTempTable($result, $siteUrl, $sessionId) {
+    public static function insertIfNotExist($result, $siteUrl, $sessionId) {
         if (!is_array($result)) {
-            throw new InvalidArgumentException('Не найдены данные для записи во временную таблицу');
+            throw new InvalidArgumentException('Не найдены данные для записи в таблицу');
         }
         $tmpTable = new TemporarySearchResults;
         $tmpTable->config_site_name = $siteUrl;
@@ -38,12 +46,12 @@ class TemporarySearchResults extends Model {
     }
 
 
-    public static function setNewVersion($siteUrl, $sessionId) {
-        self::where('id_session', $sessionId)->update(['version' => self::getCurrentVersion($siteUrl) + 1]);
+    public static function setNewVersion($sessionId) {
+        self::where('id_session', $sessionId)->update(['version' => self::getCurrentVersion() + 1]);
     }
 
     public static function getCurrentVersion() {
-        return self::max('version');
+        return self::max('version') ?? 0;
     }
 
     public static function getSliceResultByVersion($versionFrom, $versionTo) {

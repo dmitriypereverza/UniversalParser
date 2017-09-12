@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Parser\Parser;
+use App\Parser\ParsersConfig;
 use Illuminate\Console\Command;
 
 class getConfig extends Command
@@ -38,7 +38,7 @@ class getConfig extends Command
      */
     public function handle()
     {
-        $parser = new Parser();
+        $parser = new ParsersConfig();
         $this->line($parser->getTextConfig());
 
     }

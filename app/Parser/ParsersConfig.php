@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Parser;
 
+use Psr\Log\InvalidArgumentException;
 use Symfony\Component\Yaml\Yaml;
 
-class Parser {
+class ParsersConfig {
     const CONFIG_NAME = 'parser';
     private $configPath = '';
 
@@ -22,5 +22,13 @@ class Parser {
         if (file_exists($this->configPath)) {
             return file_get_contents($this->configPath);
         }
+    }
+
+    public function getSiteConfig($siteName) {
+        $arrayConfig = self::getArrayConfig();
+        if (!isset($arrayConfig[$siteName])) {
+            throw new InvalidArgumentException(sprintf('Site %s doesn\'t exist in %s.yaml', $siteName ,self::CONFIG_NAME));
+        }
+        return $arrayConfig[$siteName];
     }
 }

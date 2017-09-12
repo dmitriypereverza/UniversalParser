@@ -1,23 +1,23 @@
-# Parser config
+# ParsersConfig config
 sv-company:
   active: false
   url: https://sv-company.ru/
   class: App\Parser\Spider\DefaultSpider
   work_time:
-    Monday:
+    Mondays:
       - {time_from: '10:00', time_to: '20:00'}
-    Tuesday:
+    Tuesdays:
       - {time_from: '10:00', time_to: '12:00'}
       - {time_from: '12:00', time_to: '22:00'}
-    Wednesday:
+    Wednesdays:
       - {time_from: '10:00', time_to: '20:00'}
-    Thursday:
+    Thursdays:
       - {time_from: '10:00', time_to: '20:00'}
-    Friday:
+    Fridays:
       - {time_from: '10:00', time_to: '20:00'}
-    Saturday:
+    Saturdays:
      - {time_from: '10:00', time_to: '20:00'}
-    Sunday:
+    Sundays:
       - {time_from: '10:00', time_to: '20:00'}
 
   items_list_url: https://sv-company.ru/avtozapchasti/avtozapchasti-b-u/
@@ -36,21 +36,20 @@ razbor-nt:
   url: http://razbor-nt.ru/
   class: App\Parser\Spider\DefaultSpider
   work_time:
-    Monday:
+    Mondays:
       - {time_from: '10:00', time_to: '20:00'}
-      - {time_from: '21:00', time_to: '22:00'}
-    Tuesday:
+    Tuesdays:
       - {time_from: '10:00', time_to: '12:00'}
       - {time_from: '12:00', time_to: '22:00'}
-    Wednesday:
+    Wednesdays:
       - {time_from: '10:00', time_to: '20:00'}
-    Thursday:
+    Thursdays:
       - {time_from: '10:00', time_to: '20:00'}
-    Friday:
+    Fridays:
       - {time_from: '10:00', time_to: '20:00'}
-    Saturday:
+    Saturdays:
      - {time_from: '10:00', time_to: '20:00'}
-    Sunday:
+    Sundays:
       - {time_from: '10:00', time_to: '20:00'}
 
   items_list_url: http://razbor-nt.ru/
@@ -68,21 +67,20 @@ razbor-nt:
   url: https://разборкасокол.рф/
   class: App\Parser\Spider\DefaultSpider
   work_time:
-    Monday:
+    Mondays:
       - {time_from: '10:00', time_to: '20:00'}
-      - {time_from: '21:00', time_to: '22:00'}
-    Tuesday:
+    Tuesdays:
       - {time_from: '10:00', time_to: '12:00'}
       - {time_from: '12:00', time_to: '22:00'}
-    Wednesday:
+    Wednesdays:
       - {time_from: '10:00', time_to: '20:00'}
-    Thursday:
+    Thursdays:
       - {time_from: '10:00', time_to: '20:00'}
-    Friday:
+    Fridays:
       - {time_from: '10:00', time_to: '20:00'}
-    Saturday:
+    Saturdays:
      - {time_from: '10:00', time_to: '20:00'}
-    Sunday:
+    Sundays:
       - {time_from: '10:00', time_to: '20:00'}
 
   items_list_url: https://разборкасокол.рф/
@@ -102,22 +100,20 @@ autoinfo51:
   url: http://www.autoinfo51.ru
   class: App\Parser\Spider\DefaultSpider
   work_time:
-    Monday:
+    Mondays:
       - {time_from: '10:00', time_to: '20:00'}
-      - {time_from: '21:00', time_to: '22:00'}
-    Tuesday:
-      - {time_from: '10:00', time_to: '12:00'}
-      - {time_from: '12:00', time_to: '22:00'}
-    Wednesday:
+    Tuesdays:
+      - {time_from: '10:00', time_to: '22:30'}
+    Wednesdays:
       - {time_from: '10:00', time_to: '20:00'}
-    Thursday:
-      - {time_from: '10:00', time_to: '13:20'}
-    Friday:
-      - {time_from: '10:00', time_to: '14:04'}
-    Saturday:
-     - {time_from: '00:00', time_to: '00:00'}
-    Sunday:
-      - {time_from: '00:00', time_to: '00:00'}
+    Thursdays:
+      - {time_from: '10:00', time_to: '20:00'}
+    Fridays:
+      - {time_from: '10:00', time_to: '20:00'}
+    Saturdays:
+     - {time_from: '10:00', time_to: '20:00'}
+    Sundays:
+      - {time_from: '10:00', time_to: '20:00'}
 
   items_list_url: http://www.autoinfo51.ru
   items_list_selector: .//a
