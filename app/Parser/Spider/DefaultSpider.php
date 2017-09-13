@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Parser\Spider;
 
 use App\Events\ParserErrorEvent;
@@ -10,6 +9,7 @@ use App\Parser\Spider\Attributes\TableParser;
 use App\Parser\Spider\Filter\UriFilter as SimpleUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceHandler;
+use App\Parser\Spider\RequestHandler\GuzzleRequestWIthProxyHandler;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
@@ -21,8 +21,7 @@ use Illuminate\Support\Facades\Event as laravelEvent;
 class DefaultSpider implements SpiderInterface {
     const DEFAULT_REQUEST_DELAY = 350;
     const DEFAULT_MAX_DEPTH = 4;
-    const DEFAULT_QUERY_SIZE = 10;
-    const DEFAULT_SESSION_RESULT = 100;
+    const DEFAULT_QUERY_SIZE = 0;
 
     private $id_session;
     private $countProcessedResults;
@@ -38,29 +37,19 @@ class DefaultSpider implements SpiderInterface {
         $this->spider = $this->getSpider();
         $this->id_session = $this->getSessionId();
         $this->countProcessedResults = 0;
-
-        $selectorParser = isset($this->config['selectors']['row']) ? new TableParser($this->config['selectors']) : new DetailPageParser($this->config['selectors']);
-        $this->spider->getDownloader()->setPersistenceHandler(
-            new DBPersistenceHandler(
-                $selectorParser,
-                $this->config['url'],
-                $this->id_session,
-                new SimpleUriFilter([$this->config['url_pattern_detail']])
-            )
-        );
+        $this->setRequestHandler();
+        $this->setPersistenceHandler();
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
         $this->setMaxQueueSize($this->config['max_query_size'] ?? self::DEFAULT_QUERY_SIZE);
-        $this->setReuestDelay($this->config['reuest_delay'] ?? self::DEFAULT_REQUEST_DELAY);
+        $this->setReuestDelay($this->config['request_delay'] ?? self::DEFAULT_REQUEST_DELAY);
     }
 
     public function crawl() {
         laravelEvent::fire(new ParserInfoEvent(
             sprintf("Start crawl: %s", $this->config['url'])
         ));
-        $statsHandler = new StatsHandler();
-        $this->spider->getQueueManager()->getDispatcher()->addSubscriber($statsHandler);
-
+        $statsHandler = $this->getStatHandler();
         try {
             $this->spider->crawl();
             laravelEvent::fire(new ParserInfoEvent(
@@ -119,10 +108,25 @@ class DefaultSpider implements SpiderInterface {
         );
     }
 
-    /**
-     * @return array
-     */
     public function getConfig() {
         return $this->config;
+    }
+
+    private function setRequestHandler() {
+        $this->spider->getDownloader()->setRequestHandler(new GuzzleRequestWIthProxyHandler());
+    }
+
+    private function setPersistenceHandler() {
+        $selectorParser = isset($this->config['selectors']['row']) ? new TableParser($this->config['selectors']) : new DetailPageParser($this->config['selectors']);
+        $this->spider->getDownloader()->setPersistenceHandler(new DBPersistenceHandler($selectorParser, $this->config['url'], $this->id_session, new SimpleUriFilter([$this->config['url_pattern_detail']])));
+    }
+
+    /**
+     * @return StatsHandler
+     */
+    private function getStatHandler() {
+        $statsHandler = new StatsHandler();
+        $this->spider->getDispatcher()->addSubscriber($statsHandler);
+        return $statsHandler;
     }
 }

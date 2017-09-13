@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Console\Commands;
 
 use App\Events\ParserErrorEvent;
@@ -9,29 +8,12 @@ use App\Parser\Spider\SpiderManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Event;
 
-class StartParser extends Command
-{
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+class StartParser extends Command {
     protected $signature = 'parser:start {siteName}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'ParsersConfig start';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
+    function __construct() {
         parent::__construct();
     }
 
@@ -40,8 +22,7 @@ class StartParser extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
+    public function handle() {
         $siteName = $userId = $this->argument('siteName');
         $this->line('Starting parse site:' . $siteName);
         try {
