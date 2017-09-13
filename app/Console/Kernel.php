@@ -4,7 +4,6 @@ namespace App\Console;
 
 use App\Console\Commands\getConfig;
 use App\Console\Commands\StartParser;
-use App\Console\Commands\testRunScheduler;
 use App\Parser\ParsersConfig;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -21,7 +20,6 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         GetConfig::class,
         StartParser::class,
-        testRunScheduler::class,
     ];
 
     /**
