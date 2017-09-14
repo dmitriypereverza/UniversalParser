@@ -5,10 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * App\Models\ParserStatus
+ *
  * @property int $id
  * @property boolean $is_enable
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ParserStatus whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ParserStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ParserStatus whereIsEnable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ParserStatus whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class ParserStatus extends Model {
     protected $table = 'parser_status';

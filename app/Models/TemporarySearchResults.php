@@ -5,6 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
 /**
+ * App\Models\TemporarySearchResults
+ *
  * @property \Carbon\Carbon $created_at
  * @property int $id
  * @property string $config_site_name
@@ -12,6 +14,16 @@ use InvalidArgumentException;
  * @property string $content
  * @property string $hash
  * @property \Carbon\Carbon $updated_at
+ * @property int|null $version
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereConfigSiteName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereHash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereIdSession($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereVersion($value)
+ * @mixin \Eloquent
  */
 class TemporarySearchResults extends Model {
     protected $table = 'tmp_search_results';
