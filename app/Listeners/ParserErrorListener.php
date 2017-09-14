@@ -16,9 +16,6 @@ class ParserErrorListener
     }
 
     public function handle(ParserInfoEvent $event) {
-        /** @var Logger $logger */
-        $logger = app(Logger::class);
-        $logger->info($event->getText(), $event->getContext());
-        $logger->setLogger(new FileLogger());
+        app('file.logger')->info($event->getText(), $event->getContext());
     }
 }

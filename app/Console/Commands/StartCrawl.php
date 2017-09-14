@@ -8,8 +8,8 @@ use App\Parser\Spider\SpiderManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Event;
 
-class StartParser extends Command {
-    protected $signature = 'parser:start {siteName}';
+class StartCrawl extends Command {
+    protected $signature = 'crawl:start {siteName}';
 
     protected $description = 'ParsersConfig start';
 

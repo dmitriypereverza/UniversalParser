@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/storage/logs/parser
 /storage/*.key
 /vendor
 /.idea
@@ -9,4 +10,5 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+storagelogs/
 .env

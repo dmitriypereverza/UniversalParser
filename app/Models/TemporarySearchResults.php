@@ -37,6 +37,10 @@ class TemporarySearchResults extends Model {
         }
     }
 
+    public static function deleteSessionResult($sessionId) {
+        self::where('id_session', $sessionId)->delete();
+    }
+
     /**
      * @param $tmpTable
      * @return Model|null|static
@@ -44,7 +48,6 @@ class TemporarySearchResults extends Model {
     private static function isRowExist($tmpTable) {
         return self::where('hash', $tmpTable->hash)->first();
     }
-
 
     public static function setNewVersion($sessionId) {
         self::where('id_session', $sessionId)->update(['version' => self::getCurrentVersion() + 1]);

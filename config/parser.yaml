@@ -1,6 +1,6 @@
 # ParsersConfig config
 sv-company:
-  active: false
+  active: true
   url: https://sv-company.ru/
   class: App\Parser\Spider\DefaultSpider
   work_time:
@@ -10,9 +10,9 @@ sv-company:
       - {time_from: '10:00', time_to: '12:00'}
       - {time_from: '12:00', time_to: '22:00'}
     Wednesdays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '10:00', time_to: '18:20'}
     Thursdays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '10:00', time_to: '11:41'}
     Fridays:
       - {time_from: '10:00', time_to: '20:00'}
     Saturdays:
@@ -31,7 +31,7 @@ sv-company:
       isAvalable: .//tbody/tr[td='Статус']/td[2]
 
 razbor-nt:
-  active: false
+  active: true
   url: http://razbor-nt.ru/
   class: App\Parser\Spider\DefaultSpider
   work_time:
@@ -43,7 +43,7 @@ razbor-nt:
     Wednesdays:
       - {time_from: '10:00', time_to: '20:00'}
     Thursdays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '10:00', time_to: '11:43'}
     Fridays:
       - {time_from: '10:00', time_to: '20:00'}
     Saturdays:
@@ -60,7 +60,7 @@ razbor-nt:
       price: //div[@class="price"]
 
 разборкасокол:
-  active: false
+  active: true
   url: https://разборкасокол.рф/
   class: App\Parser\Spider\DefaultSpider
   work_time:
@@ -72,7 +72,7 @@ razbor-nt:
     Wednesdays:
       - {time_from: '10:00', time_to: '20:00'}
     Thursdays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '10:00', time_to: '11:53'}
     Fridays:
       - {time_from: '10:00', time_to: '20:00'}
     Saturdays:
@@ -100,9 +100,9 @@ autoinfo51:
     Tuesdays:
       - {time_from: '10:00', time_to: '22:30'}
     Wednesdays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '10:00', time_to: '10:13'}
     Thursdays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '10:00', time_to: '11:55'}
     Fridays:
       - {time_from: '10:00', time_to: '20:00'}
     Saturdays:
@@ -115,7 +115,7 @@ autoinfo51:
   url_pattern: /^http:\/\/www.autoinfo51.ru\/catalog\/.+/
   url_pattern_detail: /^http:\/\/www.autoinfo51.ru\/catalog\/[\d]+\/[\d]+\/$/
   max_depth: 4
-  request_dalay: 200
+  request_dalay: 500
   selectors:
       row: //table[@class="catalog"]/tr[position() >= 2]
       title: //td[3]

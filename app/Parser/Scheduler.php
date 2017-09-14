@@ -1,6 +1,7 @@
 <?php
 namespace App\Parser;
 
+use App\Models\ParserStatus;
 use App\Parser\Spider\SpiderInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
@@ -18,9 +19,8 @@ class Scheduler {
     }
 
     public function setParserLoop(SpiderInterface $parser) {
-        echo "Check\n";
         $parser->onPostPersistEvent(function (Event $event) {
-            if (!$this->isMustWork($this->siteConfig)) {
+            if (!ParserStatus::isEnable() || !$this->isMustWork($this->siteConfig)) {
                 $event->getSubject()->setDownloadLimit(1);
             }
         });

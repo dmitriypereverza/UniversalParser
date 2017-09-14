@@ -3,8 +3,10 @@
 namespace App\Console;
 
 use App\Console\Commands\getConfig;
-use App\Console\Commands\StartParser;
+use App\Console\Commands\StartCrawl;
 use App\Console\Commands\UpdateProxy;
+use App\Console\Commands\ParserStatus;
+use App\Models\ParserStatus as Parser;
 use App\Parser\ParsersConfig;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -20,8 +22,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         GetConfig::class,
-        StartParser::class,
-        UpdateProxy::class
+        StartCrawl::class,
+        UpdateProxy::class,
+        ParserStatus::class,
     ];
 
     /**
@@ -31,6 +34,26 @@ class Kernel extends ConsoleKernel
      * @return void
      */
     protected function schedule(Schedule $schedule)
+    {
+        if (Parser::isEnable()) {
+            $this->setParserTask($schedule);
+        }
+    }
+
+    /**
+     * Register the Closure based commands for the application.
+     *
+     * @return void
+     */
+    protected function commands()
+    {
+        require base_path('routes/console.php');
+    }
+
+    /**
+     * @param Schedule $schedule
+     */
+    protected function setParserTask(Schedule $schedule)
     {
         $parser = new ParsersConfig();
         $daysOfWeek = ['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays', 'Sundays'];
@@ -44,25 +67,15 @@ class Kernel extends ConsoleKernel
                 }
 
                 foreach ($times as $timeCase) {
-                    $schedule->command('parser:start', [$siteName])
+                    $schedule->command('crawl:start', [$siteName])
                         ->{strtolower($dayOfWeek)}()
                         ->everyMinute()
                         ->timezone(Config::get('app.timezone'))
                         ->between($timeCase['time_from'], $timeCase['time_to'])
-                        ->name(strval(time()))
+                        ->name('parserTask')
                         ->withoutOverlapping();
                 }
             }
         }
-    }
-
-    /**
-     * Register the Closure based commands for the application.
-     *
-     * @return void
-     */
-    protected function commands()
-    {
-        require base_path('routes/console.php');
     }
 }

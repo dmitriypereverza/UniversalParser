@@ -47,21 +47,27 @@ class DefaultSpider implements SpiderInterface {
 
     public function crawl() {
         laravelEvent::fire(new ParserInfoEvent(
-            sprintf("Start crawl: %s", $this->config['url'])
+            sprintf("%s: Start crawl", $this->config['url'])
         ));
         $statsHandler = $this->getStatHandler();
         try {
             $this->spider->crawl();
             laravelEvent::fire(new ParserInfoEvent(
-                sprintf("PERSISTED: %d", count($statsHandler->getPersisted()))
-            ));
+                sprintf(
+                    "%s: PERSISTED URL: %d; PERSISTED ELEMENTS: %d",
+                    $this->config['url'],
+                    count($statsHandler->getPersisted()),
+                    TemporarySearchResults::where('id_session', $this->id_session)->count()
+                ))
+            );
             TemporarySearchResults::setNewVersion($this->id_session);
             laravelEvent::fire(new ParserInfoEvent(
-                sprintf("End crawl: %s", $this->config['url'])
+                sprintf("%s: End crawl", $this->config['url'])
             ));
         } catch (\Exception $e) {
+            TemporarySearchResults::deleteSessionResult($this->id_session);
             laravelEvent::fire(new ParserErrorEvent(
-                sprintf("Crawl ended with error: %s", $e->getMessage())
+                sprintf("%s: Crawl finish with error: %s", $this->config['url'], $e->getMessage())
             ));
         }
     }
