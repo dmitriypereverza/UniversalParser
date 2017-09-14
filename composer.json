@@ -13,6 +13,8 @@
         "vdb/php-spider": "^0.3.0"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.1",
+        "doctrine/dbal": "~2.3",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7"
