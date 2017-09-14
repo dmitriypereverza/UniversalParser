@@ -15,7 +15,7 @@ class ParserErrorListener
     {
     }
 
-    public function handle(ParserInfoEvent $event) {
-        app('file.logger')->info($event->getText(), $event->getContext());
+    public function handle(ParserErrorEvent $event) {
+        app('file.logger')->error($event->getText(), $event->getContext());
     }
 }

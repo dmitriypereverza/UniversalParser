@@ -35,7 +35,7 @@ class StartCrawl extends Command {
             $spider->crawl();
         } catch (\Exception $e) {
             Event::fire(new ParserErrorEvent(
-                sprintf('Parse error: %s', $e->getMessage())
+                sprintf('%s: Parse error: %s',$siteName, $e->getMessage())
             ));
         }
     }
