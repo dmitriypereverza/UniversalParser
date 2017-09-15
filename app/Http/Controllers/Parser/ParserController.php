@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Parser;
 
 use App\Http\Controllers\Controller;
@@ -17,12 +18,12 @@ class ParserController extends Controller {
     }
 
     public function getPackageCount(Request $request) {
-        $validation = Validator::make($request->all(),[
+        $validation = Validator::make($request->all(), [
             'self_version' => 'required|integer|min:0',
             'elements_in_package' => 'integer|min:0',
         ]);
         if ($validation->fails()) {
-            return $validation->errors()->toArray();
+            return response($validation->errors()->toArray(), 400);
         }
 
         try {
@@ -31,7 +32,7 @@ class ParserController extends Controller {
             $elementsInPackage = $arRequest['elements_in_package'] ?? self::DEFAULT_COUNT_IN_PACKAGE;
             $currentVersion = TemporarySearchResults::getCurrentVersion();
             if ($version >= $currentVersion) {
-                return 'Your version not need to update';
+                return response('Your version not need to update', 400);
             }
 
             $totalResultCount = TemporarySearchResults::getCountSliceResultByVersion($version, $currentVersion);
@@ -40,58 +41,73 @@ class ParserController extends Controller {
                 'package_count' => $packageCount
             ]);
         } catch (\Exception $e) {
-            return json_encode([
-                'error_text' => $e->getMessage()
-            ]);
+            return response(json_encode([
+                'error' => $e->getMessage()
+            ]), 400);
         }
     }
 
+    public function getConnectionInfo(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'connection_key' => 'required',
+        ]);
+        if ($validation->fails()) {
+            return response($validation->errors()->toArray(), 400);
+        }
+        $arRequest = json_decode($request->getContent(), true);
+        $connection = PackageConnection::where('key', $arRequest['connection_key'])->first();
+        if (!$connection) {
+            return response('Connection_key does\'t exist', 404);
+        }
+
+        return json_encode([
+            'version_from' => $connection->version_from,
+            'elements_count' => $connection->elements_count,
+            'elements_in_package' => $connection->elements_in_package,
+            'created_at' => $connection->created_at,
+        ]);
+    }
+
     public function getPackageByNumber(Request $request) {
-        $validation = Validator::make($request->all(),[
+        $validation = Validator::make($request->all(), [
             'connection_key' => 'required',
             'package_number' => 'required|integer|min:0',
         ]);
         if ($validation->fails()) {
-            return $validation->errors()->toArray();
+            return response($validation->errors()->toArray(), 400);
         }
-
         try {
             $arRequest = json_decode($request->getContent(), true);
             $connection = PackageConnection::where('key', $arRequest['connection_key'])->first();
             if (!$connection) {
-                return json_encode([
-                    'error' => 'Connection_key does\'t exist'
-                ]);
+                return response('Connection_key does\'t exist', 404);
             }
-
             return json_encode([
                 'results' => TemporarySearchResults::getPackageResults($arRequest['package_number'], $connection)
             ]);
         } catch (\Exception $e) {
-            return json_encode([
-                'error_text' => $e->getMessage()
-            ]);
+            return response(json_encode([
+                'error' => $e->getMessage()
+            ]), 400);
         }
     }
 
     public function getConnectionId(Request $request) {
-        $validation = Validator::make($request->all(),[
+        $validation = Validator::make($request->all(), [
             'self_version' => 'required|numeric',
             'elements_in_package' => 'numeric',
         ]);
         if ($validation->fails()) {
-            return $validation->errors()->toArray();
+            return response($validation->errors()->toArray(), 400);
         }
-
         try {
             $arRequest = json_decode($request->getContent(), true);
             $version = $arRequest['self_version'];
             $elementsInPackage = $arRequest['elements_in_package'] ?? self::DEFAULT_COUNT_IN_PACKAGE;
             $currentVersion = TemporarySearchResults::getCurrentVersion();
             if ($version >= $currentVersion) {
-                return 'Your version not need to update';
+                return response('Your version not need to update', 400);
             }
-
             $totalResultCount = TemporarySearchResults::getCountSliceResultByVersion($version, $currentVersion);
             $connection = PackageConnection::createConnectionByElementsCount($version, $elementsInPackage, $totalResultCount);
             return json_encode([
@@ -99,9 +115,9 @@ class ParserController extends Controller {
             ]);
 
         } catch (\Exception $e) {
-            return json_encode([
-                'error_text' => $e->getMessage()
-            ]);
+            return response(json_encode([
+                'error' => $e->getMessage()
+            ]), 400);
         }
     }
 }

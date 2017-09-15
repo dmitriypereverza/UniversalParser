@@ -27,6 +27,10 @@ Route::group(['prefix' => 'parser', 'namespace' => 'Parser'], function () {
         ->name('parser.connection.id')
         ->middleware('auth.api');
 
+    Route::post('get_connection_info', 'ParserController@getConnectionInfo')
+        ->name('parser.connection.info')
+        ->middleware('auth.api');
+
     Route::post('get_package_by_number', 'ParserController@getPackageByNumber')
         ->name('parser.package.get')
         ->middleware('auth.api');
