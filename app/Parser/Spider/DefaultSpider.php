@@ -54,7 +54,7 @@ class DefaultSpider implements SpiderInterface {
             $this->spider->crawl();
             laravelEvent::fire(new ParserInfoEvent(
                 sprintf(
-                    "%s: PERSISTED URL: %d; PERSISTED ELEMENTS: %d",
+                    "%s: PERSISTED URL: %d; PERSISTED UNIQUE ELEMENTS: %d",
                     $this->config['url'],
                     count($statsHandler->getPersisted()),
                     TemporarySearchResults::where('id_session', $this->id_session)->count()
