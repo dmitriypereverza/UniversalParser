@@ -5,7 +5,8 @@ namespace App\Parser\Spider\Filter;
 /**
  * @author d.pereverza@worksolutions.ru
  */
-interface UriFilterInterface {
+interface UriFilterInterface
+{
     /**
      * @param string $url
      * @return bool

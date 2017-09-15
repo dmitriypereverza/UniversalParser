@@ -1,17 +1,20 @@
 <?php
 
 namespace App\Parser\Spider\Attributes;
+
 use Symfony\Component\DomCrawler\Crawler;
 use \VDB\Spider\Resource;
 
 /**
  * @author d.pereverza@worksolutions.ru
  */
-class TableParser implements AttributeParserInterface {
+class TableParser implements AttributeParserInterface
+{
     /**  @var array $selectors */
     private $selectors;
 
-    public function __construct($selectors) {
+    public function __construct($selectors)
+    {
         $this->selectors = $selectors;
     }
 
@@ -19,7 +22,8 @@ class TableParser implements AttributeParserInterface {
      * @param Resource $resource
      * @return array
      */
-    public function getSelectorsValue(Resource $resource) {
+    public function getSelectorsValue(Resource $resource)
+    {
         $result['url'] = $resource->getCrawler()->getUri();
         $selectors = $this->selectors;
         $rowSelector = $selectors['row'];
@@ -40,7 +44,8 @@ class TableParser implements AttributeParserInterface {
      * @param $selector
      * @return array
      */
-    private function getRows(Resource $resource, $selector) {
+    private function getRows(Resource $resource, $selector)
+    {
         $item = $resource->getCrawler()->filterXpath($selector);
         $nodeList = [];
         if ($item->count()) {
@@ -56,7 +61,8 @@ class TableParser implements AttributeParserInterface {
      * @param $selectors
      * @return array
      */
-    private function getElementSelectorsValue(Crawler $resourceCrawler, $selectors) {
+    private function getElementSelectorsValue(Crawler $resourceCrawler, $selectors)
+    {
         foreach ($selectors as $key => $selector) {
             if (!$content = $this->getSelectorContent($resourceCrawler, $selector)) {
                 unset($result);
@@ -75,7 +81,8 @@ class TableParser implements AttributeParserInterface {
      * @param $selector
      * @return string
      */
-    private function getSelectorContent(Crawler $crawler, $selector) {
+    private function getSelectorContent(Crawler $crawler, $selector)
+    {
         $item = $crawler->filterXpath($selector);
         if ($item->count()) {
             return trim($item->html());
@@ -85,7 +92,8 @@ class TableParser implements AttributeParserInterface {
     /**
      * @return bool
      */
-    public function isMultipleElements() {
+    public function isMultipleElements()
+    {
         return true;
     }
 }

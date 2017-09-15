@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Proxy whereUrl($value)
  * @mixin \Eloquent
  */
-class Proxy extends Model {
+class Proxy extends Model
+{
     protected $table = 'proxy';
 }

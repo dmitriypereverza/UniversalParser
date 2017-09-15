@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Parser;
 
 use App\Models\ParserStatus;
@@ -7,18 +8,22 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\EventDispatcher\Event;
 
-class Scheduler {
+class Scheduler
+{
     private static $timeZone;
     private $siteConfig;
     private static $dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
     /** @var SpiderInterface $spider */
 
-    public function __construct($siteConfig) {
+    public function __construct($siteConfig)
+    {
         self::$timeZone = Config::get('app.timezone');
         $this->siteConfig = $siteConfig;
     }
 
-    public function setParserLoop(SpiderInterface $parser) {
+    public function setParserLoop(SpiderInterface $parser)
+    {
         $parser->onPostPersistEvent(function (Event $event) {
             if (!ParserStatus::isEnable() || !$this->isMustWork($this->siteConfig)) {
                 $event->getSubject()->setDownloadLimit(1);
@@ -30,7 +35,8 @@ class Scheduler {
      * @param $siteConfig
      * @return bool
      */
-     private function isMustWork($siteConfig) {
+    private function isMustWork($siteConfig)
+    {
         $mustWork = false;
         if (!$siteConfig['active']) {
             return false;
@@ -44,12 +50,14 @@ class Scheduler {
         }
         return $mustWork;
     }
+
     /**
      * @param Carbon $time
      * @param $timeDiff
      * @return bool
      */
-    private function isMatch($time, $timeDiff) {
+    private function isMatch($time, $timeDiff)
+    {
         extract($timeDiff);
         /** @var string $time_from */
         $timeFromParts = explode(':', $time_from);
@@ -63,7 +71,8 @@ class Scheduler {
      * @param $currentDayOfWeek
      * @return array
      */
-    private function getWorkTimeForCurrentDay($siteConfig, $currentDayOfWeek) {
+    private function getWorkTimeForCurrentDay($siteConfig, $currentDayOfWeek)
+    {
         return $siteConfig['work_time'][self::$dayOfWeek[$currentDayOfWeek - 1] . 's'];
     }
 

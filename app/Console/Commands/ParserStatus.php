@@ -1,15 +1,18 @@
 <?php
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\ParserStatus as Parser;
 
-class ParserStatus extends Command {
+class ParserStatus extends Command
+{
     protected $signature = 'parser:status {--on} {--off}';
 
     protected $description = 'ParsersConfig start';
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
     }
 
@@ -18,7 +21,8 @@ class ParserStatus extends Command {
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         $actionOn = $this->option('on');
         $actionOff = $this->option('off');
         if ($actionOn and $actionOff) {
@@ -29,7 +33,8 @@ class ParserStatus extends Command {
         $parserEnable = Parser::isEnable();
         if ($actionOn) {
             !$parserEnable && Parser::enable();
-        } elseif ($actionOff) {
+        }
+        elseif ($actionOff) {
             $parserEnable && Parser::disable();
         }
         $this->info(sprintf('Parser: %s', Parser::isEnable() ? 'Active' : 'Disable'));

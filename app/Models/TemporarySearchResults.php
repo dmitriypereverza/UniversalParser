@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -25,7 +26,8 @@ use InvalidArgumentException;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereVersion($value)
  * @mixin \Eloquent
  */
-class TemporarySearchResults extends Model {
+class TemporarySearchResults extends Model
+{
     protected $table = 'tmp_search_results';
 
     /**
@@ -34,7 +36,8 @@ class TemporarySearchResults extends Model {
      * @param $sessionId
      * @return bool
      */
-    public static function insertIfNotExist($result, $siteUrl, $sessionId) {
+    public static function insertIfNotExist($result, $siteUrl, $sessionId)
+    {
         if (!is_array($result)) {
             throw new InvalidArgumentException('Не найдены данные для записи в таблицу');
         }
@@ -45,11 +48,12 @@ class TemporarySearchResults extends Model {
         $tmpTable->hash = md5(serialize($result));
 
         if (!self::isRowExist($tmpTable)) {
-           return $tmpTable->save();
+            return $tmpTable->save();
         }
     }
 
-    public static function deleteSessionResult($sessionId) {
+    public static function deleteSessionResult($sessionId)
+    {
         self::where('id_session', $sessionId)->delete();
     }
 
@@ -57,19 +61,23 @@ class TemporarySearchResults extends Model {
      * @param $tmpTable
      * @return Model|null|static
      */
-    private static function isRowExist($tmpTable) {
+    private static function isRowExist($tmpTable)
+    {
         return self::where('hash', $tmpTable->hash)->first();
     }
 
-    public static function setNewVersion($sessionId) {
+    public static function setNewVersion($sessionId)
+    {
         self::where('id_session', $sessionId)->update(['version' => self::getCurrentVersion() + 1]);
     }
 
-    public static function getCurrentVersion() {
+    public static function getCurrentVersion()
+    {
         return self::max('version') ?? 0;
     }
 
-    public static function getCountSliceResultByVersion($versionFrom, $versionTo) {
+    public static function getCountSliceResultByVersion($versionFrom, $versionTo)
+    {
         if ($versionTo <= $versionFrom) {
             return null;
         }
@@ -81,16 +89,16 @@ class TemporarySearchResults extends Model {
      * @param PackageConnection $connection
      * @return int|null
      */
-    public static function getPackageResults($packageNumber, $connection) {
+    public static function getPackageResults($packageNumber, $connection)
+    {
         $offset = ($packageNumber - 1) * $connection->elements_in_package;
         $countResult = $connection->elements_in_package;
         if ($offset + $connection->elements_in_package > $connection->elements_count) {
             $countResult = $connection->elements_count % $connection->elements_in_package;
         }
-        return self::whereBetween('version', [$connection->version_from, self::getCurrentVersion()])
-            ->offset($offset)
-            ->limit($countResult)
-            ->get()
-            ->toJson();
+        return self::whereBetween('version', [
+            $connection->version_from,
+            self::getCurrentVersion()
+        ])->offset($offset)->limit($countResult)->get()->toJson();
     }
 }

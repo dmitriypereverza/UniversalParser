@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Parser\Spider\PersistenceHandler;
 
 use App\Models\TemporarySearchResults;
@@ -7,7 +8,8 @@ use App\Parser\Spider\Filter\UriFilter;
 use VDB\Spider\PersistenceHandler\PersistenceHandlerInterface;
 use VDB\Spider\Resource;
 
-class DBPersistenceHandler implements PersistenceHandlerInterface {
+class DBPersistenceHandler implements PersistenceHandlerInterface
+{
     /** @var Resource[] */
     private $resources = array();
     private $siteUrl;
@@ -17,26 +19,30 @@ class DBPersistenceHandler implements PersistenceHandlerInterface {
     /** @var $attributeParser AttributeParserInterface */
     private $attributeParser;
 
-    public function __construct(AttributeParserInterface $attributeParser, $siteUrl, $sessionId, $urlFilter) {
+    public function __construct(AttributeParserInterface $attributeParser, $siteUrl, $sessionId, $urlFilter)
+    {
         $this->siteUrl = $siteUrl;
         $this->sessionId = $sessionId;
         $this->urlFilter = $urlFilter;
         $this->attributeParser = $attributeParser;
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->resources);
     }
 
-    public function persist(Resource $resource) {
-        if(!$this->urlFilter->match($resource->getUri())) {
+    public function persist(Resource $resource)
+    {
+        if (!$this->urlFilter->match($resource->getUri())) {
             return;
         }
         $this->resources[] = $resource->getUri();
         if ($selectorVals = $this->attributeParser->getSelectorsValue($resource)) {
             if (!$this->attributeParser->isMultipleElements()) {
                 TemporarySearchResults::insertIfNotExist($selectorVals, $this->siteUrl, $this->sessionId);
-            } else {
+            }
+            else {
                 foreach ($selectorVals as $rowValues) {
                     TemporarySearchResults::insertIfNotExist($rowValues, $this->siteUrl, $this->sessionId);
                 }
@@ -47,35 +53,40 @@ class DBPersistenceHandler implements PersistenceHandlerInterface {
     /**
      * @return Resource
      */
-    public function current() {
+    public function current()
+    {
         return current($this->resources);
     }
 
     /**
      * @return Resource|false
      */
-    public function next() {
+    public function next()
+    {
         next($this->resources);
     }
 
     /**
      * @return int
      */
-    public function key() {
+    public function key()
+    {
         return key($this->resources);
     }
 
     /**
      * @return boolean
      */
-    public function valid() {
+    public function valid()
+    {
         return (bool)current($this->resources);
     }
 
     /**
      * @return void
      */
-    public function rewind() {
+    public function rewind()
+    {
         reset($this->resources);
     }
 
@@ -84,6 +95,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface {
      *
      * @return void
      */
-    public function setSpiderId($spiderId) {
+    public function setSpiderId($spiderId)
+    {
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Parser\Spider\Filter;
 
 class UriFilter implements UriFilterInterface

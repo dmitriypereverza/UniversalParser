@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -22,11 +23,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Application extends Model {
+class Application extends Model
+{
     protected $table = 'applications';
 
-    public static function whereKeyAndSecret($appKey, $appSecret) {
-        return self::where('key', '=', $appKey)
-            ->where('secret', '=', $appSecret);
+    public static function whereKeyAndSecret($appKey, $appSecret)
+    {
+        return self::where('key', '=', $appKey)->where('secret', '=', $appSecret);
     }
 }

@@ -8,12 +8,11 @@ use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class AppAuthController extends Controller {
+class AppAuthController extends Controller
+{
     public function authenticateApp(Request $request)
     {
-        $credentials = base64_decode(
-            Str::substr($request->header('Authorization'), 6)
-        );
+        $credentials = base64_decode(Str::substr($request->header('Authorization'), 6));
 
         try {
             list($appKey, $appSecret) = explode(':', $credentials);
@@ -34,7 +33,8 @@ class AppAuthController extends Controller {
         ]);
     }
 
-    public function generateAuthToken($key) {
+    public function generateAuthToken($key)
+    {
         $jwt = JWT::encode([
             'iss' => getenv('JWT_ISS'),
             'sub' => $key,

@@ -2,12 +2,14 @@
 
 namespace App\Parser\Spider;
 
-class SpiderManager {
+class SpiderManager
+{
     /**
      * @param array $spiderConfig
      * @return SpiderInterface
      */
-    static public function getSpiderFromConfig($spiderConfig) {
+    static public function getSpiderFromConfig($spiderConfig)
+    {
         if (!class_exists($spiderConfig['class'])) {
             return null;
         }

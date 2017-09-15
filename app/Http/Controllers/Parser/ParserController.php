@@ -8,16 +8,19 @@ use App\Models\TemporarySearchResults;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ParserController extends Controller {
+class ParserController extends Controller
+{
     const DEFAULT_COUNT_IN_PACKAGE = 100;
 
-    public function getVersion() {
+    public function getVersion()
+    {
         return json_encode([
             "currentVersion" => TemporarySearchResults::getCurrentVersion()
         ]);
     }
 
-    public function getPackageCount(Request $request) {
+    public function getPackageCount(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'self_version' => 'required|integer|min:0',
             'elements_in_package' => 'integer|min:0',
@@ -47,7 +50,8 @@ class ParserController extends Controller {
         }
     }
 
-    public function getConnectionInfo(Request $request) {
+    public function getConnectionInfo(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'connection_key' => 'required',
         ]);
@@ -68,7 +72,8 @@ class ParserController extends Controller {
         ]);
     }
 
-    public function getPackageByNumber(Request $request) {
+    public function getPackageByNumber(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'connection_key' => 'required',
             'package_number' => 'required|integer|min:0',
@@ -92,7 +97,8 @@ class ParserController extends Controller {
         }
     }
 
-    public function getConnectionId(Request $request) {
+    public function getConnectionId(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'self_version' => 'required|numeric',
             'elements_in_package' => 'numeric',

@@ -2,9 +2,11 @@
 /**
  * @author d.pereverza@worksolutions.ru
  */
+
 namespace App\Parser\Spider\Proxy;
 
-interface ProxyInterface {
+interface ProxyInterface
+{
     /**
      * @return string
      */

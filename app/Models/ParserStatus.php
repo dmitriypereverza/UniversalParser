@@ -17,21 +17,26 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ParserStatus whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class ParserStatus extends Model {
+class ParserStatus extends Model
+{
     protected $table = 'parser_status';
     protected $guarded = [];
+
     /**
      * @return boolean
      */
-    public static function isEnable() {
+    public static function isEnable()
+    {
         return self::first()->is_enable;
     }
 
-    public static function enable() {
+    public static function enable()
+    {
         return self::first()->update(['is_enable' => true]);
     }
 
-    public static function disable() {
+    public static function disable()
+    {
         return self::first()->update(['is_enable' => false]);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Console\Commands;
 
 use App\Events\ParserErrorEvent;
@@ -8,12 +9,14 @@ use App\Parser\Spider\SpiderManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Event;
 
-class StartCrawl extends Command {
+class StartCrawl extends Command
+{
     protected $signature = 'crawl:start {siteName}';
 
     protected $description = 'ParsersConfig start';
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
     }
 
@@ -22,7 +25,8 @@ class StartCrawl extends Command {
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         $siteName = $userId = $this->argument('siteName');
         $this->line('Starting parse site:' . $siteName);
         try {
@@ -34,9 +38,7 @@ class StartCrawl extends Command {
 
             $spider->crawl();
         } catch (\Exception $e) {
-            Event::fire(new ParserErrorEvent(
-                sprintf('%s: Parse error: %s',$siteName, $e->getMessage())
-            ));
+            Event::fire(new ParserErrorEvent(sprintf('%s: Parse error: %s', $siteName, $e->getMessage())));
         }
     }
 }

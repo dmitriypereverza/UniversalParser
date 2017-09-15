@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Parser\Spider\RequestHandler;
 
 use App\Parser\Spider\Proxy\FineproxyOrgProxy;
@@ -7,7 +8,8 @@ use VDB\Spider\RequestHandler\RequestHandlerInterface;
 use VDB\Spider\Resource;
 use VDB\Spider\Uri\DiscoveredUri;
 
-class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface {
+class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
+{
     /** @var Client */
     private $client;
     private $proxyUrl;
@@ -15,7 +17,8 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface {
     /**
      * @return Client
      */
-    public function getClient() {
+    public function getClient()
+    {
         if (!$this->client) {
             $this->client = new Client();
         }
@@ -26,14 +29,16 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface {
      * @param DiscoveredUri $uri
      * @return \VDB\Spider\Resource
      */
-    public function request(DiscoveredUri $uri) {
+    public function request(DiscoveredUri $uri)
+    {
         $response = $this->getClient()->get($uri->toString(), [
             'proxy' => $this->getProxyUrl()
         ]);
         return new Resource($uri, $response);
     }
 
-    public function getProxyUrl() {
+    public function getProxyUrl()
+    {
         if (!$this->proxyUrl) {
             $proxy = new FineproxyOrgProxy();
             $this->proxyUrl = $proxy->getProxyUrl();

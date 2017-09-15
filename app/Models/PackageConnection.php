@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
 /**
  * App\Models\PackageConnection
  *
@@ -23,10 +24,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class PackageConnection extends Model {
+class PackageConnection extends Model
+{
     protected $table = 'package_connection';
 
-    public static function createConnectionByElementsCount($versionFrom, $countElementsInPackage, $elements_count) {
+    public static function createConnectionByElementsCount($versionFrom, $countElementsInPackage, $elements_count)
+    {
         $connection = new self();
         $connection->key = md5($countElementsInPackage . microtime(true));
         $connection->elements_in_package = $countElementsInPackage;
