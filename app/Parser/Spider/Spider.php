@@ -15,11 +15,11 @@ use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgum
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
 use VDB\Spider\EventListener\PolitenessPolicyListener;
-use VDB\Spider\Spider;
+use VDB\Spider\Spider as PhpSpider;
 use VDB\Spider\StatsHandler;
 use Illuminate\Support\Facades\Event as laravelEvent;
 
-class DefaultSpider implements SpiderInterface
+class Spider implements SpiderInterface
 {
     const DEFAULT_REQUEST_DELAY = 350;
     const DEFAULT_MAX_DEPTH = 4;
@@ -28,7 +28,7 @@ class DefaultSpider implements SpiderInterface
     private $id_session;
     private $countProcessedResults;
     private $config;
-    /** @var Spider $spider */
+    /** @var PhpSpider $spider */
     private $spider;
 
     public function __construct(array $config)
@@ -40,7 +40,7 @@ class DefaultSpider implements SpiderInterface
         $this->spider = $this->getSpider();
         $this->id_session = $this->getSessionId();
         $this->countProcessedResults = 0;
-        $this->setRequestHandler();
+//        $this->setRequestHandler();
         $this->setPersistenceHandler();
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
@@ -65,7 +65,7 @@ class DefaultSpider implements SpiderInterface
 
     private function getSpider()
     {
-        $spider = new Spider($this->config['items_list_url']);
+        $spider = new PhpSpider($this->config['items_list_url']);
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer($this->config['items_list_selector']));
         $spider->getDiscovererSet()->addFilter(new UriFilter([$this->config['url_pattern']]));
         return $spider;

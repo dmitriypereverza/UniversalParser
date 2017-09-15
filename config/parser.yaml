@@ -2,7 +2,7 @@
 sv-company:
   active: true
   url: https://sv-company.ru/
-  class: App\Parser\Spider\DefaultSpider
+  class: App\Parser\Spider\Spider
   work_time:
     Mondays:
       - {time_from: '10:00', time_to: '20:00'}
@@ -33,7 +33,7 @@ sv-company:
 razbor-nt:
   active: true
   url: http://razbor-nt.ru/
-  class: App\Parser\Spider\DefaultSpider
+  class: App\Parser\Spider\Spider
   work_time:
     Mondays:
       - {time_from: '10:00', time_to: '20:00'}
@@ -63,7 +63,7 @@ razbor-nt:
 разборкасокол:
   active: true
   url: https://разборкасокол.рф/
-  class: App\Parser\Spider\DefaultSpider
+  class: App\Parser\Spider\Spider
   work_time:
     Mondays:
       - {time_from: '10:00', time_to: '20:00'}
@@ -94,7 +94,7 @@ razbor-nt:
 autoinfo51:
   active: true
   url: http://www.autoinfo51.ru
-  class: App\Parser\Spider\DefaultSpider
+  class: App\Parser\Spider\Spider
   work_time:
     Mondays:
       - {time_from: '10:00', time_to: '20:00'}

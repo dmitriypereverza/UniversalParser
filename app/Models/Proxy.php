@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $isAvailable
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application where($value, $value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Proxy whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Proxy whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Proxy whereIsAvailable($value)

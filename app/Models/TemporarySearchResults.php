@@ -16,6 +16,7 @@ use InvalidArgumentException;
  * @property string $hash
  * @property \Carbon\Carbon $updated_at
  * @property int|null $version
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application where($value, $value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereConfigSiteName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereCreatedAt($value)
@@ -54,7 +55,7 @@ class TemporarySearchResults extends Model
 
     public static function deleteSessionResult($sessionId)
     {
-        self::where('id_session', $sessionId)->delete();
+        self::whereIdSession($sessionId)->delete();
     }
 
     /**
@@ -63,12 +64,12 @@ class TemporarySearchResults extends Model
      */
     private static function isRowExist($tmpTable)
     {
-        return self::where('hash', $tmpTable->hash)->first();
+        return self::whereHash($tmpTable->hash)->first();
     }
 
     public static function setNewVersion($sessionId)
     {
-        self::where('id_session', $sessionId)->update(['version' => self::getCurrentVersion() + 1]);
+        self::whereIdSession($sessionId)->update(['version' => self::getCurrentVersion() + 1]);
     }
 
     public static function getCurrentVersion()

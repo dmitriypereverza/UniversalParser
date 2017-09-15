@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $secret
  * @property string $is_active
  * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application where($value, $value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereIsActive($value)
@@ -29,6 +30,6 @@ class Application extends Model
 
     public static function whereKeyAndSecret($appKey, $appSecret)
     {
-        return self::where('key', '=', $appKey)->where('secret', '=', $appSecret);
+        return self::whereKey($appKey)->where('secret', '=', $appSecret);
     }
 }

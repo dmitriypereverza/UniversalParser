@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $elements_count
  * @property \Carbon\Carbon $updated_at
  * @property mixed $table
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application where($value, $value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereIsActive($value)
@@ -23,6 +24,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PackageConnection whereElementsCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PackageConnection whereElementsInPackage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PackageConnection whereVersionFrom($value)
  */
 class PackageConnection extends Model
 {
