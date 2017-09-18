@@ -1,6 +1,6 @@
 # ParsersConfig config
 sv-company:
-  active: true
+  active: false
   url: https://sv-company.ru/
   class: App\Parser\Spider\Spider
   work_time:
@@ -26,6 +26,8 @@ sv-company:
   items_list_selector: .//a
   selectors:
       title: .//h1[@class="product__title"]
+      brand: .//nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[3]/a
+      model: .//nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[4]/a
       img: .//img[@class="gallery__img"][1]/@src
       price: .//span[@class="product__price"]
       isAvalable: .//tbody/tr[td='Статус']/td[2]
@@ -57,11 +59,13 @@ razbor-nt:
   request_dalay: 500
   selectors:
       title: //*[@id="content"]/div[@class="b1c-good"]/h1
-      url: //*[@id="image"]/@src
+      brand: //*[@id="content"]/div/div[@class="breadcrumb-style"]/a[2]
+      model: //*[@id="content"]/div/div[@class="breadcrumb-style"]/a[3]
+      img: //*[@id="image"]/@src
       price: //div[@class="price"]
 
 разборкасокол:
-  active: true
+  active: false
   url: https://разборкасокол.рф/
   class: App\Parser\Spider\Spider
   work_time:
@@ -88,11 +92,13 @@ razbor-nt:
   max_depth: 7
   selectors:
       title: //*[@id="content"]/h1
-      url: //*[@id="image"]/@src
+      brand: //div[@class="breadcrumb"]/a[2]
+      description: //div[@class="opisanie_tovar"]
+      img: //*[@id="image"]/@src
       price: //div[@class="price"][1]
 
 autoinfo51:
-  active: true
+  active: false
   url: http://www.autoinfo51.ru
   class: App\Parser\Spider\Spider
   work_time:
@@ -119,6 +125,8 @@ autoinfo51:
   request_dalay: 500
   selectors:
       row: //table[@class="catalog"]/tr[position() >= 2]
+      model: //td[2]
       title: //td[3]
+      description: //td[5]
       price: //td[6]
       img: //td[7]/a/@href

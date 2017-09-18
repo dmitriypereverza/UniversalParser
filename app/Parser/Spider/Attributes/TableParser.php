@@ -24,7 +24,6 @@ class TableParser implements AttributeParserInterface
      */
     public function getSelectorsValue(Resource $resource)
     {
-        $result['url'] = $resource->getCrawler()->getUri();
         $selectors = $this->selectors;
         $rowSelector = $selectors['row'];
         unset($selectors['row']);
@@ -63,6 +62,7 @@ class TableParser implements AttributeParserInterface
      */
     private function getElementSelectorsValue(Crawler $resourceCrawler, $selectors)
     {
+        $result['url'] = $resourceCrawler->getUri();
         foreach ($selectors as $key => $selector) {
             if (!$content = $this->getSelectorContent($resourceCrawler, $selector)) {
                 unset($result);
@@ -85,7 +85,7 @@ class TableParser implements AttributeParserInterface
     {
         $item = $crawler->filterXpath($selector);
         if ($item->count()) {
-            return trim($item->html());
+            return trim($item->text());
         }
     }
 

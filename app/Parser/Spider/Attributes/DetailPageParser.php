@@ -42,7 +42,7 @@ class DetailPageParser implements AttributeParserInterface
     {
         $item = $resource->getCrawler()->filterXpath($selector);
         if ($item->count()) {
-            return trim($item->html());
+            return trim($item->text());
         }
     }
 
