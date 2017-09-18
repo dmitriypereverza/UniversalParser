@@ -12,7 +12,7 @@ class Scheduler
 {
     private static $timeZone;
     private $siteConfig;
-    private static $dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    public static $dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
     /** @var SpiderInterface $spider */
 

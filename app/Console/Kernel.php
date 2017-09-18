@@ -7,6 +7,7 @@ use App\Console\Commands\ParserStatistic;
 use App\Console\Commands\StartCrawl;
 use App\Console\Commands\UpdateProxy;
 use App\Console\Commands\ParserStatus;
+use App\Console\Commands\ValidareYamlConfig;
 use App\Models\ParserStatus as Parser;
 use App\Parser\ParsersConfig;
 use Illuminate\Console\Scheduling\Schedule;
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
         UpdateProxy::class,
         ParserStatus::class,
         ParserStatistic::class,
+        ValidareYamlConfig::class,
     ];
 
     /**
