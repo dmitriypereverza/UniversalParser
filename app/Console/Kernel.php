@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\getConfig;
+use App\Console\Commands\ParserStatistic;
 use App\Console\Commands\StartCrawl;
 use App\Console\Commands\UpdateProxy;
 use App\Console\Commands\ParserStatus;
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
         StartCrawl::class,
         UpdateProxy::class,
         ParserStatus::class,
+        ParserStatistic::class,
     ];
 
     /**
