@@ -43,6 +43,8 @@ class ParserStatistic extends Command
             foreach ($rows as $row) {
                 $this->info(sprintf('Site url: %s Unique elements: %s', $row->config_site_name, $row->count_url));
             }
+        } else {
+            $this->line(sprintf("Did not receive any items from %s to %s:", $diff, $now));
         }
     }
 }

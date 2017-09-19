@@ -12,13 +12,12 @@ sv-company:
   Fridays:
     - {time_from: '10:00', time_to: '20:00'}
   Saturdays:
-   - {time_from: '10:00', time_to: '20:00'}
+    - {time_from: '10:00', time_to: '20:00'}
   Sundays:
     - {time_from: '10:00', time_to: '20:00'}
 
 razbor-nt:
     Mondays:
-      - {time_from: '10:00', time_to: '20:00'}
     Tuesdays:
       - {time_from: '10:00', time_to: '12:00'}
       - {time_from: '12:00', time_to: '22:00'}

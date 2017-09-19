@@ -39,13 +39,23 @@ class ValidareYamlConfig extends Command
      */
     public function handle()
     {
-        $parser = new ParsersConfig(ParsersConfig::SCHEDULE_CONFIG);
+        $parser = new ParsersConfig();
 
         if ($error = $parser->getError()) {
             $this->error(sprintf('Config file has error: %s', $error));
             return;
         }
-        foreach ($parser->getArrayConfig() as $siteKey => $site) {
+        $mainConfig = $parser->getArrayConfigByType(ParsersConfig::SITE_CONFIG);
+        $scheduleConfig = $parser->getArrayConfigByType(ParsersConfig::SCHEDULE_CONFIG);
+        foreach ($scheduleConfig as $siteKey => $site) {
+            if (!array_key_exists($siteKey, $mainConfig)) {
+                $this->error(sprintf('Site %s does\'t have in parser.yaml', $siteKey));
+                return;
+            }
+            if (!$site) {
+                $this->error(sprintf('Error syntax in %s', $siteKey));
+                return;
+            }
             $dayCounter = 0;
             foreach ($site as $dayOfWeek => $values) {
                 if ($dayOfWeek != Scheduler::$dayOfWeek[$dayCounter] . 's') {
@@ -77,6 +87,13 @@ class ValidareYamlConfig extends Command
                         return;
                     }
                 }
+            }
+        }
+
+        foreach ($mainConfig as $siteKey => $site) {
+            if (!array_key_exists($siteKey, $scheduleConfig)) {
+                $this->error(sprintf('Site %s does\'t have in schedule.yaml', $siteKey));
+                return;
             }
         }
 

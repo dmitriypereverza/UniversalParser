@@ -15,38 +15,39 @@ class ParsersConfig
         self::SCHEDULE_CONFIG
     ];
 
-    private $configPath = '';
-
-    function __construct($configType)
+    function __construct()
     {
-        if (!$configType) {
-            $configType = self::SITE_CONFIG;
+        foreach ($this->configTypes as $configType) {
+            if (!file_exists($this->getPathByType($configType))) {
+                throw new InvalidArgumentException('File ' . $configType . '.yaml does\'t exist');
+            }
         }
-        if (!in_array($configType, $this->configTypes)) {
-            throw new InvalidArgumentException('Type ' . $configType . 'does\'t exist.');
+    }
+
+    public function getArrayConfigByType($typeConfig) {
+        if (!in_array($typeConfig, $this->configTypes)) {
+            throw new InvalidArgumentException('Type ' . $typeConfig . 'does\'t exist.');
         }
-        if (!file_exists(sprintf('%s/%s.yaml', config_path(), $configType))) {
-            throw new InvalidArgumentException('File ' . $configType . '.yaml does\'t exist');
-        }
-        $this->configPath = sprintf('%s/%s.yaml', config_path(), $configType);
+        return Yaml::parse(file_get_contents($this->getPathByType($typeConfig)));
     }
 
     public function getArrayConfig()
     {
-        return Yaml::parse(file_get_contents($this->configPath));
-    }
-
-    public function getTextConfig()
-    {
-        if (file_exists($this->configPath)) {
-            return file_get_contents($this->configPath);
+        foreach ($this->configTypes as $configType) {
+            if (!file_exists($this->getPathByType($configType))) {
+                throw new InvalidArgumentException('File ' . $configType . '.yaml does\'t exist');
+            }
         }
+        $mainConfig = Yaml::parse(file_get_contents($this->getPathByType(self::SITE_CONFIG)));
+        $config = $this->addSheduleField($mainConfig);
+
+        return $config;
     }
 
     public function getError()
     {
         try {
-            $this->getArrayConfig();
+            $this->getArrayConfigByType(self::SCHEDULE_CONFIG);
         } catch (ParseException $e) {
             return $e->getMessage();
         }
@@ -59,5 +60,23 @@ class ParsersConfig
             throw new InvalidArgumentException(sprintf('Site %s doesn\'t exist in %s.yaml', $siteName, self::SITE_CONFIG));
         }
         return $arrayConfig[$siteName];
+    }
+
+    /**
+     * @param $configType
+     * @return string
+     */
+    private function getPathByType($configType)
+    {
+        return sprintf('%s/%s.yaml', config_path(), $configType);
+    }
+
+    private function addSheduleField($mainConfig)
+    {
+        $scheduleConfig = Yaml::parse(file_get_contents($this->getPathByType(self::SCHEDULE_CONFIG)));
+        foreach ($mainConfig as $siteName => &$site) {
+            $site['work_time'] = $scheduleConfig[$siteName];
+        }
+        return $mainConfig;
     }
 }

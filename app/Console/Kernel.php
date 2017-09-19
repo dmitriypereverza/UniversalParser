@@ -23,7 +23,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        GetConfig::class,
         StartCrawl::class,
         UpdateProxy::class,
         ParserStatus::class,
@@ -69,7 +68,9 @@ class Kernel extends ConsoleKernel
                 if (!in_array($dayOfWeek, $daysOfWeek)) {
                     throw new InvalidArgumentException('Invalid name for day of week:' + $dayOfWeek);
                 }
-
+                if (!$times) {
+                    continue;
+                }
                 foreach ($times as $timeCase) {
                     $schedule->command('crawl:start', [$siteName])
                         ->{strtolower($dayOfWeek)}()
