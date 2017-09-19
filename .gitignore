@@ -13,3 +13,4 @@ yarn-error.log
 storagelogs/
 .env
 _ide_helper*
+public/phpinfo.php
