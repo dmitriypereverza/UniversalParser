@@ -30,6 +30,6 @@ class Application extends Model
 
     public static function whereKeyAndSecret($appKey, $appSecret)
     {
-        return self::whereKey($appKey)->where('secret', '=', $appSecret);
+        return self::where('key', '=', $appKey)->where('secret', '=', $appSecret);
     }
 }
