@@ -1,6 +1,6 @@
 # ParsersConfig config
 sv-company:
-  active: false
+  active: true
   url: https://sv-company.ru/
   class: App\Parser\Spider\Spider
   items_list_url: https://sv-company.ru/avtozapchasti/avtozapchasti-b-u/
@@ -32,7 +32,7 @@ razbor-nt:
       price: //div[@class="price"]
 
 разборкасокол:
-  active: false
+  active: true
   url: https://разборкасокол.рф/
   class: App\Parser\Spider\Spider
   items_list_url: https://разборкасокол.рф/
@@ -48,7 +48,7 @@ razbor-nt:
       price: //div[@class="price"][1]
 
 autoinfo51:
-  active: false
+  active: true
   url: http://www.autoinfo51.ru
   class: App\Parser\Spider\Spider
   items_list_url: http://www.autoinfo51.ru
