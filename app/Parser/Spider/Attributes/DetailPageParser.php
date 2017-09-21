@@ -27,7 +27,7 @@ class DetailPageParser implements AttributeParserInterface
         foreach ($this->selectors as $key => $selector) {
             if (!$content = $this->getSelectorContent($resource, $selector['value'])) {
                 unset($result);
-                continue;
+                break;
             }
             $content = $this->getFilteredContent($selector, $content);
             if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {

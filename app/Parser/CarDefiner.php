@@ -11,12 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class CarDefiner
 {
-    /**
-     * @param $selector
-     * @param $content
-     * @param $result
-     * @return array|null
-     */
     public function defileAdditionalData($selector, $content, $result)
     {
         $definedContent = [];
