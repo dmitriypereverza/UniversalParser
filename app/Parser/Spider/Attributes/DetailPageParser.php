@@ -78,8 +78,9 @@ class DetailPageParser implements AttributeParserInterface
     protected function getFilteredContent($selector, $content)
     {
         if (array_key_exists('regexp', $selector) && $selector['regexp']) {
-            preg_match($selector['regexp'], $content, $outputArray);
-            $content = $outputArray[0];
+            if (preg_match($selector['regexp'], $content, $outputArray)) {
+                $content = $outputArray[0];
+            }
         }
         if (array_key_exists('preg_replace', $selector) && $selector['preg_replace']) {
             $content = preg_replace($selector['preg_replace']['pattern'], $selector['preg_replace']['replace'], $content);
