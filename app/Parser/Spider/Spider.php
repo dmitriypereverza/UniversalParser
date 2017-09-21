@@ -21,10 +21,6 @@ use Illuminate\Support\Facades\Event as laravelEvent;
 
 class Spider implements SpiderInterface
 {
-    const DEFAULT_REQUEST_DELAY = 350;
-    const DEFAULT_MAX_DEPTH = 4;
-    const DEFAULT_QUERY_SIZE = 0;
-
     private $id_session;
     private $countProcessedResults;
     private $config;
@@ -40,7 +36,7 @@ class Spider implements SpiderInterface
         $this->spider = $this->getSpider();
         $this->id_session = $this->getSessionId();
         $this->countProcessedResults = 0;
-//        $this->setRequestHandler();
+        $this->setRequestHandler();
         $this->setPersistenceHandler();
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);

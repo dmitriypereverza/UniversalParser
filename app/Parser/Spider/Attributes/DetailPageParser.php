@@ -2,6 +2,7 @@
 
 namespace App\Parser\Spider\Attributes;
 
+use App\Parser\CarDefiner;
 use VDB\Spider\Resource;
 
 /**
@@ -11,21 +12,35 @@ class DetailPageParser implements AttributeParserInterface
 {
     /**  @var array $selectors */
     private $selectors;
+    /**  @var CarDefiner $carDefiner */
+    private $carDefiner;
 
     public function __construct($selectors)
     {
         $this->selectors = $selectors;
+        $this->carDefiner = new CarDefiner();
     }
 
     public function getSelectorsValue(Resource $resource)
     {
         $result['url'] = $resource->getCrawler()->getUri();
         foreach ($this->selectors as $key => $selector) {
-            if (!$content = $this->getSelectorContent($resource, $selector)) {
+            if (!$content = $this->getSelectorContent($resource, $selector['value'])) {
                 unset($result);
                 continue;
             }
-            $result[$key] = $content;
+            $content = $this->getFilteredContent($selector, $content);
+            if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
+                if (array_search('', $definedContent)) {
+                    unset($result);
+                    break;
+                }
+                foreach ($definedContent as $key => $content) {
+                    $result[$key] = $content;
+                }
+            } else {
+                $result[$key] = $content;
+            }
         }
 
         if (isset($result)) {
@@ -42,7 +57,8 @@ class DetailPageParser implements AttributeParserInterface
     {
         $item = $resource->getCrawler()->filterXpath($selector);
         if ($item->count()) {
-            return trim($item->text());
+            $trimmedText = trim($item->text());
+            return preg_replace('/\s+/', ' ', $trimmedText);
         }
     }
 
@@ -52,5 +68,22 @@ class DetailPageParser implements AttributeParserInterface
     public function isMultipleElements()
     {
         return false;
+    }
+
+    /**
+     * @param $selector
+     * @param $content
+     * @return mixed
+     */
+    protected function getFilteredContent($selector, $content)
+    {
+        if (array_key_exists('regexp', $selector) && $selector['regexp']) {
+            preg_match($selector['regexp'], $content, $outputArray);
+            $content = $outputArray[0];
+        }
+        if (array_key_exists('preg_replace', $selector) && $selector['preg_replace']) {
+            $content = preg_replace($selector['preg_replace']['pattern'], $selector['preg_replace']['replace'], $content);
+        }
+        return $content;
     }
 }

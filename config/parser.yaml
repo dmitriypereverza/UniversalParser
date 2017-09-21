@@ -1,6 +1,6 @@
 # ParsersConfig config
 sv-company:
-  active: false
+  active: true
   url: https://sv-company.ru/
   class: App\Parser\Spider\Spider
   items_list_url: https://sv-company.ru/avtozapchasti/avtozapchasti-b-u/
@@ -8,12 +8,19 @@ sv-company:
   url_pattern_detail: /https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/[^\/]+\/$/
   items_list_selector: .//a
   selectors:
-      title: .//h1[@class="product__title"]
-      brand: .//nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[3]/a
-      model: .//nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[4]/a
-      img: .//img[@class="gallery__img"][1]/@src
-      price: .//span[@class="product__price"]
-      isAvalable: .//tbody/tr[td='Статус']/td[2]
+      title:
+        value: './/h1[@class="product__title"]'
+      brand:
+        value: './/nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[3]/a'
+      model:
+        value: './/nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[4]/a'
+      img:
+        value: './/img[@class="gallery__img"][1]/@src'
+      price:
+        value: './/span[@class="product__price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      isAvalable:
+        value: './/tbody/tr[td="Статус"]/td[2]'
 
 razbor-nt:
   active: true
@@ -21,34 +28,52 @@ razbor-nt:
   class: App\Parser\Spider\Spider
   items_list_url: http://razbor-nt.ru/
   items_list_selector: .//a
-  url_pattern: /http:\/\/razbor-nt.ru\/[^\/]+\//
+  url_pattern: /http:\/\/razbor-nt.ru\/[^\?\/]+\//
   url_pattern_detail: /http:\/\/razbor-nt.ru\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+.html$/
-  request_dalay: 500
+  request_dalay: 350
   selectors:
-      title: //*[@id="content"]/div[@class="b1c-good"]/h1
-      brand: //*[@id="content"]/div/div[@class="breadcrumb-style"]/a[2]
-      model: //*[@id="content"]/div/div[@class="breadcrumb-style"]/a[3]
-      img: //*[@id="image"]/@src
-      price: //div[@class="price"]
+      title:
+        value: '//*[@id="content"]/div[@class="b1c-good"]/h1'
+      brand:
+        value: '//*[@id="content"]/div/div[@class="breadcrumb-style"]/a[2]'
+      model:
+        value: '//*[@id="content"]/div/div[@class="breadcrumb-style"]/a[3]'
+      img:
+        value: '//*[@id="image"]/@src'
+      price:
+        value: '//div[@class="price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
 
 разборкасокол:
-  active: false
+  active: true
   url: https://разборкасокол.рф/
   class: App\Parser\Spider\Spider
   items_list_url: https://разборкасокол.рф/
   items_list_selector: .//a
-  url_pattern: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai\/.+/
+  url_pattern: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai((?!\/shiny\/|\/vw\/).)+\//
   url_pattern_detail: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai\/[^\/]+\/[^\/]+.html$/
   max_depth: 7
   selectors:
-      title: //*[@id="content"]/h1
-      brand: //div[@class="breadcrumb"]/a[2]
-      description: //div[@class="opisanie_tovar"]
-      img: //*[@id="image"]/@src
-      price: //div[@class="price"][1]
+      title:
+        value: '//*[@id="content"]/h1'
+      brand:
+        value: '//div[@class="breadcrumb"]/a[2]'
+      model:
+        value: '//*[@id="content"]/h1'
+        need_parse_model_by_brand: true
+      description:
+        value: '//div[@class="opisanie_tovar"]'
+      img:
+        value: '//*[@id="image"]/@src'
+      price:
+        value: '//div[@class="price"][1]'
+        preg_replace:
+          pattern: '/\\t+/'
+          replace: ' '
+        regexp: '/\d\s?\d+(\s?\d+)?/'
 
 autoinfo51:
-  active: false
+  active: true
   url: http://www.autoinfo51.ru
   class: App\Parser\Spider\Spider
   items_list_url: http://www.autoinfo51.ru
@@ -58,9 +83,17 @@ autoinfo51:
   max_depth: 4
   request_dalay: 500
   selectors:
-      row: //table[@class="catalog"]/tr[position() >= 2]
-      model: //td[2]
-      title: //td[3]
-      description: //td[5]
-      price: //td[6]
-      img: //td[7]/a/@href
+      row:
+        value: '//table[@class="catalog"]/tr[position() >= 2]'
+      brand_model:
+        value: '//td[2]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//td[3]'
+      description:
+        value: '//td[5]'
+      price:
+        value: '//td[6]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//td[7]/a/@href'

@@ -2,6 +2,7 @@
 
 namespace App\Parser\Spider\Attributes;
 
+use App\Parser\CarDefiner;
 use Symfony\Component\DomCrawler\Crawler;
 use \VDB\Spider\Resource;
 
@@ -12,10 +13,13 @@ class TableParser implements AttributeParserInterface
 {
     /**  @var array $selectors */
     private $selectors;
+    /**  @var CarDefiner $carDefiner */
+    private $carDefiner;
 
     public function __construct($selectors)
     {
         $this->selectors = $selectors;
+        $this->carDefiner = new CarDefiner();
     }
 
     /**
@@ -45,7 +49,7 @@ class TableParser implements AttributeParserInterface
      */
     private function getRows(Resource $resource, $selector)
     {
-        $item = $resource->getCrawler()->filterXpath($selector);
+        $item = $resource->getCrawler()->filterXpath($selector['value']);
         $nodeList = [];
         if ($item->count()) {
             $nodeList = $item->each(function (Crawler $node, $i) {
@@ -64,13 +68,23 @@ class TableParser implements AttributeParserInterface
     {
         $result['url'] = $resourceCrawler->getUri();
         foreach ($selectors as $key => $selector) {
-            if (!$content = $this->getSelectorContent($resourceCrawler, $selector)) {
+            if (!$content = $this->getSelectorContent($resourceCrawler, $selector['value'])) {
                 unset($result);
-                continue;
+                break;
             }
-            $result[$key] = $content;
+            $content = $this->getFilteredContent($selector, $content);
+            if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
+                if (array_search('', $definedContent)) {
+                    unset($result);
+                    break;
+                }
+                foreach ($definedContent as $key => $content) {
+                    $result[$key] = $content;
+                }
+            } else {
+                $result[$key] = $content;
+            }
         }
-
         if (isset($result)) {
             return $result;
         }
@@ -85,7 +99,8 @@ class TableParser implements AttributeParserInterface
     {
         $item = $crawler->filterXpath($selector);
         if ($item->count()) {
-            return trim($item->text());
+            $trimmedText = trim($item->text());
+            return preg_replace('|\s+|', ' ', $trimmedText);
         }
     }
 
@@ -95,5 +110,22 @@ class TableParser implements AttributeParserInterface
     public function isMultipleElements()
     {
         return true;
+    }
+
+    /**
+     * @param $selector
+     * @param $content
+     * @return mixed
+     */
+    protected function getFilteredContent($selector, $content)
+    {
+        if (array_key_exists('regexp', $selector) && $selector['regexp']) {
+            preg_match($selector['regexp'], $content, $outputArray);
+            $content = $outputArray[0];
+        }
+        if (array_key_exists('preg_replace', $selector) && $selector['preg_replace']) {
+            $content = preg_replace($selector['preg_replace']['pattern'], $selector['preg_replace']['replace'], $content);
+        }
+        return $content;
     }
 }
