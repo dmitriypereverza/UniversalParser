@@ -55,7 +55,7 @@ class Spider implements SpiderInterface
             laravelEvent::fire(new ParserInfoEvent(sprintf("%s: End crawl", $this->config['url'])));
         } catch (\Exception $e) {
             TemporarySearchResults::deleteSessionResult($this->id_session);
-            laravelEvent::fire(new ParserErrorEvent(sprintf("%s: Crawl finish with error: %s", $this->config['url'], $e->getMessage())));
+            laravelEvent::fire(new ParserErrorEvent(sprintf("%s: Crawl finish with error: %s in %s line %s", $this->config['url'], $e->getMessage(), $e->getFile(), $e->getLine())));
         }
     }
 
