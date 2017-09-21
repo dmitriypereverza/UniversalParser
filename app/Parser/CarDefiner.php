@@ -41,7 +41,7 @@ class CarDefiner
             if (stristr($text, $brand->name . ' ') || stristr($text, $brand->synonym_name . ' ')) {
                 $currentBrand = $brand->name;
 
-                $models = Models::orderBy(DB::raw('LENGTH(name), name'))->having('car_make_id', $brand->id)->get()->reverse();
+                $models = Models::where('car_make_id', $brand->id)->orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
                 foreach ($models as $model) {
                     if (stristr($text, ' ' . $model->name . ' ') || stristr($text, ' ' . $model->synonym_name . ' ')) {
                         $currentModel = $model->name;
@@ -65,7 +65,7 @@ class CarDefiner
         if (!$brand) {
             return null;
         }
-        $models = Models::orderBy(DB::raw('LENGTH(name), name'))->having('car_make_id', $brand->id)->get()->reverse();
+        $models = Models::where('car_make_id', $brand->id)->orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
         foreach ($models as $model) {
             if (stristr($text, ' ' . $model->name . ' ') || stristr($text, ' ' . $model->synonym_name . ' ')) {
                 $currentModel = $model->name;
