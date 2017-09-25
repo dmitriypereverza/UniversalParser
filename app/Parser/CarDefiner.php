@@ -25,34 +25,16 @@ class CarDefiner
 
     private function defineBrandAndModelByText($text)
     {
-        $currentBrand = '';
-        $currentModel = '';
-        $brands = Brand::orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
-        foreach ($brands as $brand) {
-            if (!$brand->name) {
-                continue;
-            }
-            if (stristr($text, $brand->name . ' ') || stristr($text, $brand->synonym_name . ' ')) {
-                $currentBrand = $brand->name;
-
-                $models = Models::where('car_make_id', $brand->id)->orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
-                foreach ($models as $model) {
-                    if (stristr($text, ' ' . $model->name . ' ') || stristr($text, ' ' . $model->synonym_name . ' ')) {
-                        $currentModel = $model->name;
-                    }
-                }
-            }
-        }
-
+        $currentBrand = $this->defineBrand($text);
+        $currentBrand && $currentModel = $this->defineModelByBrand($currentBrand, $text);
         return [
-            'brand' => $currentBrand,
-            'model' => $currentModel
+            'brand' => $currentBrand ?? '',
+            'model' => $currentModel ?? ''
         ];
     }
 
-    private function defineModelByBrand($currentBrand, $text)
+    public function defineModelByBrand($currentBrand, $text)
     {
-        $currentModel = '';
         $brand = Brand::where('name', $currentBrand)
             ->orWhere('synonym_name', $currentBrand)
             ->first();
@@ -61,13 +43,24 @@ class CarDefiner
         }
         $models = Models::where('car_make_id', $brand->id)->orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
         foreach ($models as $model) {
-            if (stristr($text, ' ' . $model->name . ' ') || stristr($text, ' ' . $model->synonym_name . ' ')) {
-                $currentModel = $model->name;
+            if (preg_match("~\b" .$model->name. "\b~i", $text)
+                || preg_match("~\b" .$model->synonym_name. "\b~i", $text)) {
+                return $model->name;
             }
         }
+    }
 
-        return [
-            'model' => $currentModel
-        ];
+    public function defineBrand($text)
+    {
+        $brands = Brand::orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
+        foreach ($brands as $brand) {
+            if (!$brand->name) {
+                continue;
+            }
+            if (preg_match("~\b" .$brand->name. "\b~i", $text)
+                || preg_match("~\b" .$brand->synonym_name. "\b~i", $text)) {
+                return  $brand->name;
+            }
+        }
     }
 }
