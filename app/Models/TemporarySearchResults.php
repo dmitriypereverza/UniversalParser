@@ -46,6 +46,8 @@ class TemporarySearchResults extends Model
         $tmpTable->config_site_name = $siteUrl;
         $tmpTable->id_session = $sessionId;
         $tmpTable->content = json_encode($result);
+
+        unset($result['url']);
         $tmpTable->hash = md5(serialize($result));
 
         if (!self::isRowExist($tmpTable)) {
@@ -82,7 +84,7 @@ class TemporarySearchResults extends Model
         if ($versionTo <= $versionFrom) {
             return null;
         }
-        return self::whereBetween('version', [$versionFrom, $versionTo])->count();
+        return self::whereBetween('version', [$versionFrom + 1, $versionTo])->count();
     }
 
     /**

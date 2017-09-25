@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Image;
 use App\Http\Controllers\Controller;
 use App\Parser\Spider\RequestHandler\GuzzleRequestWIthProxyHandler;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
+use Validator;
 
 class ImageController extends Controller
 {
