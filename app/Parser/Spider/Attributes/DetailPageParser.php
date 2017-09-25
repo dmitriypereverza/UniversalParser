@@ -29,6 +29,10 @@ class DetailPageParser implements AttributeParserInterface
                 unset($result);
                 break;
             }
+            if ($key == 'img' && array_key_exists('isRelativePath', $selector) && $selector['isRelativePath']) {
+                $url = parse_url($resource->getCrawler()->getUri());
+                $content = $url['scheme'] . '://' . $url['host'] . $content;
+            }
             $content = $this->getFilteredContent($selector, $content);
             if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
                 if (array_search('', $definedContent)) {

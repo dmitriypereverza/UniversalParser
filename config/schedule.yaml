@@ -1,66 +1,65 @@
 # Shedule config
 
 sv-company:
-  Mondays:
-  Tuesdays:
-    - {time_from: '10:00', time_to: '12:00'}
-    - {time_from: '12:00', time_to: '22:00'}
-  Wednesdays:
-    - {time_from: '10:00', time_to: '18:20'}
-  Thursdays:
-    - {time_from: '10:00', time_to: '22:40'}
-  Fridays:
-    - {time_from: '10:00', time_to: '20:00'}
-  Saturdays:
-    - {time_from: '10:00', time_to: '20:00'}
-  Sundays:
-    - {time_from: '10:00', time_to: '20:00'}
+    Mondays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Tuesdays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Wednesdays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Thursdays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Fridays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Saturdays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Sundays:
+      - {time_from: '00:00', time_to: '23:59'}
 
 razbor-nt:
     Mondays:
+      - {time_from: '00:00', time_to: '23:59'}
     Tuesdays:
-      - {time_from: '10:00', time_to: '12:00'}
-      - {time_from: '12:00', time_to: '22:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Wednesdays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Thursdays:
-      - {time_from: '00:38', time_to: '22:45'}
+      - {time_from: '00:00', time_to: '23:59'}
     Fridays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Saturdays:
-     - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Sundays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
 
 разборкасокол:
     Mondays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Tuesdays:
-      - {time_from: '10:00', time_to: '12:00'}
-      - {time_from: '12:00', time_to: '22:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Wednesdays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Thursdays:
-      - {time_from: '01:05', time_to: '22:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Fridays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Saturdays:
-     - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Sundays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
 
 autoinfo51:
     Mondays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Tuesdays:
-      - {time_from: '10:00', time_to: '22:30'}
+      - {time_from: '00:00', time_to: '23:59'}
     Wednesdays:
-      - {time_from: '10:00', time_to: '15:30'}
+      - {time_from: '00:00', time_to: '23:59'}
     Thursdays:
-      - {time_from: '00:40', time_to: '22:55'}
+      - {time_from: '00:00', time_to: '23:59'}
     Fridays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Saturdays:
-     - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}
     Sundays:
-      - {time_from: '10:00', time_to: '20:00'}
+      - {time_from: '00:00', time_to: '23:59'}

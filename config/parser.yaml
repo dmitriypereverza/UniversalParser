@@ -16,6 +16,7 @@ sv-company:
         value: './/nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[4]/a'
       img:
         value: './/img[@class="gallery__img"][1]/@src'
+        isRelativePath: True
       price:
         value: './/span[@class="product__price"]'
         regexp: '/\d\s?\d+(\s?\d+)?/'
@@ -40,6 +41,7 @@ razbor-nt:
         value: '//*[@id="content"]/div/div[@class="breadcrumb-style"]/a[3]'
       img:
         value: '//*[@id="image"]/@src'
+        isRelativePath: False
       price:
         value: '//div[@class="price"]'
         regexp: '/\d\s?\d+(\s?\d+)?/'
@@ -65,6 +67,7 @@ razbor-nt:
         value: '//div[@class="opisanie_tovar"]'
       img:
         value: '//*[@id="image"]/@src'
+        isRelativePath: False
       price:
         value: '//div[@class="price"][1]'
         preg_replace:
@@ -97,3 +100,5 @@ autoinfo51:
         regexp: '/\d\s?\d+(\s?\d+)?/'
       img:
         value: '//td[7]/a/@href'
+        isRelativePath: False
+

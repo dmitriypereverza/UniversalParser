@@ -72,6 +72,10 @@ class TableParser implements AttributeParserInterface
                 unset($result);
                 break;
             }
+            if ($key == 'img' && array_key_exists('isRelativePath', $selector) && $selector['isRelativePath']) {
+                $url = parse_url($resourceCrawler->getUri());
+                $content = $url['scheme'] . '://' . $url['host'] . $content;
+            }
             $content = $this->getFilteredContent($selector, $content);
             if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
                 if (array_search('', $definedContent)) {
