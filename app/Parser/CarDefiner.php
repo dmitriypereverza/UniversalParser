@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\DB;
 
 class CarDefiner
 {
+    /**
+     * @param $selector
+     * @param $content
+     * @param $result
+     * @return array
+     */
     public function defileAdditionalData($selector, $content, $result)
     {
         $definedContent = [];
@@ -18,7 +24,9 @@ class CarDefiner
             $definedContent = $this->defineBrandAndModelByText($content);
         }
         elseif (array_key_exists('need_parse_model_by_brand', $selector) && $selector['need_parse_model_by_brand'] && $result['brand']) {
-            $definedContent = ['model' => $this->defineModelByBrand($result['brand'], $content)];
+            $definedContent = [
+                'model' => $this->defineModelByBrand($result['brand'], $content)
+            ];
         }
         return $definedContent;
     }
@@ -35,23 +43,28 @@ class CarDefiner
 
     public function defineModelByBrand($currentBrand, $text)
     {
+        $currentModel = '';
         $brand = Brand::where('name', $currentBrand)
             ->orWhere('synonym_name', $currentBrand)
             ->first();
         if (!$brand) {
-            return null;
+            return '';
         }
         $models = Models::where('car_make_id', $brand->id)->orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
         foreach ($models as $model) {
             if (preg_match("~\b" .$model->name. "\b~i", $text)
                 || preg_match("~\b" .$model->synonym_name. "\b~i", $text)) {
-                return $model->name;
+                $currentModel = $model->name;
+                break;
             }
         }
+
+        return $currentModel;
     }
 
     public function defineBrand($text)
     {
+        $currentBrand = '';
         $brands = Brand::orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
         foreach ($brands as $brand) {
             if (!$brand->name) {
@@ -59,8 +72,11 @@ class CarDefiner
             }
             if (preg_match("~\b" .$brand->name. "\b~i", $text)
                 || preg_match("~\b" .$brand->synonym_name. "\b~i", $text)) {
-                return  $brand->name;
+                $currentBrand = $brand->name;
+                break;
             }
         }
+
+        return $currentBrand;
     }
 }
