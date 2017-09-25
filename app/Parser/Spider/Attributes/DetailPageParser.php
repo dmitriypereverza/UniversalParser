@@ -43,7 +43,7 @@ class DetailPageParser implements AttributeParserInterface
             }
             $content = $this->getFilteredContent($selector, $content);
             if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
-                if (array_search('', $definedContent)) {
+                if (in_array('', $definedContent)) {
                     unset($result);
                     break;
                 }
