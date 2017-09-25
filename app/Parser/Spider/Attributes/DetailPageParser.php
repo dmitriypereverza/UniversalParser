@@ -33,6 +33,14 @@ class DetailPageParser implements AttributeParserInterface
                 $url = parse_url($resource->getCrawler()->getUri());
                 $content = $url['scheme'] . '://' . $url['host'] . $content;
             }
+            if ($key == 'brand') {
+                $brand = $this->carDefiner->defineBrand($content);
+                $brand && $content = $brand;
+            }
+            if ($key == 'model') {
+                $model = $this->carDefiner->defineModelByBrand($result['brand'], $content);
+                $model && $content = $model;
+            }
             $content = $this->getFilteredContent($selector, $content);
             if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
                 if (array_search('', $definedContent)) {
