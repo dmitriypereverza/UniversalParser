@@ -12,7 +12,7 @@ class ImageController extends Controller
     public function getImage(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'remoute_url' => 'required',
+            'remote_url' => 'required',
         ]);
         if ($validation->fails()) {
             return response($validation->errors()->toArray(), 400);
