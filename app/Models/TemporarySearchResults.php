@@ -100,7 +100,7 @@ class TemporarySearchResults extends Model
             $countResult = $connection->elements_count % $connection->elements_in_package;
         }
         return self::whereBetween('version', [
-            $connection->version_from,
+            $connection->version_from + 1,
             self::getCurrentVersion()
         ])->offset($offset)->limit($countResult)->get()->toJson();
     }
