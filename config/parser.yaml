@@ -103,7 +103,7 @@ autoinfo51:
         isRelativePath: False
 
 raz45:
-  active: false
+  active: true
   url: http://raz45.ru
   class: App\Parser\Spider\Spider
   items_list_url: http://raz45.ru
@@ -144,4 +144,26 @@ avito-razorbor-voroneg:
         value: '//*[@id="price-value"]/span'
       img:
         value: '//span[@class="gallery-img-cover"]/img/@src'
+
+relines:
+  active: true
+  url: http://relines.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://relines.ru
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/relines.ru\/(catalog\/[^\?]+\/|products\/[^\?]+)/
+  url_pattern_detail: /^http:\/\/relines.ru\/products\/.+/
+  max_depth: 5
+  request_dalay: 500
+  selectors:
+      brand_model:
+        value: '//h3[@class="b-product__cars__i"][1]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h2[@class="b-product__t"]'
+      price:
+        value: '//p[@class="b-product__pNb__p"]'
+      img:
+        value: '//img[@class="pic main"][1]/@src'
+        isRelativePath: True
 
