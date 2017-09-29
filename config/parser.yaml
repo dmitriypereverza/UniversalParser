@@ -103,7 +103,7 @@ autoinfo51:
         isRelativePath: False
 
 raz45:
-  active: true
+  active: false
   url: http://raz45.ru
   class: App\Parser\Spider\Spider
   items_list_url: http://raz45.ru
@@ -123,4 +123,25 @@ raz45:
         regexp: '/\d\s?\d+(\s?\d+)?/'
       img:
         value: '//span[@class="field-item even"][1]/a/img/@src'
+
+avito-razorbor-voroneg:
+  active: true
+  url: https://www.avito.ru/razorbor-voroneg/rossiya/zapchasti_i_aksessuary?view=list
+  class: App\Parser\Spider\Spider
+  items_list_url: https://www.avito.ru/razorbor-voroneg/rossiya/zapchasti_i_aksessuary?view=list
+  items_list_selector: .//a
+  url_pattern: /https:\/\/www.avito.ru\/(razorbor-voroneg\/rossiya\/zapchasti_i_aksessuary\?p=[0-9]{1,2}|voronezh\/zapchasti_i_aksessuary\/.+)/
+  url_pattern_detail: /https:\/\/www.avito.ru\/voronezh\/zapchasti_i_aksessuary\/.+/
+  max_depth: 10
+  request_dalay: 1500
+  selectors:
+      brand_model:
+        value: '//span[@class="title-info-title-text"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//span[@class="title-info-title-text"]'
+      price:
+        value: '//*[@id="price-value"]/span'
+      img:
+        value: '//span[@class="gallery-img-cover"]/img/@src'
 
