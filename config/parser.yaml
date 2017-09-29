@@ -1,6 +1,6 @@
 # ParsersConfig config
 sv-company:
-  active: true
+  active: false
   url: https://sv-company.ru/
   class: App\Parser\Spider\Spider
   items_list_url: https://sv-company.ru/avtozapchasti/avtozapchasti-b-u/
@@ -24,7 +24,7 @@ sv-company:
         value: './/tbody/tr[td="Статус"]/td[2]'
 
 razbor-nt:
-  active: true
+  active: false
   url: http://razbor-nt.ru/
   class: App\Parser\Spider\Spider
   items_list_url: http://razbor-nt.ru/
@@ -47,7 +47,7 @@ razbor-nt:
         regexp: '/\d\s?\d+(\s?\d+)?/'
 
 разборкасокол:
-  active: true
+  active: false
   url: https://разборкасокол.рф/
   class: App\Parser\Spider\Spider
   items_list_url: https://разборкасокол.рф/
@@ -76,7 +76,7 @@ razbor-nt:
         regexp: '/\d\s?\d+(\s?\d+)?/'
 
 autoinfo51:
-  active: true
+  active: false
   url: http://www.autoinfo51.ru
   class: App\Parser\Spider\Spider
   items_list_url: http://www.autoinfo51.ru
@@ -101,4 +101,26 @@ autoinfo51:
       img:
         value: '//td[7]/a/@href'
         isRelativePath: False
+
+raz45:
+  active: true
+  url: http://raz45.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://raz45.ru
+  items_list_selector: .//a
+  url_pattern: /http:\/\/raz45.ru\/automotiveparts\/[^\?]+$/
+  url_pattern_detail: /^http:\/\/raz45.ru\/automotiveparts\/[^\?][0-9]+$/
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      brand_model:
+        value: '//h1[@id="page-title"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@id="page-title"]'
+      price:
+        value: '//td[@class="component-total"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//span[@class="field-item even"][1]/a/img/@src'
 

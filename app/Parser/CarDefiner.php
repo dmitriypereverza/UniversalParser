@@ -52,7 +52,7 @@ class CarDefiner
         }
         $models = Models::where('car_make_id', $brand->id)->orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
         foreach ($models as $model) {
-            if (preg_match("~\b" .$model->name. "\b~i", $text)
+            if (preg_match("~\b" .$model->name. "\b~iu", $text)
                 || preg_match("~\b" .$model->synonym_name. "\b~i", $text)) {
                 $currentModel = $model->name;
                 break;
@@ -70,7 +70,8 @@ class CarDefiner
             if (!$brand->name) {
                 continue;
             }
-            if (preg_match("~\b" .$brand->name. "\b~i", $text)
+
+            if (preg_match("~\b" .$brand->name. "\b~iu", $text)
                 || preg_match("~\b" .$brand->synonym_name. "\b~i", $text)) {
                 $currentBrand = $brand->name;
                 break;
