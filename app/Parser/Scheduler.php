@@ -73,6 +73,9 @@ class Scheduler
      */
     private function getWorkTimeForCurrentDay($siteConfig, $currentDayOfWeek)
     {
+        if ($currentDayOfWeek == 0) {
+            $currentDayOfWeek = 7;
+        }
         return $siteConfig['work_time'][self::$dayOfWeek[$currentDayOfWeek - 1] . 's'];
     }
 
