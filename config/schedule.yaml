@@ -127,3 +127,19 @@ autopart-sib:
       - {time_from: '00:00', time_to: '23:59'}
     Sundays:
       - {time_from: '00:00', time_to: '23:59'}
+
+autotown55:
+    Mondays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Tuesdays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Wednesdays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Thursdays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Fridays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Saturdays:
+      - {time_from: '00:00', time_to: '23:59'}
+    Sundays:
+      - {time_from: '00:00', time_to: '23:59'}

@@ -194,3 +194,27 @@ autopart-sib:
       img:
         value: '//*[@id="car_table"]/tr[last()]/td[last()]/table/tr/td/a/img/@src'
 
+autotown55:
+  active: true
+  url: https://autotown55.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://autotown55.ru/catalog/
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/autotown55.ru\/catalog\//
+  url_pattern_detail: /^https:\/\/autotown55.ru\/catalog\/.+\.html/
+  max_depth: 5
+  request_dalay: 300
+  selectors:
+      brand:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Марка"]/span'
+      model:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Модель"]/span'
+      title:
+        value: '//div[@class="auto_breadcrumbs"][1]/span'
+      price:
+        value: '//span[@class="cost"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//div[@class="one_slide_inside"][1]/a[@class="fancybox"]/img/@src'
+        isRelativePath: True
+
