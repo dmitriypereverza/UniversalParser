@@ -142,6 +142,7 @@ avito-razorbor-voroneg:
         value: '//span[@class="title-info-title-text"]'
       price:
         value: '//*[@id="price-value"]/span'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
       img:
         value: '//span[@class="gallery-img-cover"]/img/@src'
 
@@ -163,7 +164,33 @@ relines:
         value: '//h2[@class="b-product__t"]'
       price:
         value: '//p[@class="b-product__pNb__p"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
       img:
         value: '//img[@class="pic main"][1]/@src'
         isRelativePath: True
+
+autopart-sib:
+  active: true
+  url: http://autopart-sib.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://autopart-sib.ru/?tree_id=0&shid=off&uid=&l=&part=sh&maker_id=&model_id=&shassi=&caruid=
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/autopart-sib.ru\//
+  url_pattern_detail: /^http:\/\/autopart-sib.ru\/p[0-9]+.html/
+  max_depth: 5
+  request_dalay: 300
+  selectors:
+      brand:
+        value: '//*[@id="car_charts"]/tr/td[span="Производитель авто:"]/text()'
+      model:
+        value: '//*[@id="car_charts"]/tr/td[span="Модель авто:"]/text()'
+      title:
+        value: '//*[@id="car_charts"]/tr/td[span="Наименование:"]/h1'
+      description:
+        value: '//*[@id="car_name"]'
+      price:
+        value: '//*[@id="car_charts"]/tr/td/span/span[@class="red"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//*[@id="car_table"]/tr[last()]/td[last()]/table/tr/td/a/img/@src'
 
