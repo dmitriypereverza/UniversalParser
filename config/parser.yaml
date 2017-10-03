@@ -125,7 +125,7 @@ raz45:
         value: '//span[@class="field-item even"][1]/a/img/@src'
 
 avito-razorbor-voroneg:
-  active: true
+  active: false
   url: https://www.avito.ru/razorbor-voroneg/rossiya/zapchasti_i_aksessuary?view=list
   class: App\Parser\Spider\Spider
   items_list_url: https://www.avito.ru/razorbor-voroneg/rossiya/zapchasti_i_aksessuary?view=list
@@ -216,5 +216,56 @@ autotown55:
         regexp: '/\d\s?\d+(\s?\d+)?/'
       img:
         value: '//div[@class="one_slide_inside"][1]/a[@class="fancybox"]/img/@src'
+        isRelativePath: True
+
+razbor72:
+  active: true
+  url: http://razbor72.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://razbor72.ru/zap
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/razbor72.ru\//
+  url_pattern_detail: /^http:\/\/razbor72.ru\/product\/.+/
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      brand_model:
+        value: '//div[@class="main"][1]/h1'
+        need_parse_model_and_brand: true
+      title:
+        value: '//div[@class="main"][1]/h1'
+      price:
+        value: '//p[@class="price"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//img[@class="big_img"]/@src'
+        isRelativePath: True
+
+razbormashin:
+  active: true
+  url: http://razbormashin.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://razbormashin.ru/avtozapchasti
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/razbormashin.ru\/avtozapchasti\//
+  url_pattern_detail: /^http:\/\/razbormashin.ru\/avtozapchasti\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+.html/
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      brand:
+        value: '//div[@class="product-detail-property"][div[1]="Производитель"]/div[2]'
+      model:
+        value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Модель"]/div[2]'
+      title:
+        value: '//h1[@class="product-detail__title"]'
+      description:
+        value: '//div[@class="product-detail__description-text"]'
+      isAvalable:
+        value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Наличие"]/div[2]'
+      price:
+        value: '//div[@class="product-detail__price-value"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//*[@id="msGallery"]/div/a[1]/@href'
         isRelativePath: True
 
