@@ -324,3 +324,25 @@ caroptics:
         value: '//div[@class="product_images"]/div[@class="big"]/a/@href'
         isRelativePath: True
 
+45razbor:
+  active: true
+  url: http://www.45razbor.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://www.45razbor.ru/index.php/nashi-rekvizity
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/www.45razbor.ru\//
+  url_pattern_detail: /^http:\/\/www.45razbor.ru\/index.php\/nashi-rekvizity\/product\/view\/[0-9]+\/[0-9]+$/
+  max_depth: 6
+  request_dalay: 200
+  selectors:
+      brand_model:
+        value: '//div[@class="jshop productfull"]/form/h1/text()'
+        need_parse_model_and_brand: true
+      title:
+        value: '//div[@class="jshop productfull"]/form/h1/text()'
+      price:
+        value: '//*[@id="block_price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//span[@id="list_product_image_middle"]/a/img/@src'
+
