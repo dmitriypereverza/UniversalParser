@@ -346,3 +346,26 @@ caroptics:
       img:
         value: '//span[@id="list_product_image_middle"]/a/img/@src'
 
+car22:
+  active: true
+  url: https://car22.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://car22.ru/katalog-zapchastej/
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/car22.ru\/katalog-zapchastej\//
+  url_pattern_detail: /^https:\/\/car22.ru\/katalog-zapchastej\/[^\/]+\/.+\/$/
+  max_depth: 5
+  request_dalay: 200
+  selectors:
+      brand_model:
+        value: '//h1[@itemprop="name"][1]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@itemprop="name"][1]'
+      price:
+        value: '//meta[@itemprop="price"]/@content'
+      img:
+        value: '//a[@itemprop="image"][1]/img/@src'
+        isRelativePath: True
+
+
