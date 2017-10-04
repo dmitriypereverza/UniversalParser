@@ -299,3 +299,28 @@ avtodriver:
         value: '//section[@class="regular slider"]/a[1]/img/@src'
         isRelativePath: True
 
+caroptics:
+  active: true
+  url: https://www.caroptics.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://www.caroptics.ru/product/
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/www.caroptics.ru\//
+  url_pattern_detail: /^https:\/\/www.caroptics.ru\/product\/[^\/]+\//
+  max_depth: 6
+  request_dalay: 200
+  selectors:
+      brand:
+        value: '//*[@id="breadcrumbs"]/div[2]/a'
+      model:
+        value: '//*[@id="breadcrumbs"]/div[3]/a'
+      title:
+        value: '//h1[@itemprop="name"][1]'
+      isAvalable:
+        value: '//div[@class="in_stock"]'
+      price:
+        value: '//meta[@itemprop="price"]/@content'
+      img:
+        value: '//div[@class="product_images"]/div[@class="big"]/a/@href'
+        isRelativePath: True
+
