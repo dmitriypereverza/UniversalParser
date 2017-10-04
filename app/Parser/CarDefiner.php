@@ -23,6 +23,11 @@ class CarDefiner
         if (array_key_exists('need_parse_model_and_brand', $selector) && $selector['need_parse_model_and_brand']) {
             $definedContent = $this->defineBrandAndModelByText($content);
         }
+        elseif (array_key_exists('need_parse_brand', $selector) && $selector['need_parse_brand']) {
+            $definedContent = [
+                'brand' => $this->defineBrand($content)
+            ];
+        }
         elseif (array_key_exists('need_parse_model_by_brand', $selector) && $selector['need_parse_model_by_brand'] && $result['brand']) {
             $definedContent = [
                 'model' => $this->defineModelByBrand($result['brand'], $content)
@@ -53,7 +58,7 @@ class CarDefiner
         $models = Models::where('car_make_id', $brand->id)->orderBy(DB::raw('LENGTH(name), name'))->get()->reverse();
         foreach ($models as $model) {
             if (preg_match("~\b" .$model->name. "\b~iu", $text)
-                || preg_match("~\b" .$model->synonym_name. "\b~i", $text)) {
+                || preg_match("~\b" .$model->synonym_name. "\b~iu", $text)) {
                 $currentModel = $model->name;
                 break;
             }
@@ -72,7 +77,7 @@ class CarDefiner
             }
 
             if (preg_match("~\b" .$brand->name. "\b~iu", $text)
-                || preg_match("~\b" .$brand->synonym_name. "\b~i", $text)) {
+                || preg_match("~\b" .$brand->synonym_name. "\b~iu", $text)) {
                 $currentBrand = $brand->name;
                 break;
             }

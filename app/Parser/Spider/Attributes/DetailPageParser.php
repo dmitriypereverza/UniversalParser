@@ -26,8 +26,10 @@ class DetailPageParser implements AttributeParserInterface
         $result['url'] = $resource->getCrawler()->getUri();
         foreach ($this->selectors as $key => $selector) {
             if (!$content = $this->getSelectorContent($resource, $selector['value'])) {
-                unset($result);
-                break;
+                if (!array_key_exists('optional', $selector) || !$selector['optional']) {
+                    unset($result);
+                    break;
+                }
             }
             if ($key == 'img' && array_key_exists('isRelativePath', $selector) && $selector['isRelativePath']) {
                 $url = parse_url($resource->getCrawler()->getUri());

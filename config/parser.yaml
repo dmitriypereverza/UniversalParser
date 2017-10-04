@@ -269,3 +269,33 @@ razbormashin:
         value: '//*[@id="msGallery"]/div/a[1]/@href'
         isRelativePath: True
 
+avtodriver:
+  active: true
+  url: https://avtodriver.com
+  class: App\Parser\Spider\Spider
+  items_list_url: https://avtodriver.com
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/avtodriver.com\//
+  url_pattern_detail: /^https:\/\/avtodriver.com\/[^\/]+\/[^\/]+\//
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      brand:
+        value: '//h1[@class="caption"][1]'
+        need_parse_brand: True
+      model:
+        value: '//*[@id="c_d"]/p[normalize-space(text())="Устанавливается на модель:"]/b'
+      title:
+        value: '//h1[@class="caption"][1]'
+      description:
+        value: '//p[@class="toppropelemdescr"]'
+        optional: True
+      isAvalable:
+        value: '//div[@class="b-catalog__avaliability"]'
+      price:
+        value: '//div[@class="b-price__element b-price-value"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//section[@class="regular slider"]/a[1]/img/@src'
+        isRelativePath: True
+
