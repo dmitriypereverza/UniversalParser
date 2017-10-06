@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\ParserErrorEvent' => [
             'App\Listeners\ParserErrorListener',
+        ],
+        'App\Events\ParserTreeMakerEvent' => [
+            'App\Listeners\ParserTreeMakerListener',
         ]
     ];
 

@@ -26,6 +26,7 @@ class DetailPageParser implements AttributeParserInterface
         $result['url'] = $resource->getCrawler()->getUri();
         foreach ($this->selectors as $key => $selector) {
             if (!$content = $this->getSelectorContent($resource, $selector['value'])) {
+                $content = $this->getFilteredContent($selector, $content);
                 if (!array_key_exists('optional', $selector) || !$selector['optional']) {
                     unset($result);
                     break;
@@ -43,7 +44,6 @@ class DetailPageParser implements AttributeParserInterface
                 $model = $this->carDefiner->defineModelByBrand($result['brand'], $content);
                 $model && $content = $model;
             }
-            $content = $this->getFilteredContent($selector, $content);
             if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
                 if (in_array('', $definedContent)) {
                     unset($result);

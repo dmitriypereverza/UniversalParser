@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\getConfig;
 use App\Console\Commands\ParserStatistic;
+use App\Console\Commands\ParseTree;
 use App\Console\Commands\StartCrawl;
 use App\Console\Commands\UpdateProxy;
 use App\Console\Commands\ParserStatus;
@@ -28,6 +29,7 @@ class Kernel extends ConsoleKernel
         ParserStatus::class,
         ParserStatistic::class,
         ValidareYamlConfig::class,
+        ParseTree::class,
     ];
 
     /**
