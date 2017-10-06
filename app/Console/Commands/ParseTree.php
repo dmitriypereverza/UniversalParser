@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Parser\Spider\TreeLinksSpider;
 use Illuminate\Console\Command;
+use Symfony\Component\EventDispatcher\Event;
 
 class ParseTree extends Command
 {
@@ -46,5 +47,10 @@ class ParseTree extends Command
 
         $parser = new TreeLinksSpider($site);
         $parser->crawl();
+        $parser->onPostPersistEvent(function (Event $event) {
+            if (!ParserStatus::isEnable() || !$this->isMustWork($this->siteConfig)) {
+                $event->getSubject()->setDownloadLimit(1);
+            }
+        });
     }
 }

@@ -44,7 +44,13 @@ class Links extends Model
         if (!$link) {
             $link = new Links();
             $link->url = $uri->toString();
+            $link->save();
         }
         return $link;
+    }
+
+    public static function getNotViewedUrl()
+    {
+        return Links::where(['is_viewed' => null]);
     }
 }

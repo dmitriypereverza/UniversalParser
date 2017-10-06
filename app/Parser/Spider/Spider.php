@@ -36,7 +36,7 @@ class Spider implements SpiderInterface
         $this->spider = $this->getSpider();
         $this->id_session = $this->getSessionId();
         $this->countProcessedResults = 0;
-        $this->setRequestHandler();
+//        $this->setRequestHandler();
         $this->setPersistenceHandler();
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
@@ -64,6 +64,7 @@ class Spider implements SpiderInterface
         $spider = new PhpSpider($this->config['items_list_url']);
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer($this->config['items_list_selector']));
         $spider->getDiscovererSet()->addFilter(new UriFilter([$this->config['url_pattern']]));
+        $spider->getQueueManager()->setTraversalAlgorithm(InDBQueueManager::ALGORITHM_DEPTH_FIRST);
         return $spider;
     }
 

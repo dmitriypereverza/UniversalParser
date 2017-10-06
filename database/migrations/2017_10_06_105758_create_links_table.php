@@ -20,6 +20,7 @@ class CreateLinksTable extends Migration
             $table->string('text')->nullable();
             $table->string('server_response_code')->nullable();
             $table->integer('parent_id')->nullable();
+            $table->boolean('is_viewed')->nullable();
             $table->timestamps();
         });
     }

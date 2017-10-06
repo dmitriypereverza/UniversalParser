@@ -4,14 +4,15 @@ namespace App\Parser\Spider;
 
 use App\Events\ParserTreeMakerEvent;
 use App\Parser\Spider\Discoverer\DiscovererSet;
+use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceLinkHandler;
-use App\Parser\Spider\RequestHandler\GuzzleRequestWIthProxyHandler;
+use App\Parser\Spider\QueueManager\InDBQueueManager;
 use App\Parser\Spider\RequestHandler\StatusDefinerWIthProxyHandler;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
+use Symfony\Component\EventDispatcher\Event;
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
 use VDB\Spider\EventListener\PolitenessPolicyListener;
-use VDB\Spider\QueueManager\InMemoryQueueManager;
 use VDB\Spider\Spider as PhpSpider;
 use VDB\Spider\StatsHandler;
 use Illuminate\Support\Facades\Event as laravelEvent;
@@ -54,7 +55,17 @@ class TreeLinksSpider implements SpiderInterface
         $spider = new PhpSpider($this->siteUrl);
         $spider->setDiscovererSet(new DiscovererSet());
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer('.//a'));
-        $spider->getQueueManager()->setTraversalAlgorithm(InMemoryQueueManager::ALGORITHM_BREADTH_FIRST);
+        $spider->getDiscovererSet()->addFilter(new UriFilter(['/^' . str_replace("/", "\/", $this->siteUrl) . '/']));
+        $spider->getQueueManager()->setTraversalAlgorithm(InDBQueueManager::ALGORITHM_BREADTH_FIRST);
+        $spider->setQueueManager(new InDBQueueManager());
+        $spider->getDispatcher()->addListener(
+            SpiderEvents::SPIDER_CRAWL_USER_STOPPED,
+            function (Event $event) {
+                echo "\nCrawl aborted by user.\n";
+                exit();
+            }
+        );
+
         return $spider;
     }
 
