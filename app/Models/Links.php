@@ -25,6 +25,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Links whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Links whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Links whereUrl($value)
+ * @property int|null $is_viewed
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Links whereIsViewed($value)
+ * @property int|null $depth
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Links whereDepth($value)
  */
 class Links extends Model
 {
@@ -35,7 +39,9 @@ class Links extends Model
      */
     public function referer()
     {
-        return $this->belongsToMany('\App\Models\Links', 'parent_id');
+        return $this
+            ->belongsToMany('\App\Models\Links', 'links_ref','child_id', 'parent_id')
+            ->withTimestamps();
     }
 
     public static function getOrCreateLinkByUrl($uri)
@@ -52,5 +58,10 @@ class Links extends Model
     public static function getNotViewedUrl()
     {
         return Links::where(['is_viewed' => null]);
+    }
+
+    public static function isViewedUrl($url)
+    {
+        return True && Links::where(['url' => $url, 'is_viewed' => True])->first();
     }
 }

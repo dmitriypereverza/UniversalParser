@@ -46,10 +46,10 @@ class DiscovererSet extends VDBDiscovererSet
      */
     private function markSeen(DiscoveredUri $uri)
     {
-        $uriString = $uri->normalize()->toString();
-        if (!array_key_exists($uriString, $this->alreadySeenUris)) {
-            $this->alreadySeenUris[$uriString] = $uri->getDepthFound();
-        }
+        $uriString = $uri->normalize();
+        $url = Links::getOrCreateLinkByUrl($uriString);
+        $url->is_viewed = True;
+        $url->save();
     }
 
     /**
@@ -73,12 +73,9 @@ class DiscovererSet extends VDBDiscovererSet
         }
 
         $discoveredUris = [];
-
         foreach ($this->discoverers as $discoverer) {
             $discoveredUris = array_merge($discoveredUris, $discoverer->discover($resource));
         }
-
-
 
         $this->normalize($discoveredUris);
         $this->removeDuplicates($discoveredUris);
@@ -87,12 +84,12 @@ class DiscovererSet extends VDBDiscovererSet
 
         foreach ($discoveredUris as $uri) {
             $uri->setDepthFound($resource->getUri()->getDepthFound() + 1);
-            $this->markSeen($uri);
 
             $parentUrl = Links::getOrCreateLinkByUrl($resource->getUri());
             $url = Links::getOrCreateLinkByUrl($uri);
-            $url->parent_id = $parentUrl->id;
+            $url->referer()->attach($parentUrl->id);
             $url->text = $this->getLinkText($resource, $uri);
+            $url->depth = $parentUrl->depth + 1;
             $url->save();
         }
 
@@ -137,7 +134,7 @@ class DiscovererSet extends VDBDiscovererSet
     private function filterAlreadySeen(array &$discoveredUris)
     {
         foreach ($discoveredUris as $k => &$uri) {
-            if (array_key_exists($uri->toString(), $this->alreadySeenUris)) {
+            if (Links::isViewedUrl($uri)) {
                 unset($discoveredUris[$k]);
             }
         }

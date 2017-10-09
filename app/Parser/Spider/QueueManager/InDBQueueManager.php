@@ -94,7 +94,7 @@ class InDBQueueManager implements QueueManagerInterface
             $link = Links::getNotViewedUrl()->orderBy('id', 'desc')->first();
             return new DiscoveredUri(new Uri($link->url));
         } elseif ($this->traversalAlgorithm === static::ALGORITHM_BREADTH_FIRST) {
-            $link = Links::getNotViewedUrl()->first();
+            $link = Links::getNotViewedUrl()->orderBy('id', 'asc')->first();
             return new DiscoveredUri(new Uri($link->url));
         } else {
             throw new \LogicException('No search algorithm set');

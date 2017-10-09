@@ -56,8 +56,8 @@ class TreeLinksSpider implements SpiderInterface
         $spider->setDiscovererSet(new DiscovererSet());
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer('.//a'));
         $spider->getDiscovererSet()->addFilter(new UriFilter(['/^' . str_replace("/", "\/", $this->siteUrl) . '/']));
-        $spider->getQueueManager()->setTraversalAlgorithm(InDBQueueManager::ALGORITHM_BREADTH_FIRST);
         $spider->setQueueManager(new InDBQueueManager());
+        $spider->getQueueManager()->setTraversalAlgorithm(InDBQueueManager::ALGORITHM_BREADTH_FIRST);
         $spider->getDispatcher()->addListener(
             SpiderEvents::SPIDER_CRAWL_USER_STOPPED,
             function (Event $event) {
