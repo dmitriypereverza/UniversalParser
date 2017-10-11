@@ -87,8 +87,9 @@ class ParserController extends Controller
             if (!$connection) {
                 return response('Connection_key does\'t exist', 404);
             }
-            return json_encode([
-                'results' => TemporarySearchResults::getPackageResults($arRequest['package_number'], $connection)
+            $packageResults = TemporarySearchResults::getPackageResults($arRequest['package_number'], $connection);
+            return response()->json([
+                'results' => $packageResults
             ]);
         } catch (\Exception $e) {
             return response(json_encode([
