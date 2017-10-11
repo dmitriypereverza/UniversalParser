@@ -16,12 +16,6 @@ class InDBQueueManager implements QueueManagerInterface
     /** @var int The maximum size of the process queue for this spider. 0 means infinite */
     public $maxQueueSize = 0;
 
-    /** @var int the amount of times a Resource was enqueued */
-    private $currentQueueSize = 0;
-
-    /** @var DiscoveredUri[] the list of URIs to process */
-    private $traversalQueue = array();
-
     /** @var int The traversal algorithm to use. Choose from the class constants
      */
     private $traversalAlgorithm = self::ALGORITHM_DEPTH_FIRST;
@@ -73,15 +67,7 @@ class InDBQueueManager implements QueueManagerInterface
      */
     public function addUri(DiscoveredUri $uri)
     {
-        if ($this->maxQueueSize != 0 && $this->currentQueueSize >= $this->maxQueueSize) {
-            throw new QueueException('Maximum Queue Size of ' . $this->maxQueueSize . ' reached');
-        }
-
-        $this->currentQueueSize++;
-//        array_push($this->traversalQueue, $uri);
         Links::getOrCreateLinkByUrl($uri);
-
-
         $this->getDispatcher()->dispatch(
             SpiderEvents::SPIDER_CRAWL_POST_ENQUEUE,
             new GenericEvent($this, array('uri' => $uri))
@@ -91,10 +77,10 @@ class InDBQueueManager implements QueueManagerInterface
     public function next()
     {
         if ($this->traversalAlgorithm === static::ALGORITHM_DEPTH_FIRST) {
-            $link = Links::getNotViewedUrl()->orderBy('id', 'desc')->first();
+            $link = Links::getNotViewedUrl()->orderBy('id', 'desc')->limit(20)->get()->random(1)->first();
             return new DiscoveredUri(new Uri($link->url));
         } elseif ($this->traversalAlgorithm === static::ALGORITHM_BREADTH_FIRST) {
-            $link = Links::getNotViewedUrl()->orderBy('id', 'asc')->first();
+            $link = Links::getNotViewedUrl()->orderBy('id', 'asc')->limit(20)->get()->random(1)->first();
             return new DiscoveredUri(new Uri($link->url));
         } else {
             throw new \LogicException('No search algorithm set');

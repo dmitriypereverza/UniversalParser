@@ -60,6 +60,11 @@ class Links extends Model
         return Links::where(['is_viewed' => null]);
     }
 
+    public static function getViewedUrl()
+    {
+        return Links::select('url')->where(['is_viewed' => 1])->get()->toArray();
+    }
+
     public static function isViewedUrl($url)
     {
         return True && Links::where(['url' => $url, 'is_viewed' => True])->first();

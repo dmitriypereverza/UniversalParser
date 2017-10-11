@@ -4,16 +4,17 @@ namespace App\Console\Commands;
 
 use App\Parser\Spider\TreeLinksSpider;
 use Illuminate\Console\Command;
-use Symfony\Component\EventDispatcher\Event;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class ParseTree extends Command
 {
+    use DispatchesJobs;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'parse:tree {site}';
+    protected $signature = 'parse:tree {site} {depth} {request_delay}';
 
     /**
      * The console command description.
@@ -40,17 +41,14 @@ class ParseTree extends Command
     public function handle()
     {
         $site = $this->argument('site');
+        $depth = $this->argument('depth');
+        $requestDelay = $this->argument('request_delay');
         if (!$site) {
             $this->error('Site not found!');
             return;
         }
 
-        $parser = new TreeLinksSpider($site);
+        $parser = new TreeLinksSpider($site, $depth, $requestDelay);
         $parser->crawl();
-        $parser->onPostPersistEvent(function (Event $event) {
-            if (!ParserStatus::isEnable() || !$this->isMustWork($this->siteConfig)) {
-                $event->getSubject()->setDownloadLimit(1);
-            }
-        });
     }
 }

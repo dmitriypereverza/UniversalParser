@@ -4,6 +4,7 @@ namespace App\Parser\Spider;
 
 use App\Events\ParserTreeMakerEvent;
 use App\Parser\Spider\Discoverer\DiscovererSet;
+use App\Parser\Spider\Filter\Prefetch\NotUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceLinkHandler;
 use App\Parser\Spider\QueueManager\InDBQueueManager;
@@ -23,7 +24,7 @@ class TreeLinksSpider implements SpiderInterface
     /** @var PhpSpider $spider */
     private $spider;
 
-    public function __construct($siteUrl, $depth=null, $requestDelay = self::DEFAULT_REQUEST_DELAY)
+    public function __construct($siteUrl, $depth = self::DEFAULT_MAX_DEPTH, $requestDelay = self::DEFAULT_REQUEST_DELAY)
     {
         if (!$siteUrl) {
             throw new InvalidArgumentExcept('Не передан адрес сайта');
@@ -56,6 +57,7 @@ class TreeLinksSpider implements SpiderInterface
         $spider->setDiscovererSet(new DiscovererSet());
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer('.//a'));
         $spider->getDiscovererSet()->addFilter(new UriFilter(['/^' . str_replace("/", "\/", $this->siteUrl) . '/']));
+        $spider->getDiscovererSet()->addFilter(new NotUriFilter(['/^' . str_replace("/", "\/", $this->siteUrl) . '\/(ad|api|simple|search)/']));
         $spider->setQueueManager(new InDBQueueManager());
         $spider->getQueueManager()->setTraversalAlgorithm(InDBQueueManager::ALGORITHM_BREADTH_FIRST);
         $spider->getDispatcher()->addListener(

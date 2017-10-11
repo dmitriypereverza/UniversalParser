@@ -11,6 +11,7 @@ use VDB\Spider\Uri\DiscoveredUri;
 
 class DiscovererSet extends VDBDiscovererSet
 {
+    private $alreadySeenUris = [];
     /**
      * @var Discoverer[]
      */
@@ -22,17 +23,19 @@ class DiscovererSet extends VDBDiscovererSet
     /**
      * @var int maximum crawl depth
      */
-    public $maxDepth = 20;
+    public $maxDepth = 3;
 
     /**
      * @var array the list of already visited URIs with the depth they were discovered on as value
      */
-    private $alreadySeenUris = array();
-
     public function __construct(array $discoverers = array())
     {
         foreach ($discoverers as $alias => $discoverer) {
             $this->set($discoverer, is_int($alias) ? null : $alias);
+        }
+
+        foreach (Links::getViewedUrl() as $link) {
+            $this->alreadySeenUris[$link['url']] = 1;
         }
     }
 
@@ -50,6 +53,10 @@ class DiscovererSet extends VDBDiscovererSet
         $url = Links::getOrCreateLinkByUrl($uriString);
         $url->is_viewed = True;
         $url->save();
+
+        if (!array_key_exists($uriString->toString(), $this->alreadySeenUris)) {
+            $this->alreadySeenUris[$uriString->toString()] = $uri->getDepthFound();
+        }
     }
 
     /**
@@ -88,8 +95,8 @@ class DiscovererSet extends VDBDiscovererSet
             $parentUrl = Links::getOrCreateLinkByUrl($resource->getUri());
             $url = Links::getOrCreateLinkByUrl($uri);
             $url->referer()->attach($parentUrl->id);
-            $url->text = $this->getLinkText($resource, $uri);
-            $url->depth = $parentUrl->depth + 1;
+//            $url->text = $this->getLinkText($resource, $uri);
+//            $url->depth = $parentUrl->depth + 1;
             $url->save();
         }
 
@@ -134,7 +141,7 @@ class DiscovererSet extends VDBDiscovererSet
     private function filterAlreadySeen(array &$discoveredUris)
     {
         foreach ($discoveredUris as $k => &$uri) {
-            if (Links::isViewedUrl($uri)) {
+            if (array_key_exists($uri->toString(), $this->alreadySeenUris)) {
                 unset($discoveredUris[$k]);
             }
         }
@@ -179,7 +186,7 @@ class DiscovererSet extends VDBDiscovererSet
 
     private function getLinkText(Resource $resource, $uri)
     {
-        $item = $resource->getCrawler()->filterXpath('//a[@href="' . $uri . '"]/text()');
+        $item = $resource->getCrawler()->filterXpath('//a[@href="' . $uri . '"]');
         if ($item->count()) {
             return  trim($item->text());
         }
