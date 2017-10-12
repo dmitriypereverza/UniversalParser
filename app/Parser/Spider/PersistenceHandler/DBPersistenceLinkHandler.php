@@ -27,7 +27,6 @@ class DBPersistenceLinkHandler implements PersistenceHandlerInterface
 
     public function persist(Resource $resource)
     {
-        echo $resource->getUri() . "\n";
         $this->links[] = $resource->getUri();
 
         $url = Links::getOrCreateLinkByUrl($resource->getUri());

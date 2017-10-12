@@ -43,7 +43,9 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
      */
     public function requestByStringUrl($uri)
     {
-        $response = $this->getClient()->get($uri);
+        $response = $this->getClient()->get($uri, [
+            'proxy' => $this->getProxyUrl()
+        ]);
         return $response;
     }
 
