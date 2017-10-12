@@ -2,13 +2,15 @@
 
 namespace App\Parser\Spider\RequestHandler;
 
+use App\Models\Links;
 use App\Parser\Spider\Proxy\FineproxyOrgProxy;
 use GuzzleHttp\Client;
+use Psr\Http\Message\ResponseInterface;
 use VDB\Spider\RequestHandler\RequestHandlerInterface;
 use VDB\Spider\Resource;
 use VDB\Spider\Uri\DiscoveredUri;
 
-class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
+class StatusDefinerWIthProxyHandler implements RequestHandlerInterface
 {
     /** @var Client */
     private $client;
@@ -31,20 +33,13 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
      */
     public function request(DiscoveredUri $uri)
     {
-        $response = $this->getClient()->get($uri->toString(), [
-            'proxy' => $this->getProxyUrl()
-        ]);
-        return new Resource($uri, $response);
-    }
+//        $response = $this->getClient()->get($uri->toString(), [
+//            'proxy' => $this->getProxyUrl()
+//        ]);
+        $response = $this->getClient()->get($uri->toString());
 
-    /**
-     * @param $uri
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function requestByStringUrl($uri)
-    {
-        $response = $this->getClient()->get($uri);
-        return $response;
+        $this->saveInDb($uri, $response);
+        return new Resource($uri, $response);
     }
 
     public function getProxyUrl()
@@ -54,5 +49,16 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
             $this->proxyUrl = $proxy->getProxyUrl();
         }
         return $this->proxyUrl;
+    }
+
+    /**
+     * @param DiscoveredUri $uri
+     * @param ResponseInterface $response
+     */
+    protected function saveInDb(DiscoveredUri $uri, $response)
+    {
+        $link = Links::getOrCreateLinkByUrl($uri);
+        $link->server_response_code = $response->getStatusCode();
+        $link->save();
     }
 }
