@@ -34,17 +34,18 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
 
     public function persist(Resource $resource)
     {
+        echo $resource->getUri() . "\n";
         if (!$this->urlFilter->match($resource->getUri())) {
             return;
         }
         $this->resources[] = $resource->getUri();
         if ($selectorVals = $this->attributeParser->getSelectorsValue($resource)) {
             if (!$this->attributeParser->isMultipleElements()) {
-                TemporarySearchResults::insertIfNotExist($selectorVals, $this->siteUrl, $this->sessionId);
+                $this->saveParseElement($selectorVals);
             }
             else {
                 foreach ($selectorVals as $rowValues) {
-                    TemporarySearchResults::insertIfNotExist($rowValues, $this->siteUrl, $this->sessionId);
+                    $this->saveParseElement($rowValues);
                 }
             }
         }
@@ -97,5 +98,25 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
      */
     public function setSpiderId($spiderId)
     {
+    }
+
+    private function modifyFields($selectorVals)
+    {
+        $selectorVals['title'] = sprintf(
+            '%s%s%s%s%s',
+            isset($selectorVals['acticul']) ? $selectorVals['acticul'] . ' ' : '',
+            isset($selectorVals['title']) ? $selectorVals['title'] . ' ' : '',
+            isset($selectorVals['model']) ? $selectorVals['model'] . ' ' : '',
+            isset($selectorVals['car_body_code']) ? $selectorVals['car_body_code'] . ' ' : '',
+            isset($selectorVals['brand']) ? $selectorVals['brand'] . ' ' : ''
+        );
+
+        return $selectorVals;
+    }
+
+    private function saveParseElement($values)
+    {
+        $values = $this->modifyFields($values);
+        TemporarySearchResults::insertIfNotExist($values, $this->siteUrl, $this->sessionId);
     }
 }
