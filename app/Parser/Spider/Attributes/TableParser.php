@@ -68,9 +68,13 @@ class TableParser implements AttributeParserInterface
     {
         $result['url'] = $resourceCrawler->getUri();
         foreach ($selectors as $key => $selector) {
-            if (!$content = $this->getSelectorContent($resourceCrawler, $selector['value'])) {
-                unset($result);
-                break;
+            $content = $this->getSelectorContent($resourceCrawler, $selector['value']);
+            $content = $this->getFilteredContent($selector, $content);
+            if (!$content) {
+                if (!array_key_exists('optional', $selector) || !$selector['optional']) {
+                    unset($result);
+                    break;
+                }
             }
             if ($key == 'img' && array_key_exists('isRelativePath', $selector) && $selector['isRelativePath']) {
                 $url = parse_url($resourceCrawler->getUri());
@@ -84,9 +88,8 @@ class TableParser implements AttributeParserInterface
                 $model = $this->carDefiner->defineModelByBrand($result['brand'], $content);
                 $model && $content = $model;
             }
-            $content = $this->getFilteredContent($selector, $content);
             if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
-                if (array_search('', $definedContent)) {
+                if (in_array('', $definedContent)) {
                     unset($result);
                     break;
                 }
@@ -97,6 +100,7 @@ class TableParser implements AttributeParserInterface
                 $result[$key] = $content;
             }
         }
+
         if (isset($result)) {
             return $result;
         }
@@ -134,6 +138,8 @@ class TableParser implements AttributeParserInterface
         if (array_key_exists('regexp', $selector) && $selector['regexp']) {
             if (preg_match($selector['regexp'], $content, $outputArray)) {
                 $content = $outputArray[0];
+            } else {
+                $content = '';
             }
         }
         if (array_key_exists('preg_replace', $selector) && $selector['preg_replace']) {

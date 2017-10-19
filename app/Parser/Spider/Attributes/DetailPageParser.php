@@ -25,8 +25,9 @@ class DetailPageParser implements AttributeParserInterface
     {
         $result['url'] = $resource->getCrawler()->getUri();
         foreach ($this->selectors as $key => $selector) {
-            if (!$content = $this->getSelectorContent($resource, $selector['value'])) {
-                $content = $this->getFilteredContent($selector, $content);
+            $content = $this->getSelectorContent($resource, $selector['value']);
+            $content = $this->getFilteredContent($selector, $content);
+            if (!$content) {
                 if (!array_key_exists('optional', $selector) || !$selector['optional']) {
                     unset($result);
                     break;
@@ -94,6 +95,8 @@ class DetailPageParser implements AttributeParserInterface
         if (array_key_exists('regexp', $selector) && $selector['regexp']) {
             if (preg_match($selector['regexp'], $content, $outputArray)) {
                 $content = $outputArray[0];
+            } else {
+                $content = '';
             }
         }
         if (array_key_exists('preg_replace', $selector) && $selector['preg_replace']) {
