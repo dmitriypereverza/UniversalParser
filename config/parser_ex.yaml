@@ -423,3 +423,32 @@ rbrauto:
       price:
         value: '//td[6]/table/tr/td/span'
         regexp: '/\d\s?\d+(\s?\d+)?/'
+
+
+autoclub48:
+  active: true
+  url: http://www.autoclub48.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://www.autoclub48.ru/
+  url_pattern: /http:\/\/www.autoclub48\.ru\/[0-9]+\//
+  url_pattern_detail: /^http:\/\/www.autoclub48\.ru\/[0-9]+\/[0-9]+$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//div[@class="item_info_section"]/dl/dd'
+        optional: True
+      title:
+        value: '//h1/span'
+      discription:
+        value: '//div[@class="bx_item_description"]/p'
+      brand_model:
+        value: '//h1/span'
+        need_parse_model_and_brand: true
+      img:
+        value: '//div[@class="bx_bigimages_imgcontainer"]/img/@src'
+        regexp: '/(?<=\/\/autoclub48\.ru\.images\.1c-bitrix-cdn\.ru).+/'
+        isRelativePath: True
+      price:
+        value: '//div[@class="item_current_price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
