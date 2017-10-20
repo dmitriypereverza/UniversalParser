@@ -1,11 +1,7 @@
 <?php
-
 namespace App\Parser\Spider\PersistenceHandler;
 
 use App\Models\Links;
-use App\Models\TemporarySearchResults;
-use App\Parser\Spider\Attributes\AttributeParserInterface;
-use App\Parser\Spider\Filter\UriFilter;
 use VDB\Spider\PersistenceHandler\PersistenceHandlerInterface;
 use VDB\Spider\Resource;
 
@@ -74,15 +70,6 @@ class DBPersistenceLinkHandler implements PersistenceHandlerInterface
         reset($this->links);
     }
 
-    /**
-     * @param string $spiderId
-     *
-     * @return void
-     */
-    public function setSpiderId($spiderId)
-    {
-    }
-
     private function getPageTitle($resource)
     {
         $item = $resource->getCrawler()->filterXpath('//title/text()');
@@ -90,5 +77,14 @@ class DBPersistenceLinkHandler implements PersistenceHandlerInterface
             return  trim($item->text());
         }
         return null;
+    }
+
+    /**
+     * @param string $spiderId
+     *
+     * @return void
+     */
+    public function setSpiderId($spiderId)
+    {
     }
 }
