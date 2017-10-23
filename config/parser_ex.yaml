@@ -76,7 +76,7 @@ razbor-nt:
         regexp: '/\d\s?\d+(\s?\d+)?/'
 
 autoinfo51:
-  active: false
+  active: true
   url: http://www.autoinfo51.ru
   class: App\Parser\Spider\Spider
   items_list_url: http://www.autoinfo51.ru
@@ -88,11 +88,21 @@ autoinfo51:
   selectors:
       row:
         value: '//table[@class="catalog"]/tr[position() >= 2]'
+      articul:
+        value: '//td[4]'
+        optional: True
       brand_model:
         value: '//td[2]'
         need_parse_model_and_brand: true
       title:
         value: '//td[3]'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
       description:
         value: '//td[5]'
       price:
@@ -100,7 +110,6 @@ autoinfo51:
         regexp: '/\d\s?\d+(\s?\d+)?/'
       img:
         value: '//td[7]/a/@href'
-        isRelativePath: False
 
 raz45:
   active: true
@@ -157,11 +166,20 @@ relines:
   max_depth: 5
   request_dalay: 500
   selectors:
+      articul:
+        value: '//h2[@class="b-product__sku"]'
       brand_model:
         value: '//h3[@class="b-product__cars__i"][1]'
         need_parse_model_and_brand: true
       title:
         value: '//h2[@class="b-product__t"]'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
       price:
         value: '//p[@class="b-product__pNb__p"]'
         regexp: '/\d\s?\d+(\s?\d+)?/'
@@ -180,12 +198,22 @@ autopart-sib:
   max_depth: 5
   request_dalay: 300
   selectors:
+      articul:
+        value: '//td[@id="car_name"]/span'
+        regexp: '/(?<=No.)\s.+/'
       brand:
         value: '//*[@id="car_charts"]/tr/td[span="Производитель авто:"]/text()'
       model:
         value: '//*[@id="car_charts"]/tr/td[span="Модель авто:"]/text()'
       title:
         value: '//*[@id="car_charts"]/tr/td[span="Наименование:"]/h1'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
       description:
         value: '//*[@id="car_name"]'
       price:
@@ -205,10 +233,14 @@ autotown55:
   max_depth: 5
   request_dalay: 300
   selectors:
+      articul:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="ШтрихКод"]/span'
       brand:
         value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Марка"]/span'
       model:
         value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Модель"]/span'
+      car_body_type:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Кузов"]/span'
       title:
         value: '//div[@class="auto_breadcrumbs"][1]/span'
       price:
@@ -217,6 +249,7 @@ autotown55:
       img:
         value: '//div[@class="one_slide_inside"][1]/a[@class="fancybox"]/img/@src'
         isRelativePath: True
+
 
 razbor72:
   active: true
@@ -252,12 +285,19 @@ razbormashin:
   max_depth: 4
   request_dalay: 200
   selectors:
+      articul:
+        value: '//div[@class="product-detail-property"][div[1]="Артикул"]/div[2]'
       brand:
         value: '//div[@class="product-detail-property"][div[1]="Производитель"]/div[2]'
       model:
         value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Модель"]/div[2]'
       title:
         value: '//h1[@class="product-detail__title"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
       description:
         value: '//div[@class="product-detail__description-text"]'
       isAvalable:
@@ -280,6 +320,10 @@ avtodriver:
   max_depth: 4
   request_dalay: 200
   selectors:
+      articul:
+        value: '//*[@id="c_d"]/p[normalize-space(text())="Оригинальный номер детали:"]/b'
+      car_body_type:
+        value: '//*[@id="c_d"]/p[normalize-space(text())="Кузов:"]/b'
       brand:
         value: '//h1[@class="caption"][1]'
         need_parse_brand: True
@@ -287,6 +331,11 @@ avtodriver:
         value: '//*[@id="c_d"]/p[normalize-space(text())="Устанавливается на модель:"]/b'
       title:
         value: '//h1[@class="caption"][1]'
+        composition:
+          pattern: '%s (%s)'
+          params:
+            - title
+            - car_body_type
       description:
         value: '//p[@class="toppropelemdescr"]'
         optional: True
@@ -310,6 +359,8 @@ caroptics:
   max_depth: 6
   request_dalay: 200
   selectors:
+      articul:
+        value: '//tr[td[1]="Артикул:"]/td[2]'
       brand:
         value: '//*[@id="breadcrumbs"]/div[2]/a'
       model:
@@ -335,11 +386,18 @@ caroptics:
   max_depth: 6
   request_dalay: 200
   selectors:
+      articul:
+        value: '//*[@id="product_code"]'
       brand_model:
         value: '//div[@class="jshop productfull"]/form/h1/text()'
         need_parse_model_and_brand: true
       title:
         value: '//div[@class="jshop productfull"]/form/h1/text()'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
       price:
         value: '//*[@id="block_price"]'
         regexp: '/\d\s?\d+(\s?\d+)?/'
@@ -357,11 +415,19 @@ car22:
   max_depth: 5
   request_dalay: 200
   selectors:
+      articul:
+        value: '//div[@class="articule"]'
+        regexp: '/(?<=Код: ).+/'
       brand_model:
         value: '//h1[@itemprop="name"][1]'
         need_parse_model_and_brand: true
       title:
         value: '//h1[@itemprop="name"][1]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
       price:
         value: '//meta[@itemprop="price"]/@content'
       img:
@@ -381,14 +447,19 @@ car22:
         value: '//div[@class="content-div"]/p[2]'
         regexp: '/(?<=Артикул:\s).+/'
         optional: True
-      title:
-        value: '//h1[@class="left-marg"]'
-      description:
-        value: '//*[@id="goods-more-descriptions-text"]'
-        optional: True
       brand_model:
         value: '//h1[@class="left-marg"]'
         need_parse_model_and_brand: true
+      title:
+        value: '//h1[@class="left-marg"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      description:
+        value: '//*[@id="goods-more-descriptions-text"]'
+        optional: True
       img:
         value: '//img[@id="bigphoto"]/@src'
         isRelativePath: True
@@ -411,11 +482,16 @@ rbrauto:
       articul:
         value: '//td[3]'
         optional: True
-      title:
-        value: '//td[2]'
       brand_model:
         value: '//td[2]'
         need_parse_model_and_brand: true
+      title:
+        value: '//td[2]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
       img:
         value: '//td[1]/a/@href'
         regexp: '/^((?!\/resources\/nophoto\.jpg).)*$/'
@@ -423,7 +499,6 @@ rbrauto:
       price:
         value: '//td[6]/table/tr/td/span'
         regexp: '/\d\s?\d+(\s?\d+)?/'
-
 
 autoclub48:
   active: true
