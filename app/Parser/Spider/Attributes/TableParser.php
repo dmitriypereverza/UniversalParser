@@ -68,42 +68,9 @@ class TableParser implements AttributeParserInterface
     {
         $result['url'] = $resourceCrawler->getUri();
         foreach ($selectors as $key => $selector) {
-            $content = $this->getSelectorContent($resourceCrawler, $selector['value']);
-            $content = $this->getFilteredContent($selector, $content);
-            if (!$content) {
-                if (!array_key_exists('optional', $selector) || !$selector['optional']) {
-                    unset($result);
-                    break;
-                }
-            }
-            if ($key == 'img' && array_key_exists('isRelativePath', $selector) && $selector['isRelativePath']) {
-                $url = parse_url($resourceCrawler->getUri());
-                $content = $url['scheme'] . '://' . $url['host'] . $content;
-            }
-            if ($key == 'brand') {
-                $brand = $this->carDefiner->defineBrand($content);
-                $brand && $content = $brand;
-            }
-            if ($key == 'model') {
-                $model = $this->carDefiner->defineModelByBrand($result['brand'], $content);
-                $model && $content = $model;
-            }
-            if ($definedContent = $this->carDefiner->defileAdditionalData($selector, $content, $result)) {
-                if (in_array('', $definedContent)) {
-                    unset($result);
-                    break;
-                }
-                foreach ($definedContent as $key => $content) {
-                    $result[$key] = $content;
-                }
-            } else {
-                $result[$key] = $content;
-            }
+            $result[$key] = $this->getSelectorContent($resourceCrawler, $selector['value']);
         }
-
-        if (isset($result)) {
-            return $result;
-        }
+        return $result;
     }
 
     /**
@@ -126,25 +93,5 @@ class TableParser implements AttributeParserInterface
     public function isMultipleElements()
     {
         return true;
-    }
-
-    /**
-     * @param $selector
-     * @param $content
-     * @return mixed
-     */
-    protected function getFilteredContent($selector, $content)
-    {
-        if (array_key_exists('regexp', $selector) && $selector['regexp']) {
-            if (preg_match($selector['regexp'], $content, $outputArray)) {
-                $content = $outputArray[0];
-            } else {
-                $content = '';
-            }
-        }
-        if (array_key_exists('preg_replace', $selector) && $selector['preg_replace']) {
-            $content = preg_replace($selector['preg_replace']['pattern'], $selector['preg_replace']['replace'], $content);
-        }
-        return $content;
     }
 }

@@ -36,7 +36,7 @@ class Spider implements SpiderInterface
         $this->spider = $this->getSpider();
         $this->id_session = $this->getSessionId();
         $this->countProcessedResults = 0;
-        $this->setRequestHandler();
+//        $this->setRequestHandler();
         $this->setPersistenceHandler();
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
@@ -117,7 +117,7 @@ class Spider implements SpiderInterface
     private function setPersistenceHandler()
     {
         $selectorParser = isset($this->config['selectors']['row']) ? new TableParser($this->config['selectors']) : new DetailPageParser($this->config['selectors']);
-        $this->spider->getDownloader()->setPersistenceHandler(new DBPersistenceHandler($selectorParser, $this->config['url'], $this->id_session, new SimpleUriFilter([$this->config['url_pattern_detail']])));
+        $this->spider->getDownloader()->setPersistenceHandler(new DBPersistenceHandler($selectorParser, $this->config, $this->id_session, new SimpleUriFilter([$this->config['url_pattern_detail']])));
     }
 
     /**
