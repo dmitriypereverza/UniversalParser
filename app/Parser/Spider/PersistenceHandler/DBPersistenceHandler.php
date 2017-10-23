@@ -63,6 +63,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
     private function modifiedSelectorsValue($selectorVals)
     {
         $result = [];
+        $result['url'] = $selectorVals['url'];
         $selectors = $this->config['selectors'];
         unset($selectors['row']);
         foreach ($selectors as $key => $selector) {
@@ -75,7 +76,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
                 }
             }
             if ($key == 'img' && $this->getSelectorParam('isRelativePath', $selector)) {
-                $url = parse_url($selectorVals['uri']);
+                $url = parse_url($selectorVals['url']);
                 $content = $url['scheme'] . '://' . $url['host'] . $content;
             }
             if ($key == 'brand') {
