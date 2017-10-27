@@ -12,27 +12,23 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('auth/app', 'Auth\AppAuthController@authenticateApp');
+Route::post('auth/app', 'Auth\AppAuthController@authenticateApp')
+    ->middleware('ipcheck');
 
-Route::group(['prefix' => 'parser', 'namespace' => 'Parser'], function () {
+Route::group(['prefix' => 'parser', 'namespace' => 'Parser', 'middleware' => ['auth.api', 'ipcheck']], function () {
     Route::get('current_version', 'ParserController@getVersion')
-        ->name('parser.version')
-    ->middleware('auth.api');
+        ->name('parser.version');
 
     Route::post('get_package_count', 'ParserController@getPackageCount')
-        ->name('parser.package.count')
-        ->middleware('auth.api');
+        ->name('parser.package.count');
 
     Route::post('get_connection_id', 'ParserController@getConnectionId')
-        ->name('parser.connection.id')
-        ->middleware('auth.api');
+        ->name('parser.connection.id');
 
     Route::post('get_connection_info', 'ParserController@getConnectionInfo')
-        ->name('parser.connection.info')
-        ->middleware('auth.api');
+        ->name('parser.connection.info');
 
     Route::post('get_package_by_number', 'ParserController@getPackageByNumber')
-        ->name('parser.package.get')
-        ->middleware('auth.api');
+        ->name('parser.package.get');
 });
 

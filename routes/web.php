@@ -11,4 +11,5 @@
 |
 */
 
-Route::get('/image', 'Image\ImageController@getImage');
+Route::get('/image', 'Image\ImageController@getImage')
+->middleware('ipcheck');
