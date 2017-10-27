@@ -36,7 +36,7 @@ class Spider implements SpiderInterface
         $this->spider = $this->getSpider();
         $this->id_session = $this->getSessionId();
         $this->countProcessedResults = 0;
-//        $this->setRequestHandler();
+        $this->setRequestHandler();
         $this->setPersistenceHandler();
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
