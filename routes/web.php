@@ -10,7 +10,5 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::any('{all}', function(){return '';})->where('all', '.*')->middleware('ipcheck');
 
-Route::get('/image', 'Image\ImageController@getImage')
-->middleware('ipcheck');
+Route::get('/image', 'Image\ImageController@getImage');

@@ -12,10 +12,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('auth/app', 'Auth\AppAuthController@authenticateApp')
-    ->middleware('ipcheck');
+Route::post('auth/app', 'Auth\AppAuthController@authenticateApp');
 
-Route::group(['prefix' => 'parser', 'namespace' => 'Parser', 'middleware' => ['auth.api', 'ipcheck']], function () {
+Route::group(['prefix' => 'parser', 'namespace' => 'Parser', 'middleware' => ['auth.api']], function () {
     Route::get('current_version', 'ParserController@getVersion')
         ->name('parser.version');
 
