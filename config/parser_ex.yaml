@@ -660,3 +660,69 @@ partsib.info:
       price:
         value: '//span[@class="price"]/span/b'
         regexp: '/\d\s?\d+(\s?\d+)?/'
+
+motorlandby:
+  active: true
+  url: https://motorlandby.ru/auto-parts/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://motorlandby.ru/auto-parts/
+  url_pattern: /https:\/\/motorlandby\.ru\/auto-parts\//
+  url_pattern_detail: /^https:\/\/motorlandby\.ru\/auto-parts\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+\/$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Артикул"]/td[2]'
+        optional: True
+      sparePart:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Название запчасти"]/td[2]'
+      brand:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Марка"]/td[2]'
+      model:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Модель"]/td[2]'
+      title:
+        value: '//div[@class="cont"]/h1'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - sparePart
+            - model
+            - brand
+      img:
+        value: '//div[@class="viki-gallery"]/a/@href'
+      price:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Цена"]/td[2]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+pezhon:
+  active: true
+  url: https://pezhon.ru/
+  class: App\Parser\Spider\Spider
+#  items_list_url: https://pezhon.ru/
+  items_list_url: https://pezhon.ru/accessories/floor-mats-interior/kovrik-salona-foc-3-11-rezinovyj-perednij-zadnij-levyj/
+  url_pattern: /https:\/\/pezhon\.ru\/[^\#\?]+$/
+  url_pattern_detail: /^https:\/\/pezhon\.ru\/[^\/]+\/[^\/]+\/.+\//
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//li[span[1]="Внутренний номер: "]/span[2]'
+        optional: True
+      brand_model:
+        value: '//h1[@class="good__title"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@class="good__title"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      img:
+        value: '//img[@class="good-slider__img"]/@src'
+        regexp: '/^((?!\/templates\/template13\/pictures\/500\.png).)*$/'
+        isRelativePath: True
+      price:
+        value: '//div[@class="good__price"]'
+        regexp: '/^((?!^0 руб\.))\d\s?\d+(\s?\d+)?/'
