@@ -527,3 +527,136 @@ autoclub48:
       price:
         value: '//div[@class="item_current_price"]'
         regexp: '/\d\s?\d+(\s?\d+)?/'
+
+#---- 3.11.2017 -----
+
+smtauto:
+  active: true
+  url: https://www.smtauto.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://www.smtauto.ru/
+  url_pattern: /^https:\/\/www\.smtauto\.ru\/parts_used\//
+  url_pattern_detail: /^https:\/\/www\.smtauto\.ru\/parts_used\/[0-9]+\/[0-9]+\/[0-9]+\/[0-9]+\/[0-9]+$/
+  items_list_selector: .//a
+  max_depth: 6
+  selectors:
+      articul:
+        value: '//p[@class="tr-artikul"]'
+        regexp: '/[0-9]+/'
+        optional: True
+      title:
+        value: '//*[@class="ten columns content"]/h1'
+      brand_model:
+        value: '//ul[@class="tr-descr"]/li[span[1]/span[1] = "Машина"]/span[2]/span'
+        need_parse_model_and_brand: true
+      img:
+        value: '//a[@id="big_img"]/img/@src'
+      isAvailable:
+        value: '//div[@class="tr-col-3"]/p[1]'
+      price:
+        value: '//div[@class="tr-pricebutton"]/div/span[@class="value"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+glavrazbor:
+  active: true
+  url: http://glavrazbor.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://glavrazbor.ru/
+  url_pattern: /http:\/\/glavrazbor\.ru\/katalog-avtozapchastej\//
+  url_pattern_detail: /http:\/\/glavrazbor\.ru\/katalog-avtozapchastej\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/\?]+$/
+  items_list_selector: .//a
+  max_depth: 6
+  selectors:
+      articul:
+        value: '//div[@class="col-sm-4"]/ul[@class="list-unstyled"]/li[1]'
+        regexp: '/[0-9]+/'
+        optional: True
+      brand:
+        value: '//ul[@class="breadcrumb"]/li[3]/a'
+      model:
+        value: '//ul[@class="breadcrumb"]/li[4]/a'
+      title:
+        value: '//div[@class="container"]/h1'
+        composition:
+          pattern: '%s %s %s'
+          params:
+            - articul
+            - title
+            - brand
+      img:
+        value: '//ul[@class="thumbnails"]/li/a/img/@src'
+      price:
+        value: '//ul[@class="list-unstyled"]/li/h2'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+razborkino:
+  active: true
+  url: https://razborkino.ru/catalog/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://razborkino.ru/catalog/
+  url_pattern: /https:\/\/razborkino\.ru\/catalog\//
+  url_pattern_detail: /https:\/\/razborkino\.ru\/catalog\/.+\/[0-9]+\/$/
+  items_list_selector: .//a
+  max_depth: 6
+  selectors:
+      articul:
+        value: '//span[@class="part-number"]/span'
+        regexp: '/[0-9]+/'
+        optional: True
+      sparePart:
+        value: '//span[@class="name"]/span'
+      brand:
+        value: '//div[@id="breadcrumb"]/div/span[5]/a/span'
+      model:
+        value: '//div[@id="breadcrumb"]/div/span[7]/a/span'
+      title:
+        value: '//span[@class="name"]/span'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
+      description:
+        value: '//span[@itemprop="description"]'
+      img:
+        value: '//a[@itemprop="image"]/img/@src'
+        isRelativePath: True
+      price:
+        value: '//span[@itemprop="price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+partsib.info:
+  active: true
+  url: http://partsib.info/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://partsib.info/
+  url_pattern: /http:\/\/partsib\.info\//
+  url_pattern_detail: /^http:\/\/partsib\.info\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+\/$/
+  items_list_selector: .//a
+  max_depth: 6
+  selectors:
+      articul:
+        value: '//span[@itemprop="mpn"]'
+        optional: True
+      sparePart:
+        value: '//span[@itemprop="category"]'
+      brand_model:
+        value: '//h1[@itemprop="name"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@itemprop="name"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      isAvalable:
+        value: '//span[@itemprop="availability"]'
+      img:
+        value: '//img[@itemprop="image"]/@src'
+        isRelativePath: True
+      price:
+        value: '//span[@class="price"]/span/b'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
