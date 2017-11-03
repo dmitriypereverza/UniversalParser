@@ -35,6 +35,8 @@ razbor-nt:
   selectors:
       title:
         value: '//*[@id="content"]/div[@class="b1c-good"]/h1'
+      sparePart:
+        value: '//div[@class="b1c-name"]/h2'
       brand:
         value: '//*[@id="content"]/div/div[@class="breadcrumb-style"]/a[2]'
       model:
@@ -91,6 +93,8 @@ autoinfo51:
       articul:
         value: '//td[4]'
         optional: True
+      sparePart:
+        value: '//td[3]'
       brand_model:
         value: '//td[2]'
         need_parse_model_and_brand: true
@@ -125,6 +129,8 @@ raz45:
       brand_model:
         value: '//h1[@id="page-title"]'
         need_parse_model_and_brand: true
+      sparePart:
+        value: '//div[@class="field field-name-field-gr-automotiveparts field-type-taxonomy-term-reference field-label-above"]/div/span'
       title:
         value: '//h1[@id="page-title"]'
       price:
@@ -171,6 +177,8 @@ relines:
       brand_model:
         value: '//h3[@class="b-product__cars__i"][1]'
         need_parse_model_and_brand: true
+      sparePart:
+        value: '//h2[@class="b-product__t"]'
       title:
         value: '//h2[@class="b-product__t"]'
         composition:
@@ -196,7 +204,6 @@ autopart-sib:
   url_pattern: /^http:\/\/autopart-sib.ru\//
   url_pattern_detail: /^http:\/\/autopart-sib.ru\/p[0-9]+.html/
   max_depth: 5
-  request_dalay: 300
   selectors:
       articul:
         value: '//td[@id="car_name"]/span'
@@ -205,6 +212,8 @@ autopart-sib:
         value: '//*[@id="car_charts"]/tr/td[span="Производитель авто:"]/text()'
       model:
         value: '//*[@id="car_charts"]/tr/td[span="Модель авто:"]/text()'
+      sparePart:
+        value: '//*[@id="car_charts"]/tr/td[span="Наименование:"]/h1'
       title:
         value: '//*[@id="car_charts"]/tr/td[span="Наименование:"]/h1'
         composition:
@@ -235,6 +244,8 @@ autotown55:
   selectors:
       articul:
         value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="ШтрихКод"]/span'
+      sparePart:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Название"]/span'
       brand:
         value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Марка"]/span'
       model:
@@ -249,7 +260,6 @@ autotown55:
       img:
         value: '//div[@class="one_slide_inside"][1]/a[@class="fancybox"]/img/@src'
         isRelativePath: True
-
 
 razbor72:
   active: true
