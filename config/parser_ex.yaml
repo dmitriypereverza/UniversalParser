@@ -571,6 +571,10 @@ smtauto:
         value: '//p[@class="tr-artikul"]'
         regexp: '/[0-9]+/'
         optional: True
+      sparePart:
+        value: '//*[@class="ten columns content"]/h1'
+        regexp: '/.+(?=\sдля)/'
+        optional: True
       title:
         value: '//*[@class="ten columns content"]/h1'
       brand_model:
