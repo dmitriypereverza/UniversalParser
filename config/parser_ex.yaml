@@ -35,6 +35,9 @@ razbor-nt:
   selectors:
       title:
         value: '//*[@id="content"]/div[@class="b1c-good"]/h1'
+      sparePart:
+        value: '//div[@class="b1c-name"]/h2'
+        optional: True
       brand:
         value: '//*[@id="content"]/div/div[@class="breadcrumb-style"]/a[2]'
       model:
@@ -91,6 +94,9 @@ autoinfo51:
       articul:
         value: '//td[4]'
         optional: True
+      sparePart:
+        value: '//td[3]'
+        optional: True
       brand_model:
         value: '//td[2]'
         need_parse_model_and_brand: true
@@ -125,6 +131,9 @@ raz45:
       brand_model:
         value: '//h1[@id="page-title"]'
         need_parse_model_and_brand: true
+      sparePart:
+        value: '//div[@class="field field-name-field-gr-automotiveparts field-type-taxonomy-term-reference field-label-above"]/div/span'
+        optional: True
       title:
         value: '//h1[@id="page-title"]'
       price:
@@ -171,6 +180,9 @@ relines:
       brand_model:
         value: '//h3[@class="b-product__cars__i"][1]'
         need_parse_model_and_brand: true
+      sparePart:
+        value: '//h2[@class="b-product__t"]'
+        optional: True
       title:
         value: '//h2[@class="b-product__t"]'
         composition:
@@ -196,7 +208,6 @@ autopart-sib:
   url_pattern: /^http:\/\/autopart-sib.ru\//
   url_pattern_detail: /^http:\/\/autopart-sib.ru\/p[0-9]+.html/
   max_depth: 5
-  request_dalay: 300
   selectors:
       articul:
         value: '//td[@id="car_name"]/span'
@@ -205,6 +216,9 @@ autopart-sib:
         value: '//*[@id="car_charts"]/tr/td[span="Производитель авто:"]/text()'
       model:
         value: '//*[@id="car_charts"]/tr/td[span="Модель авто:"]/text()'
+      sparePart:
+        value: '//*[@id="car_charts"]/tr/td[span="Наименование:"]/h1'
+        optional: True
       title:
         value: '//*[@id="car_charts"]/tr/td[span="Наименование:"]/h1'
         composition:
@@ -235,6 +249,9 @@ autotown55:
   selectors:
       articul:
         value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="ШтрихКод"]/span'
+      sparePart:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Название"]/span'
+        optional: True
       brand:
         value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Марка"]/span'
       model:
@@ -249,7 +266,6 @@ autotown55:
       img:
         value: '//div[@class="one_slide_inside"][1]/a[@class="fancybox"]/img/@src'
         isRelativePath: True
-
 
 razbor72:
   active: true
@@ -281,12 +297,16 @@ razbormashin:
   items_list_url: http://razbormashin.ru/avtozapchasti
   items_list_selector: .//a
   url_pattern: /^http:\/\/razbormashin.ru\/avtozapchasti\//
-  url_pattern_detail: /^http:\/\/razbormashin.ru\/avtozapchasti\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+.html/
+  url_pattern_detail: /^http:\/\/razbormashin.ru\/avtozapchasti\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/].+\.html/
   max_depth: 4
   request_dalay: 200
   selectors:
       articul:
         value: '//div[@class="product-detail-property"][div[1]="Артикул"]/div[2]'
+      sparePart:
+        value: '//h1[@class="product-detail__title"]'
+        regexp: '/.+(?=\sдля)/'
+        optional: True
       brand:
         value: '//div[@class="product-detail-property"][div[1]="Производитель"]/div[2]'
       model:
@@ -324,6 +344,10 @@ avtodriver:
         value: '//*[@id="c_d"]/p[normalize-space(text())="Оригинальный номер детали:"]/b'
       car_body_type:
         value: '//*[@id="c_d"]/p[normalize-space(text())="Кузов:"]/b'
+      sparePart:
+        value: '//p[@class="toppropelem toppropelemdescr"]'
+        regexp: '/.+(?=\sдля)/'
+        optional: True
       brand:
         value: '//h1[@class="caption"][1]'
         need_parse_brand: True
@@ -418,6 +442,9 @@ car22:
       articul:
         value: '//div[@class="articule"]'
         regexp: '/(?<=Код: ).+/'
+      sparePart:
+        value: '//ul[@class="breadcrumbs"]/li[last()-1]/a'
+        optional: True
       brand_model:
         value: '//h1[@itemprop="name"][1]'
         need_parse_model_and_brand: true
@@ -543,6 +570,10 @@ smtauto:
       articul:
         value: '//p[@class="tr-artikul"]'
         regexp: '/[0-9]+/'
+        optional: True
+      sparePart:
+        value: '//*[@class="ten columns content"]/h1'
+        regexp: '/.+(?=\sдля)/'
         optional: True
       title:
         value: '//*[@class="ten columns content"]/h1'
