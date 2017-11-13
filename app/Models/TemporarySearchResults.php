@@ -79,12 +79,9 @@ class TemporarySearchResults extends Model
         return self::max('version') ?? 0;
     }
 
-    public static function getCountSliceResultByVersion($versionFrom, $versionTo)
+    public static function getCountResultByVersion($versionTo)
     {
-        if ($versionTo <= $versionFrom) {
-            return null;
-        }
-        return self::whereBetween('version', [$versionFrom + 1, $versionTo])->count();
+        return self::where('version', $versionTo + 1)->count();
     }
 
     /**
@@ -99,9 +96,6 @@ class TemporarySearchResults extends Model
         if ($offset + $connection->elements_in_package > $connection->elements_count) {
             $countResult = $connection->elements_count % $connection->elements_in_package;
         }
-        return self::whereBetween('version', [
-            $connection->version_from + 1,
-            self::getCurrentVersion()
-        ])->offset($offset)->limit($countResult)->get()->toJson();
+        return self::where('version',$connection->version_from + 1)->offset($offset)->limit($countResult)->get()->toJson();
     }
 }

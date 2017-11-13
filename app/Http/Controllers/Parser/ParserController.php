@@ -38,7 +38,7 @@ class ParserController extends Controller
                 return response('Your version not need to update', 400);
             }
 
-            $totalResultCount = TemporarySearchResults::getCountSliceResultByVersion($version, $currentVersion);
+            $totalResultCount = TemporarySearchResults::getCountResultByVersion($version);
             $packageCount = ceil($totalResultCount / $elementsInPackage);
             return json_encode([
                 'package_count' => $packageCount
@@ -115,7 +115,7 @@ class ParserController extends Controller
             if ($version >= $currentVersion) {
                 return response('Your version not need to update', 400);
             }
-            $totalResultCount = TemporarySearchResults::getCountSliceResultByVersion($version, $currentVersion);
+            $totalResultCount = TemporarySearchResults::getCountResultByVersion($version);
             $connection = PackageConnection::createConnectionByElementsCount($version, $elementsInPackage, $totalResultCount);
             return json_encode([
                 'connection_key' => $connection->key
