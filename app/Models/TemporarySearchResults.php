@@ -69,9 +69,14 @@ class TemporarySearchResults extends Model
         return self::whereHash($tmpTable->hash)->first();
     }
 
-    public static function setNewVersion($sessionId)
+    public static function setVersion($sessionId, $version)
     {
-        self::whereIdSession($sessionId)->update(['version' => self::getCurrentVersion() + 1]);
+        self::whereIdSession($sessionId)->update(['version' => $version]);
+    }
+
+    public static function getCountElementsInSession($sessionId)
+    {
+        return self::whereIdSession($sessionId)->count();
     }
 
     public static function getCurrentVersion()
@@ -96,6 +101,10 @@ class TemporarySearchResults extends Model
         if ($offset + $connection->elements_in_package > $connection->elements_count) {
             $countResult = $connection->elements_count % $connection->elements_in_package;
         }
-        return self::where('version',$connection->version_from + 1)->offset($offset)->limit($countResult)->get()->toJson();
+        return self::where('version',$connection->version_from + 1)
+            ->offset($offset)
+            ->limit($countResult)
+            ->get()
+            ->toJson();
     }
 }

@@ -18,6 +18,9 @@ Route::group(['prefix' => 'parser', 'namespace' => 'Parser', 'middleware' => ['a
     Route::get('current_version', 'ParserController@getVersion')
         ->name('parser.version');
 
+    Route::post('get_new_version_num', 'ParserController@getNewVersionNum')
+        ->name('parser.version.get');
+
     Route::post('get_package_count', 'ParserController@getPackageCount')
         ->name('parser.package.count');
 

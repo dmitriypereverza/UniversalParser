@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Parser;
 use App\Http\Controllers\Controller;
 use App\Models\PackageConnection;
 use App\Models\TemporarySearchResults;
+use App\Models\Version;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -119,6 +120,34 @@ class ParserController extends Controller
             $connection = PackageConnection::createConnectionByElementsCount($version, $elementsInPackage, $totalResultCount);
             return json_encode([
                 'connection_key' => $connection->key
+            ]);
+
+        } catch (\Exception $e) {
+            return response(json_encode([
+                'error' => $e->getMessage()
+            ]), 400);
+        }
+    }
+
+    public function getNewVersionNum(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'element_count' => 'required|numeric',
+        ]);
+        if ($validation->fails()) {
+            return response($validation->errors()->toArray(), 400);
+        }
+        $arRequest = json_decode($request->getContent(), true);
+        $elementCount = $arRequest['element_count'];
+
+        $newVersion = new Version();
+        $newVersion->version = Version::getNextEmptyVersion();
+        $newVersion->element_count = $elementCount;
+        $newVersion->save();
+
+        try {
+            return json_encode([
+                'version' => $newVersion->version
             ]);
 
         } catch (\Exception $e) {

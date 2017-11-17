@@ -5,12 +5,14 @@ namespace App\Parser\Spider;
 use App\Events\ParserErrorEvent;
 use App\Events\ParserInfoEvent;
 use App\Models\TemporarySearchResults;
+use App\Models\Version;
 use App\Parser\Spider\Attributes\DetailPageParser;
 use App\Parser\Spider\Attributes\TableParser;
 use App\Parser\Spider\Filter\UriFilter as SimpleUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceHandler;
 use App\Parser\Spider\RequestHandler\GuzzleRequestWIthProxyHandler;
+use App\Parser\Version\VersionManager;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
@@ -51,7 +53,10 @@ class Spider implements SpiderInterface
         try {
             $this->spider->crawl();
             laravelEvent::fire(new ParserInfoEvent(sprintf("%s: PERSISTED URL: %d; PERSISTED UNIQUE ELEMENTS: %d", $this->config['url'], count($statsHandler->getPersisted()), TemporarySearchResults::where('id_session', $this->id_session)->count())));
-            TemporarySearchResults::setNewVersion($this->id_session);
+            if ($elementCount = TemporarySearchResults::getCountElementsInSession($this->id_session)) {
+                $newVersion = app('version.manager')->getNewVersion($elementCount);
+                TemporarySearchResults::setVersion($this->id_session, $newVersion);
+            }
             laravelEvent::fire(new ParserInfoEvent(sprintf("%s: End crawl", $this->config['url'])));
         } catch (\Exception $e) {
             TemporarySearchResults::deleteSessionResult($this->id_session);
