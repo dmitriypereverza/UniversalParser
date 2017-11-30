@@ -1,4 +1,76 @@
 # ParsersConfig config
+autotown55:
+  active: true
+  url: https://autotown55.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://autotown55.ru/catalog/
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/autotown55.ru\/catalog\//
+  url_pattern_detail: /^https:\/\/autotown55.ru\/catalog\/.+\.html/
+  max_depth: 5
+  request_dalay: 300
+  selectors:
+      articul:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="ШтрихКод"]/span'
+      sparePart:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Название"]/span'
+        optional: True
+      brand:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Марка"]/span'
+      model:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Модель"]/span'
+      car_body_type:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Кузов"]/span'
+      title:
+        value: '//div[@class="auto_breadcrumbs"][1]/span'
+      price:
+        value: '//span[@class="cost"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//div[@class="one_slide_inside"][1]/a[@class="fancybox"]/img/@src'
+        isRelativePath: True
+
+razbormashin:
+  active: true
+  url: http://razbormashin.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://razbormashin.ru/avtozapchasti
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/razbormashin.ru\/avtozapchasti\//
+  url_pattern_detail: /^http:\/\/razbormashin.ru\/avtozapchasti\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/].+\.html/
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      articul:
+        value: '//div[@class="product-detail-property"][div[1]="Артикул"]/div[2]'
+      sparePart:
+        value: '//h1[@class="product-detail__title"]'
+        regexp: '/.+(?=\sдля)/'
+        optional: True
+      brand:
+        value: '//div[@class="product-detail-property"][div[1]="Производитель"]/div[2]'
+      model:
+        value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Модель"]/div[2]'
+      title:
+        value: '//h1[@class="product-detail__title"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      description:
+        value: '//div[@class="product-detail__description-text"]'
+      isAvalable:
+        value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Наличие"]/div[2]'
+      price:
+        value: '//div[@class="product-detail__price-value"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//*[@id="msGallery"]/div/a[1]/@href'
+        isRelativePath: True
+
+#--- 3 m
+
 sv-company:
   active: false
   url: https://sv-company.ru/
@@ -236,98 +308,40 @@ autopart-sib:
       img:
         value: '//*[@id="car_table"]/tr[last()]/td[last()]/table/tr/td/a/img/@src'
 
-autotown55:
-  active: true
-  url: https://autotown55.ru/
-  class: App\Parser\Spider\Spider
-  items_list_url: https://autotown55.ru/catalog/
-  items_list_selector: .//a
-  url_pattern: /^https:\/\/autotown55.ru\/catalog\//
-  url_pattern_detail: /^https:\/\/autotown55.ru\/catalog\/.+\.html/
-  max_depth: 5
-  request_dalay: 300
-  selectors:
-      articul:
-        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="ШтрихКод"]/span'
-      sparePart:
-        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Название"]/span'
-        optional: True
-      brand:
-        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Марка"]/span'
-      model:
-        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Модель"]/span'
-      car_body_type:
-        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Кузов"]/span'
-      title:
-        value: '//div[@class="auto_breadcrumbs"][1]/span'
-      price:
-        value: '//span[@class="cost"][1]'
-        regexp: '/\d\s?\d+(\s?\d+)?/'
-      img:
-        value: '//div[@class="one_slide_inside"][1]/a[@class="fancybox"]/img/@src'
-        isRelativePath: True
+  народавто:
+    active: true
+    url: http://www.xn--80aagg7bhdlw.xn--p1ai/
+    class: App\Parser\Spider\Spider
+    items_list_url: http://www.xn--80aagg7bhdlw.xn--p1ai/
+    url_pattern: /http:\/\/www.xn--80aagg7bhdlw.xn--p1ai\/.+/
+    url_pattern_detail: /^http:\/\/www\.xn--80aagg7bhdlw\.xn--p1ai\/\?id=[0-9]+$/
+    items_list_selector: .//a
+    selectors:
+        articul:
+          value: '//div[@class="content-div"]/p[2]'
+          regexp: '/(?<=Артикул:\s).+/'
+          optional: True
+        brand_model:
+          value: '//h1[@class="left-marg"]'
+          need_parse_model_and_brand: true
+        title:
+          value: '//h1[@class="left-marg"]'
+          composition:
+            pattern: '%s %s'
+            params:
+              - articul
+              - title
+        description:
+          value: '//*[@id="goods-more-descriptions-text"]'
+          optional: True
+        img:
+          value: '//img[@id="bigphoto"]/@src'
+          isRelativePath: True
+        price:
+          value: '//p[@class="price-id"]/strong'
+          regexp: '/\d\s?\d+(\s?\d+)?/'
 
-razbor72:
-  active: true
-  url: http://razbor72.ru
-  class: App\Parser\Spider\Spider
-  items_list_url: http://razbor72.ru/zap
-  items_list_selector: .//a
-  url_pattern: /^http:\/\/razbor72.ru\//
-  url_pattern_detail: /^http:\/\/razbor72.ru\/product\/.+/
-  max_depth: 4
-  request_dalay: 200
-  selectors:
-      brand_model:
-        value: '//div[@class="main"][1]/h1'
-        need_parse_model_and_brand: true
-      title:
-        value: '//div[@class="main"][1]/h1'
-      price:
-        value: '//p[@class="price"][1]'
-        regexp: '/\d\s?\d+(\s?\d+)?/'
-      img:
-        value: '//img[@class="big_img"]/@src'
-        isRelativePath: True
-
-razbormashin:
-  active: true
-  url: http://razbormashin.ru
-  class: App\Parser\Spider\Spider
-  items_list_url: http://razbormashin.ru/avtozapchasti
-  items_list_selector: .//a
-  url_pattern: /^http:\/\/razbormashin.ru\/avtozapchasti\//
-  url_pattern_detail: /^http:\/\/razbormashin.ru\/avtozapchasti\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/].+\.html/
-  max_depth: 4
-  request_dalay: 200
-  selectors:
-      articul:
-        value: '//div[@class="product-detail-property"][div[1]="Артикул"]/div[2]'
-      sparePart:
-        value: '//h1[@class="product-detail__title"]'
-        regexp: '/.+(?=\sдля)/'
-        optional: True
-      brand:
-        value: '//div[@class="product-detail-property"][div[1]="Производитель"]/div[2]'
-      model:
-        value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Модель"]/div[2]'
-      title:
-        value: '//h1[@class="product-detail__title"]'
-        composition:
-          pattern: '%s %s'
-          params:
-            - articul
-            - title
-      description:
-        value: '//div[@class="product-detail__description-text"]'
-      isAvalable:
-        value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Наличие"]/div[2]'
-      price:
-        value: '//div[@class="product-detail__price-value"][1]'
-        regexp: '/\d\s?\d+(\s?\d+)?/'
-      img:
-        value: '//*[@id="msGallery"]/div/a[1]/@href'
-        isRelativePath: True
+#--- 2 m
 
 avtodriver:
   active: true
@@ -461,39 +475,6 @@ car22:
         value: '//a[@itemprop="image"][1]/img/@src'
         isRelativePath: True
 
-народавто:
-  active: true
-  url: http://www.xn--80aagg7bhdlw.xn--p1ai/
-  class: App\Parser\Spider\Spider
-  items_list_url: http://www.xn--80aagg7bhdlw.xn--p1ai/
-  url_pattern: /http:\/\/www.xn--80aagg7bhdlw.xn--p1ai\/.+/
-  url_pattern_detail: /^http:\/\/www\.xn--80aagg7bhdlw\.xn--p1ai\/\?id=[0-9]+$/
-  items_list_selector: .//a
-  selectors:
-      articul:
-        value: '//div[@class="content-div"]/p[2]'
-        regexp: '/(?<=Артикул:\s).+/'
-        optional: True
-      brand_model:
-        value: '//h1[@class="left-marg"]'
-        need_parse_model_and_brand: true
-      title:
-        value: '//h1[@class="left-marg"]'
-        composition:
-          pattern: '%s %s'
-          params:
-            - articul
-            - title
-      description:
-        value: '//*[@id="goods-more-descriptions-text"]'
-        optional: True
-      img:
-        value: '//img[@id="bigphoto"]/@src'
-        isRelativePath: True
-      price:
-        value: '//p[@class="price-id"]/strong'
-        regexp: '/\d\s?\d+(\s?\d+)?/'
-
 rbrauto:
   active: true
   url: http://rbrauto.ru/
@@ -525,34 +506,6 @@ rbrauto:
         isRelativePath: True
       price:
         value: '//td[6]/table/tr/td/span'
-        regexp: '/\d\s?\d+(\s?\d+)?/'
-
-autoclub48:
-  active: true
-  url: http://www.autoclub48.ru/
-  class: App\Parser\Spider\Spider
-  items_list_url: http://www.autoclub48.ru/
-  url_pattern: /http:\/\/www.autoclub48\.ru\/[0-9]+\//
-  url_pattern_detail: /^http:\/\/www.autoclub48\.ru\/[0-9]+\/[0-9]+$/
-  items_list_selector: .//a
-  max_depth: 4
-  selectors:
-      articul:
-        value: '//div[@class="item_info_section"]/dl/dd'
-        optional: True
-      title:
-        value: '//h1/span'
-      discription:
-        value: '//div[@class="bx_item_description"]/p'
-      brand_model:
-        value: '//h1/span'
-        need_parse_model_and_brand: true
-      img:
-        value: '//div[@class="bx_bigimages_imgcontainer"]/img/@src'
-        regexp: '/(?<=\/\/autoclub48\.ru\.images\.1c-bitrix-cdn\.ru).+/'
-        isRelativePath: True
-      price:
-        value: '//div[@class="item_current_price"]'
         regexp: '/\d\s?\d+(\s?\d+)?/'
 
 #---- 3.11.2017 -----
@@ -692,6 +645,29 @@ partsib.info:
         value: '//span[@class="price"]/span/b'
         regexp: '/\d\s?\d+(\s?\d+)?/'
 
+razbor72:
+  active: true
+  url: http://razbor72.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://razbor72.ru/zap
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/razbor72.ru\//
+  url_pattern_detail: /^http:\/\/razbor72.ru\/product\/.+/
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      brand_model:
+        value: '//div[@class="main"][1]/h1'
+        need_parse_model_and_brand: true
+      title:
+        value: '//div[@class="main"][1]/h1'
+      price:
+        value: '//p[@class="price"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//img[@class="big_img"]/@src'
+        isRelativePath: True
+
 motorlandby:
   active: true
   url: https://motorlandby.ru/auto-parts/
@@ -756,3 +732,69 @@ pezhon:
       price:
         value: '//div[@class="good__price"]'
         regexp: '/^((?!^0 руб\.))\d\s?\d+(\s?\d+)?/'
+
+autoclub48:
+  active: true
+  url: http://www.autoclub48.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://www.autoclub48.ru/
+  url_pattern: /http:\/\/www.autoclub48\.ru\/[0-9]+\//
+  url_pattern_detail: /^http:\/\/www.autoclub48\.ru\/[0-9]+\/[0-9]+$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//div[@class="item_info_section"]/dl/dd'
+        optional: True
+      title:
+        value: '//h1/span'
+      discription:
+        value: '//div[@class="bx_item_description"]/p'
+      brand_model:
+        value: '//h1/span'
+        need_parse_model_and_brand: true
+      img:
+        value: '//div[@class="bx_bigimages_imgcontainer"]/img/@src'
+        regexp: '/(?<=\/\/autoclub48\.ru\.images\.1c-bitrix-cdn\.ru).+/'
+        isRelativePath: True
+      price:
+        value: '//div[@class="item_current_price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+#----- new parsers
+
+nilina-auto:
+  active: true
+  url: https://nilina-auto.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://nilina-auto.ru
+  url_pattern: /https:\/\/nilina-auto\.ru\/.+/
+  url_pattern_detail: /^https:\/\/nilina-auto\.ru\/.+\.html$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//span[@data-qaid="product_code"]'
+        optional: True
+      title:
+        value: '//span[@data-qaid="product_name"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      isAvalable:
+        value: '//li[@data-qaid="presence_data"]'
+      discription:
+        value: '//div[@data-qaid="product_description"]/text()'
+        optional: True
+      brand_model:
+        value: '//span[@data-qaid="product_name"]'
+        need_parse_model_and_brand: true
+      img:
+        value: '//meta[@property="og:image"]/@content'
+        isRelativePath: True
+      price:
+        value: '//span[@data-qaid="product_price"]'
+
+
