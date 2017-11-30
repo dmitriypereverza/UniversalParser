@@ -828,3 +828,26 @@ motorhog:
       price:
         value: '//td[@class="td5"]'
 
+superstor:
+  active: true
+  url: https://superstor.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://superstor.ru/shop
+  url_pattern: /https:\/\/superstor\.ru\/shop/
+  url_pattern_detail: /^https:\/\/superstor\.ru\/shop\/[^\/]+\/[^\/]+\/[^\/]+\/$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      brand_model:
+        value: '//h1[@itemprop="name"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@itemprop="name"]'
+      description:
+        value: '//div[@id="product-description"]/p'
+        optional: True
+      img:
+        value: '//img[@id="product-image"]/@src'
+        isRelativePath: True
+      price:
+        value: '//span[@data-price]/@data-price'
