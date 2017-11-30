@@ -851,3 +851,41 @@ superstor:
         isRelativePath: True
       price:
         value: '//span[@data-price]/@data-price'
+
+autolans:
+  active: true
+  url: http://autolans.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://autolans.ru
+  url_pattern: /http:\/\/autolans\.ru\/magazin\//
+  url_pattern_detail: /^http:\/\/autolans\.ru\/magazin\/product\/[^\/]+/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//div[@class="shop2-product-article"]/text()'
+        optional: True
+      brand_model:
+        value: '//h1'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      description:
+        value: '//div[@id="shop2-tabs-2"]'
+        preg_replace:
+          pattern: '/\\(t|s)+/'
+          replace: ' '
+        optional: True
+      isAvalable:
+        value: '//table[@class="shop2-product-options"]/tr[th="Наличие"]/td'
+        optional: True
+      img:
+        value: '//div[@class="product-image"]/a/@href'
+        isRelativePath: True
+      price:
+        value: '//div[@class="price-current"]/strong'
