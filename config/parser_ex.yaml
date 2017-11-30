@@ -797,4 +797,34 @@ nilina-auto:
       price:
         value: '//span[@data-qaid="product_price"]'
 
+motorhog:
+  active: true
+  url: http://motorhog.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://motorhog.ru/catalog/
+  url_pattern: /http:\/\/motorhog\.ru\/catalog/
+  url_pattern_detail: /^http:\/\/motorhog\.ru\/catalog\/[^\/]+\/[^\/]+\/\?mod=[\d]+&cat=[\d]+$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      row:
+        value: '//table[@class="details_table"]/tr[position() >= 2]'
+      articul:
+        value: '//td[@class="td1"]'
+        optional: True
+      brand_model:
+        value: '//td[@class="td3"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//td[@class="td3"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      img:
+        value: '//td[@class="td0"]/a/@href'
+        isRelativePath: True
+      price:
+        value: '//td[@class="td5"]'
 
