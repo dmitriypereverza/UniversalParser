@@ -957,4 +957,30 @@ lr-zap:
         value: '//div[@class="price-current"]/strong'
         regexp: '/[0-9]+((?=\.))?/'
 
-
+евроавто:
+  active: true
+  url: евроавто.рф
+  class: App\Parser\Spider\Spider
+  items_list_url: http://xn--80adbj0cckt.xn--p1ai
+  url_pattern: /http:\/\/xn--80adbj0cckt\.xn--p1ai\/[^#\.\?]+$/
+  url_pattern_detail: /^http:\/\/xn--80adbj0cckt\.xn--p1ai\/parts\/used\/model=[0-9]+\/[0-9]+$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//tr[th="Внутренний номер З/Ч"]/td'
+        optional: True
+      brand:
+        value: '//tr[th="Марка Т/С"]/td'
+      model:
+        value: '//tr[th="Модель Т/С"]/td'
+      sparePart:
+        value: '//tr[th="Имя З/Ч"]/td'
+      title:
+        value: '//h1'
+      img:
+        value: '//li[@class="span1"]/a/@href'
+        regexp: '/^((?!.+default\..+).)*$/'
+      price:
+        value: '//tr[th="Стоимость"]/td'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
