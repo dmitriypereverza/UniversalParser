@@ -76,6 +76,7 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
             }
             if ($key == 'img' && $this->getSelectorParam('isRelativePath', $selector)) {
                 $url = parse_url($selectorVals['url']);
+                $content[0] != '/' && $content = '/' . $content;
                 $content = $url['scheme'] . '://' . $url['host'] . $content;
             }
             if ($key == 'brand') {

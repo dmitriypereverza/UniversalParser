@@ -7,6 +7,7 @@ use App\Console\Commands\ParserStatistic;
 use App\Console\Commands\ParseTree;
 use App\Console\Commands\SetNewVersion;
 use App\Console\Commands\StartCrawl;
+use App\Console\Commands\TreeCsv;
 use App\Console\Commands\UpdateProxy;
 use App\Console\Commands\ParserStatus;
 use App\Console\Commands\ValidareYamlConfig;
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
         ValidareYamlConfig::class,
         ParseTree::class,
         SetNewVersion::class,
+        TreeCsv::class,
     ];
 
     /**

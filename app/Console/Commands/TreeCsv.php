@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Parser\Spider\TreeLinksSpider;
+use App\Models\Links;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class ParseTree extends Command
+class TreeCsv extends Command
 {
     use DispatchesJobs;
     /**
@@ -14,7 +14,7 @@ class ParseTree extends Command
      *
      * @var string
      */
-    protected $signature = 'parse:tree {site} {depth} {request_delay}';
+    protected $signature = 'tree:csv {fileName}';
 
     /**
      * The console command description.
@@ -40,15 +40,21 @@ class ParseTree extends Command
      */
     public function handle()
     {
-        $site = $this->argument('site');
-        $depth = $this->argument('depth');
-        $requestDelay = $this->argument('request_delay');
-        if (!$site) {
-            $this->error('Site not found!');
+        $fileName = $this->argument('fileName');
+        $data = Links::getDownloadedLinks();
+        if (count($data) == 0) {
+            $this->warn('Downloaded links not found');
             return;
         }
+        $filePath = 'storage/' . $fileName;
+        $out = fopen($filePath, 'w');
+        fputcsv($out, array_keys($data[1]));
+        foreach($data as $line)
+        {
+            fputcsv($out, $line);
+        }
+        fclose($out);
+        $this->line('CSV file was create in: ' . $filePath);
 
-        $parser = new TreeLinksSpider($site, $depth, $requestDelay);
-        $parser->crawl();
     }
 }
