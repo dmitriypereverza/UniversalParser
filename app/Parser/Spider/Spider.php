@@ -5,12 +5,14 @@ namespace App\Parser\Spider;
 use App\Events\ParserErrorEvent;
 use App\Events\ParserInfoEvent;
 use App\Models\TemporarySearchResults;
+use App\Models\Version;
 use App\Parser\Spider\Attributes\DetailPageParser;
 use App\Parser\Spider\Attributes\TableParser;
 use App\Parser\Spider\Filter\UriFilter as SimpleUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceHandler;
 use App\Parser\Spider\RequestHandler\GuzzleRequestWIthProxyHandler;
+use App\Parser\Version\VersionManager;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
@@ -36,7 +38,7 @@ class Spider implements SpiderInterface
         $this->spider = $this->getSpider();
         $this->id_session = $this->getSessionId();
         $this->countProcessedResults = 0;
-//        $this->setRequestHandler();
+        $this->setRequestHandler();
         $this->setPersistenceHandler();
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
@@ -51,7 +53,10 @@ class Spider implements SpiderInterface
         try {
             $this->spider->crawl();
             laravelEvent::fire(new ParserInfoEvent(sprintf("%s: PERSISTED URL: %d; PERSISTED UNIQUE ELEMENTS: %d", $this->config['url'], count($statsHandler->getPersisted()), TemporarySearchResults::where('id_session', $this->id_session)->count())));
-            TemporarySearchResults::setNewVersion($this->id_session);
+            if ($elementCount = TemporarySearchResults::getCountElementsInSession($this->id_session)) {
+                $newVersion = app('version.manager')->getNewVersion($elementCount);
+                TemporarySearchResults::setVersion($this->id_session, $newVersion);
+            }
             laravelEvent::fire(new ParserInfoEvent(sprintf("%s: End crawl", $this->config['url'])));
         } catch (\Exception $e) {
             TemporarySearchResults::deleteSessionResult($this->id_session);
@@ -64,7 +69,6 @@ class Spider implements SpiderInterface
         $spider = new PhpSpider($this->config['items_list_url']);
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer($this->config['items_list_selector']));
         $spider->getDiscovererSet()->addFilter(new UriFilter([$this->config['url_pattern']]));
-        $spider->getQueueManager()->setTraversalAlgorithm(InDBQueueManager::ALGORITHM_DEPTH_FIRST);
         return $spider;
     }
 
@@ -118,7 +122,7 @@ class Spider implements SpiderInterface
     private function setPersistenceHandler()
     {
         $selectorParser = isset($this->config['selectors']['row']) ? new TableParser($this->config['selectors']) : new DetailPageParser($this->config['selectors']);
-        $this->spider->getDownloader()->setPersistenceHandler(new DBPersistenceHandler($selectorParser, $this->config['url'], $this->id_session, new SimpleUriFilter([$this->config['url_pattern_detail']])));
+        $this->spider->getDownloader()->setPersistenceHandler(new DBPersistenceHandler($selectorParser, $this->config, $this->id_session, new SimpleUriFilter([$this->config['url_pattern_detail']])));
     }
 
     /**

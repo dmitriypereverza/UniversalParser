@@ -13,7 +13,6 @@ class ApiAuth
     public function handle($request, Closure $next)
     {
         $authToken = $request->bearerToken();
-
         try {
             $this->payloadIsValid($payload = (array)JWT::decode($authToken, getenv('JWT_KEY'), ['HS256']));
             $app = Application::where('key', '=', $payload['sub'])->firstOrFail();

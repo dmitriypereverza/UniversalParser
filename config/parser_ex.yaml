@@ -1,0 +1,986 @@
+# ParsersConfig config
+autotown55:
+  active: true
+  url: https://autotown55.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://autotown55.ru/catalog/
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/autotown55.ru\/catalog\//
+  url_pattern_detail: /^https:\/\/autotown55.ru\/catalog\/.+\.html/
+  max_depth: 5
+  request_dalay: 300
+  selectors:
+      articul:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="ШтрихКод"]/span'
+      sparePart:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Название"]/span'
+        optional: True
+      brand:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Марка"]/span'
+      model:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Модель"]/span'
+      car_body_type:
+        value: '//div[@class="auto_card_inf"]/p[normalize-space(text())="Кузов"]/span'
+      title:
+        value: '//div[@class="auto_breadcrumbs"][1]/span'
+      price:
+        value: '//span[@class="cost"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//div[@class="one_slide_inside"][1]/a[@class="fancybox"]/img/@src'
+        isRelativePath: True
+
+razbormashin:
+  active: true
+  url: http://razbormashin.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://razbormashin.ru/avtozapchasti
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/razbormashin.ru\/avtozapchasti\//
+  url_pattern_detail: /^http:\/\/razbormashin.ru\/avtozapchasti\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/].+\.html/
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      articul:
+        value: '//div[@class="product-detail-property"][div[1]="Артикул"]/div[2]'
+      sparePart:
+        value: '//h1[@class="product-detail__title"]'
+        regexp: '/.+(?=\sдля)/'
+        optional: True
+      brand:
+        value: '//div[@class="product-detail-property"][div[1]="Производитель"]/div[2]'
+      model:
+        value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Модель"]/div[2]'
+      title:
+        value: '//h1[@class="product-detail__title"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      description:
+        value: '//div[@class="product-detail__description-text"]'
+      isAvalable:
+        value: '//div[@class="product-detail-property product-detail-property_space"][div[1]="Наличие"]/div[2]'
+      price:
+        value: '//div[@class="product-detail__price-value"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//*[@id="msGallery"]/div/a[1]/@href'
+        isRelativePath: True
+
+#--- 3 m
+
+sv-company:
+  active: false
+  url: https://sv-company.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://sv-company.ru/avtozapchasti/avtozapchasti-b-u/
+  url_pattern: /https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/.+/
+  url_pattern_detail: /https:\/\/sv-company.ru\/avtozapchasti\/avtozapchasti-b-u\/[^\/]+\/$/
+  items_list_selector: .//a
+  selectors:
+      title:
+        value: './/h1[@class="product__title"]'
+      brand:
+        value: './/nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[3]/a'
+      model:
+        value: './/nav/ul[@class="breadcrumbs page__breadcrumbs"]/li[4]/a'
+      img:
+        value: './/img[@class="gallery__img"][1]/@src'
+        isRelativePath: True
+      price:
+        value: './/span[@class="product__price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      isAvalable:
+        value: './/tbody/tr[td="Статус"]/td[2]'
+
+razbor-nt:
+  active: false
+  url: http://razbor-nt.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://razbor-nt.ru/
+  items_list_selector: .//a
+  url_pattern: /http:\/\/razbor-nt.ru\/[^\?\/]+\//
+  url_pattern_detail: /http:\/\/razbor-nt.ru\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+.html$/
+  request_dalay: 350
+  selectors:
+      title:
+        value: '//*[@id="content"]/div[@class="b1c-good"]/h1'
+      sparePart:
+        value: '//div[@class="b1c-name"]/h2'
+        optional: True
+      brand:
+        value: '//*[@id="content"]/div/div[@class="breadcrumb-style"]/a[2]'
+      model:
+        value: '//*[@id="content"]/div/div[@class="breadcrumb-style"]/a[3]'
+      img:
+        value: '//*[@id="image"]/@src'
+        isRelativePath: False
+      price:
+        value: '//div[@class="price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+разборкасокол:
+  active: false
+  url: https://разборкасокол.рф/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://разборкасокол.рф/
+  items_list_selector: .//a
+  url_pattern: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai((?!\/shiny\/|\/vw\/).)+\//
+  url_pattern_detail: /https:\/\/xn--80aacxqbhucbnep.xn--p1ai\/[^\/]+\/[^\/]+.html$/
+  max_depth: 7
+  selectors:
+      title:
+        value: '//*[@id="content"]/h1'
+      brand:
+        value: '//div[@class="breadcrumb"]/a[2]'
+      model:
+        value: '//*[@id="content"]/h1'
+        need_parse_model_by_brand: true
+      description:
+        value: '//div[@class="opisanie_tovar"]'
+      img:
+        value: '//*[@id="image"]/@src'
+        isRelativePath: False
+      price:
+        value: '//div[@class="price"][1]'
+        preg_replace:
+          pattern: '/\\t+/'
+          replace: ' '
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+autoinfo51:
+  active: true
+  url: http://www.autoinfo51.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://www.autoinfo51.ru
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/www.autoinfo51.ru\/catalog\/.+/
+  url_pattern_detail: /^http:\/\/www.autoinfo51.ru\/catalog\/[\d]+\/[\d]+\/$/
+  max_depth: 4
+  request_dalay: 500
+  selectors:
+      row:
+        value: '//table[@class="catalog"]/tr[position() >= 2]'
+      articul:
+        value: '//td[4]'
+        optional: True
+      sparePart:
+        value: '//td[3]'
+        optional: True
+      brand_model:
+        value: '//td[2]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//td[3]'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
+      description:
+        value: '//td[5]'
+      price:
+        value: '//td[6]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//td[7]/a/@href'
+
+raz45:
+  active: true
+  url: http://raz45.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://raz45.ru
+  items_list_selector: .//a
+  url_pattern: /http:\/\/raz45.ru\/automotiveparts\/[^\?]+$/
+  url_pattern_detail: /^http:\/\/raz45.ru\/automotiveparts\/[^\?][0-9]+$/
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      brand_model:
+        value: '//h1[@id="page-title"]'
+        need_parse_model_and_brand: true
+      sparePart:
+        value: '//div[@class="field field-name-field-gr-automotiveparts field-type-taxonomy-term-reference field-label-above"]/div/span'
+        optional: True
+      title:
+        value: '//h1[@id="page-title"]'
+      price:
+        value: '//td[@class="component-total"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//span[@class="field-item even"][1]/a/img/@src'
+
+avito-razorbor-voroneg:
+  active: false
+  url: https://www.avito.ru/razorbor-voroneg/rossiya/zapchasti_i_aksessuary?view=list
+  class: App\Parser\Spider\Spider
+  items_list_url: https://www.avito.ru/razorbor-voroneg/rossiya/zapchasti_i_aksessuary?view=list
+  items_list_selector: .//a
+  url_pattern: /https:\/\/www.avito.ru\/(razorbor-voroneg\/rossiya\/zapchasti_i_aksessuary\?p=[0-9]{1,2}|voronezh\/zapchasti_i_aksessuary\/.+)/
+  url_pattern_detail: /https:\/\/www.avito.ru\/voronezh\/zapchasti_i_aksessuary\/.+/
+  max_depth: 10
+  request_dalay: 1500
+  selectors:
+      brand_model:
+        value: '//span[@class="title-info-title-text"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//span[@class="title-info-title-text"]'
+      price:
+        value: '//*[@id="price-value"]/span'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//span[@class="gallery-img-cover"]/img/@src'
+
+relines:
+  active: true
+  url: http://relines.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://relines.ru
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/relines.ru\/(catalog\/[^\?]+\/|products\/[^\?]+)/
+  url_pattern_detail: /^http:\/\/relines.ru\/products\/.+/
+  max_depth: 5
+  request_dalay: 500
+  selectors:
+      articul:
+        value: '//h2[@class="b-product__sku"]'
+      brand_model:
+        value: '//h3[@class="b-product__cars__i"][1]'
+        need_parse_model_and_brand: true
+      sparePart:
+        value: '//h2[@class="b-product__t"]'
+        optional: True
+      title:
+        value: '//h2[@class="b-product__t"]'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
+      price:
+        value: '//p[@class="b-product__pNb__p"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//img[@class="pic main"][1]/@src'
+        isRelativePath: True
+
+autopart-sib:
+  active: true
+  url: http://autopart-sib.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://autopart-sib.ru/?tree_id=0&shid=off&uid=&l=&part=sh&maker_id=&model_id=&shassi=&caruid=
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/autopart-sib.ru\//
+  url_pattern_detail: /^http:\/\/autopart-sib.ru\/p[0-9]+.html/
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//td[@id="car_name"]/span'
+        regexp: '/(?<=No.)\s.+/'
+      brand:
+        value: '//*[@id="car_charts"]/tr/td[span="Производитель авто:"]/text()'
+      model:
+        value: '//*[@id="car_charts"]/tr/td[span="Модель авто:"]/text()'
+      sparePart:
+        value: '//*[@id="car_charts"]/tr/td[span="Наименование:"]/h1'
+        optional: True
+      title:
+        value: '//*[@id="car_charts"]/tr/td[span="Наименование:"]/h1'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
+      description:
+        value: '//*[@id="car_name"]'
+      price:
+        value: '//*[@id="car_charts"]/tr/td/span/span[@class="red"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//*[@id="car_table"]/tr[last()]/td[last()]/table/tr/td/a/img/@src'
+
+  народавто:
+    active: true
+    url: http://www.xn--80aagg7bhdlw.xn--p1ai/
+    class: App\Parser\Spider\Spider
+    items_list_url: http://www.xn--80aagg7bhdlw.xn--p1ai/
+    url_pattern: /http:\/\/www.xn--80aagg7bhdlw.xn--p1ai\/.+/
+    url_pattern_detail: /^http:\/\/www\.xn--80aagg7bhdlw\.xn--p1ai\/\?id=[0-9]+$/
+    items_list_selector: .//a
+    selectors:
+        articul:
+          value: '//div[@class="content-div"]/p[2]'
+          regexp: '/(?<=Артикул:\s).+/'
+          optional: True
+        brand_model:
+          value: '//h1[@class="left-marg"]'
+          need_parse_model_and_brand: true
+        title:
+          value: '//h1[@class="left-marg"]'
+          composition:
+            pattern: '%s %s'
+            params:
+              - articul
+              - title
+        description:
+          value: '//*[@id="goods-more-descriptions-text"]'
+          optional: True
+        img:
+          value: '//img[@id="bigphoto"]/@src'
+          isRelativePath: True
+        price:
+          value: '//p[@class="price-id"]/strong'
+          regexp: '/\d\s?\d+(\s?\d+)?/'
+
+#--- 2 m
+
+avtodriver:
+  active: true
+  url: https://avtodriver.com
+  class: App\Parser\Spider\Spider
+  items_list_url: https://avtodriver.com
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/avtodriver.com\//
+  url_pattern_detail: /^https:\/\/avtodriver.com\/[^\/]+\/[^\/]+\//
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      articul:
+        value: '//*[@id="c_d"]/p[normalize-space(text())="Оригинальный номер детали:"]/b'
+      car_body_type:
+        value: '//*[@id="c_d"]/p[normalize-space(text())="Кузов:"]/b'
+      sparePart:
+        value: '//p[@class="toppropelem toppropelemdescr"]'
+        regexp: '/.+(?=\sдля)/'
+        optional: True
+      brand:
+        value: '//h1[@class="caption"][1]'
+        need_parse_brand: True
+      model:
+        value: '//*[@id="c_d"]/p[normalize-space(text())="Устанавливается на модель:"]/b'
+      title:
+        value: '//h1[@class="caption"][1]'
+        composition:
+          pattern: '%s (%s)'
+          params:
+            - title
+            - car_body_type
+      description:
+        value: '//p[@class="toppropelemdescr"]'
+        optional: True
+      isAvalable:
+        value: '//div[@class="b-catalog__avaliability"]'
+      price:
+        value: '//div[@class="b-price__element b-price-value"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//section[@class="regular slider"]/a[1]/img/@src'
+        isRelativePath: True
+
+caroptics:
+  active: true
+  url: https://www.caroptics.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://www.caroptics.ru/product/
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/www.caroptics.ru\//
+  url_pattern_detail: /^https:\/\/www.caroptics.ru\/product\/[^\/]+\//
+  max_depth: 6
+  request_dalay: 200
+  selectors:
+      articul:
+        value: '//tr[td[1]="Артикул:"]/td[2]'
+      brand:
+        value: '//*[@id="breadcrumbs"]/div[2]/a'
+      model:
+        value: '//*[@id="breadcrumbs"]/div[3]/a'
+      title:
+        value: '//h1[@itemprop="name"][1]'
+      isAvalable:
+        value: '//div[@class="in_stock"]'
+      price:
+        value: '//meta[@itemprop="price"]/@content'
+      img:
+        value: '//div[@class="product_images"]/div[@class="big"]/a/@href'
+        isRelativePath: True
+
+45razbor:
+  active: true
+  url: http://www.45razbor.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://www.45razbor.ru/index.php/nashi-rekvizity
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/www.45razbor.ru\//
+  url_pattern_detail: /^http:\/\/www.45razbor.ru\/index.php\/nashi-rekvizity\/product\/view\/[0-9]+\/[0-9]+$/
+  max_depth: 6
+  request_dalay: 200
+  selectors:
+      articul:
+        value: '//*[@id="product_code"]'
+      brand_model:
+        value: '//div[@class="jshop productfull"]/form/h1/text()'
+        need_parse_model_and_brand: true
+      title:
+        value: '//div[@class="jshop productfull"]/form/h1/text()'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      price:
+        value: '//*[@id="block_price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//span[@id="list_product_image_middle"]/a/img/@src'
+
+car22:
+  active: true
+  url: https://car22.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://car22.ru/katalog-zapchastej/
+  items_list_selector: .//a
+  url_pattern: /^https:\/\/car22.ru\/katalog-zapchastej\//
+  url_pattern_detail: /^https:\/\/car22.ru\/katalog-zapchastej\/[^\/]+\/.+\/$/
+  max_depth: 5
+  request_dalay: 200
+  selectors:
+      articul:
+        value: '//div[@class="articule"]'
+        regexp: '/(?<=Код: ).+/'
+      sparePart:
+        value: '//ul[@class="breadcrumbs"]/li[last()-1]/a'
+        optional: True
+      brand_model:
+        value: '//h1[@itemprop="name"][1]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@itemprop="name"][1]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      price:
+        value: '//meta[@itemprop="price"]/@content'
+      img:
+        value: '//a[@itemprop="image"][1]/img/@src'
+        isRelativePath: True
+
+rbrauto:
+  active: true
+  url: http://rbrauto.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://rbrauto.ru/
+  url_pattern: /http:\/\/rbrauto.ru\/.+/
+  url_pattern_detail: /^http:\/\/rbrauto\.ru\/catalog\/.+/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      row:
+        value: '//table[@class="catalog"]/tr[position() >= 2]'
+      articul:
+        value: '//td[3]'
+        optional: True
+      brand_model:
+        value: '//td[2]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//td[2]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      img:
+        value: '//td[1]/a/@href'
+        regexp: '/^((?!\/resources\/nophoto\.jpg).)*$/'
+        isRelativePath: True
+      price:
+        value: '//td[6]/table/tr/td/span'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+#---- 3.11.2017 -----
+
+smtauto:
+  active: true
+  url: https://www.smtauto.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://www.smtauto.ru/
+  url_pattern: /^https:\/\/www\.smtauto\.ru\/parts_used\//
+  url_pattern_detail: /^https:\/\/www\.smtauto\.ru\/parts_used\/[0-9]+\/[0-9]+\/[0-9]+\/[0-9]+\/[0-9]+$/
+  items_list_selector: .//a
+  max_depth: 6
+  selectors:
+      articul:
+        value: '//p[@class="tr-artikul"]'
+        regexp: '/[0-9]+/'
+        optional: True
+      sparePart:
+        value: '//*[@class="ten columns content"]/h1'
+        regexp: '/.+(?=\sдля)/'
+        optional: True
+      title:
+        value: '//*[@class="ten columns content"]/h1'
+      brand_model:
+        value: '//ul[@class="tr-descr"]/li[span[1]/span[1] = "Машина"]/span[2]/span'
+        need_parse_model_and_brand: true
+      img:
+        value: '//a[@id="big_img"]/img/@src'
+      isAvailable:
+        value: '//div[@class="tr-col-3"]/p[1]'
+      price:
+        value: '//div[@class="tr-pricebutton"]/div/span[@class="value"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+glavrazbor:
+  active: true
+  url: http://glavrazbor.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://glavrazbor.ru/
+  url_pattern: /http:\/\/glavrazbor\.ru\/katalog-avtozapchastej\//
+  url_pattern_detail: /http:\/\/glavrazbor\.ru\/katalog-avtozapchastej\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/\?]+$/
+  items_list_selector: .//a
+  max_depth: 6
+  selectors:
+      articul:
+        value: '//div[@class="col-sm-4"]/ul[@class="list-unstyled"]/li[1]'
+        regexp: '/[0-9]+/'
+        optional: True
+      brand:
+        value: '//ul[@class="breadcrumb"]/li[3]/a'
+      model:
+        value: '//ul[@class="breadcrumb"]/li[4]/a'
+      title:
+        value: '//div[@class="container"]/h1'
+        composition:
+          pattern: '%s %s %s'
+          params:
+            - articul
+            - title
+            - brand
+      img:
+        value: '//ul[@class="thumbnails"]/li/a/img/@src'
+      price:
+        value: '//ul[@class="list-unstyled"]/li/h2'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+razborkino:
+  active: true
+  url: https://razborkino.ru/catalog/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://razborkino.ru/catalog/
+  url_pattern: /https:\/\/razborkino\.ru\/catalog\//
+  url_pattern_detail: /https:\/\/razborkino\.ru\/catalog\/.+\/[0-9]+\/$/
+  items_list_selector: .//a
+  max_depth: 6
+  selectors:
+      articul:
+        value: '//span[@class="part-number"]/span'
+        regexp: '/[0-9]+/'
+        optional: True
+      sparePart:
+        value: '//span[@class="name"]/span'
+      brand:
+        value: '//div[@id="breadcrumb"]/div/span[5]/a/span'
+      model:
+        value: '//div[@id="breadcrumb"]/div/span[7]/a/span'
+      title:
+        value: '//span[@class="name"]/span'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
+      description:
+        value: '//span[@itemprop="description"]'
+      img:
+        value: '//a[@itemprop="image"]/img/@src'
+        isRelativePath: True
+      price:
+        value: '//span[@itemprop="price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+partsib.info:
+  active: true
+  url: http://partsib.info/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://partsib.info/
+  url_pattern: /http:\/\/partsib\.info\//
+  url_pattern_detail: /^http:\/\/partsib\.info\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+\/$/
+  items_list_selector: .//a
+  max_depth: 6
+  selectors:
+      articul:
+        value: '//span[@itemprop="mpn"]'
+        optional: True
+      sparePart:
+        value: '//span[@itemprop="category"]'
+      brand_model:
+        value: '//h1[@itemprop="name"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@itemprop="name"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      isAvalable:
+        value: '//span[@itemprop="availability"]'
+      img:
+        value: '//img[@itemprop="image"]/@src'
+        isRelativePath: True
+      price:
+        value: '//span[@class="price"]/span/b'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+razbor72:
+  active: true
+  url: http://razbor72.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://razbor72.ru/zap
+  items_list_selector: .//a
+  url_pattern: /^http:\/\/razbor72.ru\//
+  url_pattern_detail: /^http:\/\/razbor72.ru\/product\/.+/
+  max_depth: 4
+  request_dalay: 200
+  selectors:
+      brand_model:
+        value: '//div[@class="main"][1]/h1'
+        need_parse_model_and_brand: true
+      title:
+        value: '//div[@class="main"][1]/h1'
+      price:
+        value: '//p[@class="price"][1]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+      img:
+        value: '//img[@class="big_img"]/@src'
+        isRelativePath: True
+
+motorlandby:
+  active: true
+  url: https://motorlandby.ru/auto-parts/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://motorlandby.ru/auto-parts/
+  url_pattern: /https:\/\/motorlandby\.ru\/auto-parts\//
+  url_pattern_detail: /^https:\/\/motorlandby\.ru\/auto-parts\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+\/$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Артикул"]/td[2]'
+        optional: True
+      sparePart:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Название запчасти"]/td[2]'
+      brand:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Марка"]/td[2]'
+      model:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Модель"]/td[2]'
+      title:
+        value: '//div[@class="cont"]/h1'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - sparePart
+            - model
+            - brand
+      img:
+        value: '//div[@class="viki-gallery"]/a/@href'
+      price:
+        value: '//table[@class="parttbl"]/tbody/tr[td="Цена"]/td[2]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+pezhon:
+  active: true
+  url: https://pezhon.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://pezhon.ru/
+  url_pattern: /https:\/\/pezhon\.ru\/[^\#\?]+$/
+  url_pattern_detail: /^https:\/\/pezhon\.ru\/[^\/]+\/[^\/]+\/.+\//
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//li[span[1]="Внутренний номер: "]/span[2]'
+        optional: True
+      brand_model:
+        value: '//h1[@class="good__title"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@class="good__title"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      img:
+        value: '//img[@class="good-slider__img"]/@src'
+        regexp: '/^((?!\/templates\/template13\/pictures\/500\.png).)*$/'
+        isRelativePath: True
+      price:
+        value: '//div[@class="good__price"]'
+        regexp: '/^((?!^0 руб\.))\d\s?\d+(\s?\d+)?/'
+
+autoclub48:
+  active: true
+  url: http://www.autoclub48.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: http://www.autoclub48.ru/
+  url_pattern: /http:\/\/www.autoclub48\.ru\/[0-9]+\//
+  url_pattern_detail: /^http:\/\/www.autoclub48\.ru\/[0-9]+\/[0-9]+$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//div[@class="item_info_section"]/dl/dd'
+        optional: True
+      title:
+        value: '//h1/span'
+      discription:
+        value: '//div[@class="bx_item_description"]/p'
+      brand_model:
+        value: '//h1/span'
+        need_parse_model_and_brand: true
+      img:
+        value: '//div[@class="bx_bigimages_imgcontainer"]/img/@src'
+        regexp: '/(?<=\/\/autoclub48\.ru\.images\.1c-bitrix-cdn\.ru).+/'
+        isRelativePath: True
+      price:
+        value: '//div[@class="item_current_price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+#----- new parsers
+
+nilina-auto:
+  active: true
+  url: https://nilina-auto.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://nilina-auto.ru
+  url_pattern: /https:\/\/nilina-auto\.ru\/.+/
+  url_pattern_detail: /^https:\/\/nilina-auto\.ru\/.+\.html$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//span[@data-qaid="product_code"]'
+        optional: True
+      title:
+        value: '//span[@data-qaid="product_name"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      isAvalable:
+        value: '//li[@data-qaid="presence_data"]'
+      discription:
+        value: '//div[@data-qaid="product_description"]/text()'
+        optional: True
+      brand_model:
+        value: '//span[@data-qaid="product_name"]'
+        need_parse_model_and_brand: true
+      img:
+        value: '//meta[@property="og:image"]/@content'
+        isRelativePath: True
+      price:
+        value: '//span[@data-qaid="product_price"]'
+
+motorhog:
+  active: true
+  url: http://motorhog.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://motorhog.ru/catalog/
+  url_pattern: /http:\/\/motorhog\.ru\/catalog/
+  url_pattern_detail: /^http:\/\/motorhog\.ru\/catalog\/[^\/]+\/[^\/]+\/\?mod=[\d]+&cat=[\d]+$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      row:
+        value: '//table[@class="details_table"]/tr[position() >= 2]'
+      articul:
+        value: '//td[@class="td1"]'
+        optional: True
+      brand_model:
+        value: '//td[@class="td3"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//td[@class="td3"]'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      img:
+        value: '//td[@class="td0"]/a/@href'
+        isRelativePath: True
+      price:
+        value: '//td[@class="td5"]'
+
+superstor:
+  active: true
+  url: https://superstor.ru/
+  class: App\Parser\Spider\Spider
+  items_list_url: https://superstor.ru/shop
+  url_pattern: /https:\/\/superstor\.ru\/shop/
+  url_pattern_detail: /^https:\/\/superstor\.ru\/shop\/[^\/]+\/[^\/]+\/[^\/]+\/$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      brand_model:
+        value: '//h1[@itemprop="name"]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1[@itemprop="name"]'
+      description:
+        value: '//div[@id="product-description"]/p'
+        optional: True
+      img:
+        value: '//img[@id="product-image"]/@src'
+        isRelativePath: True
+      price:
+        value: '//span[@data-price]/@data-price'
+
+autolans:
+  active: true
+  url: http://autolans.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://autolans.ru
+  url_pattern: /http:\/\/autolans\.ru\/magazin\//
+  url_pattern_detail: /^http:\/\/autolans\.ru\/magazin\/product\/[^\/]+/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//div[@class="shop2-product-article"]/text()'
+        optional: True
+      brand_model:
+        value: '//h1'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      description:
+        value: '//div[@id="shop2-tabs-2"]'
+        preg_replace:
+          pattern: '/\\(t|s)+/'
+          replace: ' '
+        optional: True
+      isAvalable:
+        value: '//table[@class="shop2-product-options"]/tr[th="Наличие"]/td'
+        optional: True
+      img:
+        value: '//div[@class="product-image"]/a/@href'
+        isRelativePath: True
+      price:
+        value: '//div[@class="price-current"]/strong'
+
+#2.12
+
+superford:
+  active: true
+  url: https://superford.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://superford.ru
+  url_pattern: /https:\/\/superford\.ru\/[^#\.\?]+$/
+  url_pattern_detail: /^https:\/\/superford\.ru\/[^\/#]+\/[^\/]+\/[^\/]+\/[^\/]+/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//span[@class="editable"][1]'
+        optional: True
+      brand:
+        value: '//span[@class="navigation_page"]/a[1]'
+      model:
+        value: '//span[@class="navigation_page"]/a[2]'
+      title:
+        value: '//form[@id="buy_block"]/h2'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      img:
+        value: '//div[@class="fotorama"]/a/@href'
+        regexp: '/^((?!.+default\..+).)*$/'
+      price:
+        value: '//form[@id="buy_block"]/p[@class="god_price"]'
+        regexp: '/\d\s?\d+(\s?\d+)?/'
+
+lr-zap:
+  active: true
+  url: https://lr-zap.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://lr-zap.ru
+  url_pattern: /https:\/\/lr-zap\.ru\/shop\/[^#\.\?]+$/
+  url_pattern_detail: /^https:\/\/lr-zap\.ru\/shop\/product\/[^\/#\.\?]+/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//div[@class="shop2-product-article"]/text()'
+        regexp: '/^((?!.?нет).)*$/'
+        optional: True
+      brand_model:
+        value: '//div[@class="site-path"]/a[2]'
+        need_parse_model_and_brand: true
+      title:
+        value: '//h1'
+        composition:
+          pattern: '%s %s %s %s'
+          params:
+            - articul
+            - title
+            - model
+            - brand
+      img:
+        value: '//a[@class="product-image-a"]/img/@src'
+        regexp: '/^((?!.+default\..+).)*$/'
+        isRelativePath: True
+      price:
+        value: '//div[@class="price-current"]/strong'
+        regexp: '/[0-9]+((?=\.))?/'
+
+евроавто:
+  active: true
+  url: евроавто.рф
+  class: App\Parser\Spider\Spider
+  items_list_url: http://xn--80adbj0cckt.xn--p1ai
+  url_pattern: /http:\/\/xn--80adbj0cckt\.xn--p1ai\/[^#\.\?]+$/
+  url_pattern_detail: /^http:\/\/xn--80adbj0cckt\.xn--p1ai\/parts\/used\/model=[0-9]+\/[0-9]+$/
+  items_list_selector: .//a
+  max_depth: 5
+  selectors:
+      articul:
+        value: '//tr[th="Внутренний номер З/Ч"]/td'
+        optional: True
+      brand:
+        value: '//tr[th="Марка Т/С"]/td'
+      model:
+        value: '//tr[th="Модель Т/С"]/td'
+      sparePart:
+        value: '//tr[th="Имя З/Ч"]/td'
+      title:
+        value: '//h1'
+      img:
+        value: '//li[@class="span1"]/a/@href'
+        regexp: '/^((?!.+default\..+).)*$/'
+      price:
+        value: '//tr[th="Стоимость"]/td'
+        regexp: '/\d\s?\d+(\s?\d+)?/'

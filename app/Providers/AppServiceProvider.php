@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Parser\Version\VersionManager;
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,5 +28,9 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment() !== 'production') {
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
+
+        $this->app->bind('version.manager', function () {
+            return new VersionManager(new Client(), getenv('SLAVE_URL'), getenv('TOKEN'));
+        });
     }
 }

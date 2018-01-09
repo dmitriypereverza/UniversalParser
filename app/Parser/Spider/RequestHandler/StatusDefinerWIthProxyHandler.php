@@ -33,10 +33,9 @@ class StatusDefinerWIthProxyHandler implements RequestHandlerInterface
      */
     public function request(DiscoveredUri $uri)
     {
-//        $response = $this->getClient()->get($uri->toString(), [
-//            'proxy' => $this->getProxyUrl()
-//        ]);
-        $response = $this->getClient()->get($uri->toString());
+        $response = $this->getClient()->get($uri->toString(), [
+            'proxy' => $this->getProxyUrl()
+        ]);
 
         $this->saveInDb($uri, $response);
         return new Resource($uri, $response);
