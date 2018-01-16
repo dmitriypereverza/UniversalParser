@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Event;
 
 class StartCrawl extends Command
 {
-    protected $signature = 'crawl:start {siteName}';
+    protected $signature = 'crawl:start {siteName} {--update}';
 
     protected $description = 'ParsersConfig start';
 
@@ -27,7 +27,8 @@ class StartCrawl extends Command
      */
     public function handle()
     {
-        $siteName = $userId = $this->argument('siteName');
+        $siteName = $this->argument('siteName');
+        $needUpdate = $this->option('update');
         $this->line('Starting parse site:' . $siteName);
         try {
             $parser = new ParsersConfig();
@@ -35,7 +36,9 @@ class StartCrawl extends Command
             $spider = SpiderManager::getSpiderFromConfig($siteConfig);
             $scheduler = new Scheduler($siteConfig);
             $scheduler->setParserLoop($spider);
-
+            if ($needUpdate) {
+                $spider->setUpdateMode();
+            }
             $spider->crawl();
         } catch (\Exception $e) {
             Event::fire(new ParserErrorEvent(sprintf('%s: Parse error: %s', $siteName, $e->getMessage())));

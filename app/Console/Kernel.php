@@ -88,6 +88,15 @@ class Kernel extends ConsoleKernel
                         ->between($timeCase['time_from'], $timeCase['time_to'])
                         ->name('parserTask')
                         ->withoutOverlapping();
+                    if ($siteConfig['needUpdate']) {
+                        $schedule->command('crawl:start', [$siteName, '--update'])
+                            ->{strtolower($dayOfWeek)}()
+                            ->everyMinute()
+                            ->timezone(Config::get('app.timezone'))
+                            ->between($timeCase['time_from'], $timeCase['time_to'])
+                            ->name('parserTaskUpdate')
+                            ->withoutOverlapping();
+                    }
                 }
             }
         }
