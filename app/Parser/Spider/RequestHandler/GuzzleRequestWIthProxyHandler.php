@@ -2,6 +2,7 @@
 
 namespace App\Parser\Spider\RequestHandler;
 
+use App\Models\TemporarySearchResults;
 use App\Parser\Spider\Proxy\FineproxyOrgProxy;
 use GuzzleHttp\Client;
 use VDB\Spider\RequestHandler\RequestHandlerInterface;
@@ -34,6 +35,14 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
         $response = $this->getClient()->get($uri->toString(), [
             'proxy' => $this->getProxyUrl()
         ]);
+        if ($response->getStatusCode() == 404) {
+            TemporarySearchResults::where(['content->url' => "{$uri->toString()}"])
+                ->update([
+                    'need_delete' => true,
+                    'version' => 0,
+                ]);
+            return null;
+        }
         return new Resource($uri, $response);
     }
 
