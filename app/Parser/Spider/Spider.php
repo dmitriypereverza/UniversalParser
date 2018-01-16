@@ -5,14 +5,14 @@ namespace App\Parser\Spider;
 use App\Events\ParserErrorEvent;
 use App\Events\ParserInfoEvent;
 use App\Models\TemporarySearchResults;
-use App\Models\Version;
 use App\Parser\Spider\Attributes\DetailPageParser;
 use App\Parser\Spider\Attributes\TableParser;
 use App\Parser\Spider\Filter\UriFilter as SimpleUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceHandler;
+use App\Parser\Spider\PersistenceHandler\DBPersistenceHandlerForUpdate;
+use App\Parser\Spider\QueueManager\UpdateDBQueueManager;
 use App\Parser\Spider\RequestHandler\GuzzleRequestWIthProxyHandler;
-use App\Parser\Version\VersionManager;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
 use VDB\Spider\Discoverer\XPathExpressionDiscoverer;
 use VDB\Spider\Event\SpiderEvents;
@@ -43,7 +43,7 @@ class Spider implements SpiderInterface
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
         $this->setMaxQueueSize($this->config['max_query_size'] ?? self::DEFAULT_QUERY_SIZE);
-        $this->setReuestDelay($this->config['request_delay'] ?? self::DEFAULT_REQUEST_DELAY);
+        $this->setRequestDelay($this->config['request_delay'] ?? self::DEFAULT_REQUEST_DELAY);
     }
 
     public function crawl()
@@ -75,7 +75,7 @@ class Spider implements SpiderInterface
     /**
      * @param integer $delay Delay in milliseconds
      */
-    private function setReuestDelay($delay)
+    private function setRequestDelay($delay)
     {
         $this->spider->getDownloader()->getDispatcher()->addListener(SpiderEvents::SPIDER_CRAWL_PRE_REQUEST, [
                 new PolitenessPolicyListener($delay),
@@ -133,5 +133,22 @@ class Spider implements SpiderInterface
         $statsHandler = new StatsHandler();
         $this->spider->getDispatcher()->addSubscriber($statsHandler);
         return $statsHandler;
+    }
+
+    public function setUpdateMode()
+    {
+        $this->spider = $this->getSpiderForUpdate();
+    }
+
+    private function getSpiderForUpdate()
+    {
+        $firstCollectedUrl = TemporarySearchResults::select('content->url as url')->where(['config_site_name' => $this->config['url']])->first();
+        $spider = new PhpSpider(trim($firstCollectedUrl->url, '"'));
+        $spider->setQueueManager(new UpdateDBQueueManager($this->config['url']));
+        $selectorParser = isset($this->config['selectors']['row']) ? new TableParser($this->config['selectors']) : new DetailPageParser($this->config['selectors']);
+        $spider->getDownloader()->setPersistenceHandler(new DBPersistenceHandlerForUpdate($selectorParser, $this->config, $this->id_session, new SimpleUriFilter([$this->config['url_pattern_detail']])));
+        $spider->getDownloader()->setRequestHandler(new GuzzleRequestWIthProxyHandler());
+
+        return $spider;
     }
 }
