@@ -37,7 +37,6 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
 
     public function persist(Resource $resource)
     {
-        echo $resource->getUri() . "\n";
         if (!$this->urlFilter->match($resource->getUri())) {
             return;
         }
