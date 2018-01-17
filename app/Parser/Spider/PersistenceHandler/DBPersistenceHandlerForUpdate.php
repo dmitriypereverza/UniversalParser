@@ -61,17 +61,52 @@ class DBPersistenceHandlerForUpdate implements PersistenceHandlerInterface
                 ->where('content->url', $modifiedVars['url'])
                 ->get()
                 ->toArray();
-
             foreach ($existingItem as $item) {
-//                $decodedContent = json_decode($item['content']);
-//                unset($decodedContent['isAvalable']);
-//                unset($modifiedVars['isAvalable']);
-//                if (md5(serialize($decodedContent) == md5(serialize($modifiedVars)))) {
-//                    echo 1;
-//                }
+                $decodedContent = (array)json_decode($item['content']);
+                if ($this->isEqualByParameters($decodedContent, $modifiedVars, ['url', 'title'])) {
+                    $arrayDiff = array_diff_assoc($modifiedVars, $decodedContent);
+                    if (!$arrayDiff) {
+                        continue;
+                    }
+                    if ($paramKeys = array_intersect($this->config['updateParams'], array_keys($decodedContent))) {
+                        $jsonUpdateParams = [];
+                        foreach ($paramKeys as $updateParam) {
+                            if (isset($arrayDiff[$updateParam])) {
+                                $decodedContent[$updateParam] = $arrayDiff[$updateParam];
+                                $jsonUpdateParams['content->'.$updateParam] = $arrayDiff[$updateParam];
+                            }
+                        }
+                        if (!$jsonUpdateParams) {
+                            continue;
+                        }
+                        unset($decodedContent['url']);
+                        TemporarySearchResults::where('id', $item['id'])
+                            ->update(array_merge($jsonUpdateParams, [
+                                'hash' => md5(serialize($decodedContent)),
+                                'version' => 0,
+                                'need_update' => 1,
+                            ]));
+                    }
+                }
             }
+        }
+    }
 
-            TemporarySearchResults::insertIfNotExist($modifiedVars, $this->config['url'], $this->sessionId);
+    private function isEqualByParameters($decodedContent, $modifiedVars, $params)
+    {
+        $getParamsFromArray = function ($params, $array) {
+            $result = [];
+            foreach ($params as $param) {
+                if (isset($array[$param])) {
+                    $result[$param] = $array[$param];
+                }
+            }
+            return $result;
+        };
+        $storedContent = $getParamsFromArray($params, $decodedContent);
+        $currentVars = $getParamsFromArray($params, $modifiedVars);
+        if (md5(serialize($storedContent)) == md5(serialize($currentVars))) {
+            return true;
         }
     }
 
