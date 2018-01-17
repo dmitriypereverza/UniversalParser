@@ -33,7 +33,8 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
     public function request(DiscoveredUri $uri)
     {
         $response = $this->getClient()->get($uri->toString(), [
-            'proxy' => $this->getProxyUrl()
+            'proxy' => $this->getProxyUrl(),
+            'http_errors' => false
         ]);
         if ($response->getStatusCode() == 404) {
             TemporarySearchResults::where(['content->url' => "{$uri->toString()}"])
