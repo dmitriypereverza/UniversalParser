@@ -38,7 +38,7 @@ class UpdateDBQueueManager implements QueueManagerInterface
         $this->traversalQueue = TemporarySearchResults::select('content->url as url')
             ->where(['config_site_name' => $this->siteConfigName])
             ->where('version', '>', 0)
-            ->whereNull('need_delete')
+            ->whereNull('old_content')
             ->get()
             ->toArray();
         $this->traversalQueue = array_map(function ($item) {

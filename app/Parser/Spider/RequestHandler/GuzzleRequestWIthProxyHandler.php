@@ -43,7 +43,9 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
             'http_errors' => false
         ]);
         if ($response->getStatusCode() == 404) {
-            $elementToDelete = TemporarySearchResults::where(['content->url' => "{$uri->toString()}"])->get();
+            $elementToDelete = TemporarySearchResults::where(['content->url' => "{$uri->toString()}"])
+                ->whereNull('old_content')
+                ->get();
             foreach ($elementToDelete as $item) {
                 TemporarySearchResults::insertRowForDelete($item->id, $this->sessionId);
             }

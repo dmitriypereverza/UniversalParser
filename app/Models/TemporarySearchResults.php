@@ -69,6 +69,7 @@ class TemporarySearchResults extends Model
         if (!is_array($result)) {
             throw new InvalidArgumentException('Не найдены данные для записи в таблицу');
         }
+        TemporarySearchResults::whereId($idToUpdate)->update(['old_content' => 1]);
         $tmpTable = new TemporarySearchResults;
         $tmpTable->config_site_name = $siteUrl;
         $tmpTable->id_session = $sessionId;
@@ -78,9 +79,7 @@ class TemporarySearchResults extends Model
         unset($result['url']);
         $tmpTable->hash = md5(serialize($result));
 
-        if (!self::isRowExist($tmpTable)) {
-            return $tmpTable->save();
-        }
+        return $tmpTable->save();
     }
 
     /**

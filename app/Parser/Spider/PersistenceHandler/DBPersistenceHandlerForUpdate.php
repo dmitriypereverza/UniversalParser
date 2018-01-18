@@ -57,7 +57,6 @@ class DBPersistenceHandlerForUpdate implements PersistenceHandlerInterface
         if ($modifiedVars = $this->modifiedSelectorsValue($values)) {
             $existingItem = TemporarySearchResults::where(['config_site_name' => $this->config['url']])
                 ->where('version', '>', 0)
-                ->whereNull('need_delete')
                 ->whereNull('old_content')
                 ->where('content->url', $modifiedVars['url'])
                 ->get()
