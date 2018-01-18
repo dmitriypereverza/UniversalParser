@@ -58,6 +58,7 @@ class DBPersistenceHandlerForUpdate implements PersistenceHandlerInterface
             $existingItem = TemporarySearchResults::where(['config_site_name' => $this->config['url']])
                 ->where('version', '>', 0)
                 ->whereNull('need_delete')
+                ->whereNull('old_content')
                 ->where('content->url', $modifiedVars['url'])
                 ->get()
                 ->toArray();
@@ -69,23 +70,22 @@ class DBPersistenceHandlerForUpdate implements PersistenceHandlerInterface
                         continue;
                     }
                     if ($paramKeys = array_intersect($this->config['updateParams'], array_keys($decodedContent))) {
-                        $jsonUpdateParams = [];
+                        $isNeedUpdate = false;
                         foreach ($paramKeys as $updateParam) {
                             if (isset($arrayDiff[$updateParam])) {
                                 $decodedContent[$updateParam] = $arrayDiff[$updateParam];
-                                $jsonUpdateParams['content->'.$updateParam] = $arrayDiff[$updateParam];
+                                $isNeedUpdate = true;
                             }
                         }
-                        if (!$jsonUpdateParams) {
+                        if (!$isNeedUpdate) {
                             continue;
                         }
-                        unset($decodedContent['url']);
-                        TemporarySearchResults::where('id', $item['id'])
-                            ->update(array_merge($jsonUpdateParams, [
-                                'hash' => md5(serialize($decodedContent)),
-                                'version' => 0,
-                                'need_update' => 1,
-                            ]));
+                        TemporarySearchResults::insertRowForUpdate(
+                            $decodedContent,
+                            $item['id'],
+                            $this->config['url'],
+                            $this->sessionId
+                        );
                     }
                 }
             }

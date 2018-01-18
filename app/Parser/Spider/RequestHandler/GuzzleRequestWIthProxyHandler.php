@@ -14,6 +14,12 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
     /** @var Client */
     private $client;
     private $proxyUrl;
+    private $sessionId;
+
+    function __construct($sessionId = null)
+    {
+        $this->sessionId = $sessionId;
+    }
 
     /**
      * @return Client
@@ -37,11 +43,10 @@ class GuzzleRequestWIthProxyHandler implements RequestHandlerInterface
             'http_errors' => false
         ]);
         if ($response->getStatusCode() == 404) {
-            TemporarySearchResults::where(['content->url' => "{$uri->toString()}"])
-                ->update([
-                    'need_delete' => true,
-                    'version' => 0,
-                ]);
+            $elementToDelete = TemporarySearchResults::where(['content->url' => "{$uri->toString()}"])->get();
+            foreach ($elementToDelete as $item) {
+                TemporarySearchResults::insertRowForDelete($item->id, $this->sessionId);
+            }
             return null;
         }
         return new Resource($uri, $response);

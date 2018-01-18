@@ -14,6 +14,8 @@ use InvalidArgumentException;
  * @property string $id_session
  * @property string $content
  * @property string $hash
+ * @property integer $need_delete
+ * @property integer $need_update
  * @property \Carbon\Carbon $updated_at
  * @property int|null $version
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application where($value, $value)
@@ -53,6 +55,47 @@ class TemporarySearchResults extends Model
         if (!self::isRowExist($tmpTable)) {
             return $tmpTable->save();
         }
+    }
+
+    /**
+     * @param $result
+     * @param $idToUpdate
+     * @param $siteUrl
+     * @param $sessionId
+     * @return bool
+     */
+    public static function insertRowForUpdate($result, $idToUpdate, $siteUrl, $sessionId)
+    {
+        if (!is_array($result)) {
+            throw new InvalidArgumentException('Не найдены данные для записи в таблицу');
+        }
+        $tmpTable = new TemporarySearchResults;
+        $tmpTable->config_site_name = $siteUrl;
+        $tmpTable->id_session = $sessionId;
+        $tmpTable->need_update = $idToUpdate;
+        $tmpTable->content = json_encode($result);
+
+        unset($result['url']);
+        $tmpTable->hash = md5(serialize($result));
+
+        if (!self::isRowExist($tmpTable)) {
+            return $tmpTable->save();
+        }
+    }
+
+    /**
+     * @param $idToDelete
+     * @param $sessionId
+     * @return bool
+     */
+    public static function insertRowForDelete($idToDelete, $sessionId)
+    {
+        TemporarySearchResults::whereId($idToDelete)->update(['old_content' => 1]);
+        $tmpTable = new TemporarySearchResults;
+        $tmpTable->need_delete = $idToDelete;
+        $tmpTable->version = 0;
+        $tmpTable->id_session = $sessionId;
+        return $tmpTable->save();
     }
 
     public static function deleteSessionResult($sessionId)

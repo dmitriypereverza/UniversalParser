@@ -47,6 +47,7 @@ class SetNewVersion extends Command
                 TemporarySearchResults::setVersion($nullVersionElement->id_session, $newVersion);
             } catch (\Exception $e) {
                 laravelEvent::fire(new ParserErrorEvent(sprintf("%s: Error while getting new version: %s in %s line %s", $nullVersionElement->config_site_name, $e->getMessage(), $e->getFile(), $e->getLine())));
+                break;
             }
         }
     }
