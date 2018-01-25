@@ -114,4 +114,8 @@ class TreeLinksSpider implements SpiderInterface
         $this->spider->getDispatcher()->addSubscriber($statsHandler);
         return $statsHandler;
     }
+
+    public function setUpdateMode()
+    {
+    }
 }
