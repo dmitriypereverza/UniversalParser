@@ -34,10 +34,13 @@ class StatusDefinerWIthProxyHandler implements RequestHandlerInterface
     public function request(DiscoveredUri $uri)
     {
         $response = $this->getClient()->get($uri->toString(), [
-            'proxy' => $this->getProxyUrl()
+            'proxy' => $this->getProxyUrl(),
+            'http_errors' => false
         ]);
-
         $this->saveInDb($uri, $response);
+        if ($response->getStatusCode() != 200) {
+            throw new \LogicException('Page not found');
+        }
         return new Resource($uri, $response);
     }
 
