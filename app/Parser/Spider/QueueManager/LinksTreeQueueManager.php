@@ -11,7 +11,7 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 use VDB\Spider\Event\SpiderEvents;
 use VDB\Uri\Uri;
 
-class InDBQueueManager implements QueueManagerInterface
+class LinksTreeQueueManager implements QueueManagerInterface
 {
     /** @var int The maximum size of the process queue for this spider. 0 means infinite */
     public $maxQueueSize = 0;

@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Links
@@ -68,5 +69,18 @@ class Links extends Model
     public static function isViewedUrl($url)
     {
         return True && Links::where(['url' => $url, 'is_viewed' => True])->first();
+    }
+
+    public static function getDownloadedLinks()
+    {
+        $result = DB::select('select l.id, l.server_response_code, l.url, lp.url as refer, l.title, lp.text
+            from links as l
+            JOIN links_ref as lfc on lfc.child_id = l.id
+            JOIN links as lp on lp.id = lfc.parent_id
+            WHERE l.server_response_code is not NULL;');
+
+        return array_map(function ($value) {
+            return (array)$value;
+        }, $result);
     }
 }

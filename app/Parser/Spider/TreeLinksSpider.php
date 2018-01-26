@@ -7,7 +7,7 @@ use App\Parser\Spider\Discoverer\DiscovererSet;
 use App\Parser\Spider\Filter\Prefetch\NotUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
 use App\Parser\Spider\PersistenceHandler\DBPersistenceLinkHandler;
-use App\Parser\Spider\QueueManager\InDBQueueManager;
+use App\Parser\Spider\QueueManager\LinksTreeQueueManager;
 use App\Parser\Spider\RequestHandler\StatusDefinerWIthProxyHandler;
 use Symfony\Component\Console\Exception\InvalidArgumentException as InvalidArgumentExcept;
 use Symfony\Component\EventDispatcher\Event;
@@ -58,8 +58,8 @@ class TreeLinksSpider implements SpiderInterface
         $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer('.//a'));
         $spider->getDiscovererSet()->addFilter(new UriFilter(['/^' . str_replace("/", "\/", $this->siteUrl) . '/']));
         $spider->getDiscovererSet()->addFilter(new NotUriFilter(['/^' . str_replace("/", "\/", $this->siteUrl) . '\/(ad|api|simple|search)/']));
-        $spider->setQueueManager(new InDBQueueManager());
-        $spider->getQueueManager()->setTraversalAlgorithm(InDBQueueManager::ALGORITHM_BREADTH_FIRST);
+        $spider->setQueueManager(new LinksTreeQueueManager());
+        $spider->getQueueManager()->setTraversalAlgorithm(LinksTreeQueueManager::ALGORITHM_BREADTH_FIRST);
         $spider->getDispatcher()->addListener(
             SpiderEvents::SPIDER_CRAWL_USER_STOPPED,
             function (Event $event) {
