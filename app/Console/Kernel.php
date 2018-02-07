@@ -70,9 +70,6 @@ class Kernel extends ConsoleKernel
         $parser = new ParsersConfig();
         $daysOfWeek = ['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays', 'Sundays'];
         foreach ($parser->getArrayConfig() as $siteName => $siteConfig) {
-            if (!$siteConfig['active']) {
-                continue;
-            }
             foreach ($siteConfig['work_time'] as $dayOfWeek => $times) {
                 if (!in_array($dayOfWeek, $daysOfWeek)) {
                     throw new InvalidArgumentException('Invalid name for day of week:' + $dayOfWeek);
@@ -81,14 +78,16 @@ class Kernel extends ConsoleKernel
                     continue;
                 }
                 foreach ($times as $timeCase) {
-                    $schedule->command('crawl:start', [$siteName])
-                        ->{strtolower($dayOfWeek)}()
-                        ->everyMinute()
-                        ->timezone(Config::get('app.timezone'))
-                        ->between($timeCase['time_from'], $timeCase['time_to'])
-                        ->name('parserTask')
-                        ->withoutOverlapping();
-                    if (isset($siteConfig['needUpdate'])) {
+                    if ($siteConfig['active']) {
+                        $schedule->command('crawl:start', [$siteName])
+                            ->{strtolower($dayOfWeek)}()
+                            ->everyMinute()
+                            ->timezone(Config::get('app.timezone'))
+                            ->between($timeCase['time_from'], $timeCase['time_to'])
+                            ->name('parserTask')
+                            ->withoutOverlapping();
+                    }
+                    if (isset($siteConfig['needUpdate']) && $siteConfig['active']) {
                         $schedule->command('crawl:start', [$siteName, '--update'])
                             ->{strtolower($dayOfWeek)}()
                             ->everyMinute()
