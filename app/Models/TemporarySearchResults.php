@@ -28,6 +28,10 @@ use InvalidArgumentException;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereVersion($value)
  * @mixin \Eloquent
+ * @property int|null $old_content
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereNeedDelete($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereNeedUpdate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereOldContent($value)
  */
 class TemporarySearchResults extends Model
 {

@@ -61,7 +61,9 @@ class LoadModelListCsv extends Command
         while (($line = fgetcsv($out, 0, ',')) !== FALSE) {
             $refModel = new RefModels();
             foreach ($csvAttributeKeys as $arrt => $key) {
-                $refModel->{$arrt} = $line[$key] ?? null;
+                if (!empty($line[$key])) {
+                    $refModel->{$arrt} = $line[$key];
+                }
             }
             $refModel->save();
             $bar->advance();
