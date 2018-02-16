@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\getConfig;
+use App\Console\Commands\LoadModelListCsv;
 use App\Console\Commands\ParserStatistic;
 use App\Console\Commands\ParseTree;
 use App\Console\Commands\SetNewVersion;
@@ -34,6 +35,7 @@ class Kernel extends ConsoleKernel
         ParseTree::class,
         SetNewVersion::class,
         TreeCsv::class,
+        LoadModelListCsv::class,
     ];
 
     /**
