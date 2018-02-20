@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSparePartTable extends Migration
+class CreateEuroAutoLinksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,10 @@ class CreateSparePartTable extends Migration
      */
     public function up()
     {
-        Schema::create('spare_parts', function (Blueprint $table) {
+        Schema::create('euroavto_links', function (Blueprint $table) {
             $table->increments('id');
             $table->string('root_model_link');
-            $table->string('ref_model_link');
-            $table->string('category');
-            $table->string('title');
-            $table->string('article')->nullable();
-            $table->string('img_url')->nullable();
+            $table->boolean('is_recived')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ class CreateSparePartTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('spare_parts');
+        Schema::dropIfExists('euroavto_links');
     }
 }
