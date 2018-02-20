@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
+use App\Models\EuroAutoLinks;
 use App\Models\RefModels;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Exception\LogicException;
@@ -19,18 +20,7 @@ class LoadModelListCsv extends Command
      *
      * @var string
      */
-    protected $description = '';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-    }
+    protected $description = 'Load models info from .csv';
 
     /**
      * Execute the console command.
@@ -66,9 +56,15 @@ class LoadModelListCsv extends Command
                 }
             }
             $refModel->save();
+            if ($refModel->parse_link && !EuroAutoLinks::whereRootModelLink($refModel->parse_link)->exists()) {
+                $euroAutoLink = new EuroAutoLinks();
+                $euroAutoLink->root_model_link = $refModel->parse_link;
+                $euroAutoLink->save();
+            }
             $bar->advance();
         }
         $bar->finish();
-        $this->line("\nAll rows was load");
+        $this->line("\n\n");
+        $this->line("All rows was load");
     }
 }
