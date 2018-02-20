@@ -1,8 +1,6 @@
 <?php
-
 namespace App\Parser\Spider\Attributes;
 
-use App\Parser\CarDefiner;
 use Symfony\Component\DomCrawler\Crawler;
 use \VDB\Spider\Resource;
 
@@ -13,13 +11,10 @@ class TableParser implements AttributeParserInterface
 {
     /**  @var array $selectors */
     private $selectors;
-    /**  @var CarDefiner $carDefiner */
-    private $carDefiner;
 
     public function __construct($selectors)
     {
         $this->selectors = $selectors;
-        $this->carDefiner = new CarDefiner();
     }
 
     /**
