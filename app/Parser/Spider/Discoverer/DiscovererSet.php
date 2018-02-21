@@ -11,7 +11,6 @@ use VDB\Spider\Uri\DiscoveredUri;
 
 class DiscovererSet extends VDBDiscovererSet
 {
-    private $alreadySeenUris = [];
     /**
      * @var Discoverer[]
      */
@@ -33,10 +32,6 @@ class DiscovererSet extends VDBDiscovererSet
         foreach ($discoverers as $alias => $discoverer) {
             $this->set($discoverer, is_int($alias) ? null : $alias);
         }
-
-        foreach (Links::getViewedUrl() as $link) {
-            $this->alreadySeenUris[$link['url']] = 1;
-        }
     }
 
     /**
@@ -53,10 +48,6 @@ class DiscovererSet extends VDBDiscovererSet
         $url = Links::getOrCreateLinkByUrl($uriString);
         $url->is_viewed = True;
         $url->save();
-
-        if (!array_key_exists($uriString->toString(), $this->alreadySeenUris)) {
-            $this->alreadySeenUris[$uriString->toString()] = $uri->getDepthFound();
-        }
     }
 
     /**
@@ -141,7 +132,7 @@ class DiscovererSet extends VDBDiscovererSet
     private function filterAlreadySeen(array &$discoveredUris)
     {
         foreach ($discoveredUris as $k => &$uri) {
-            if (array_key_exists($uri->toString(), $this->alreadySeenUris)) {
+            if (Links::whereUrl($uri->toString())->get()->isNotEmpty()) {
                 unset($discoveredUris[$k]);
             }
         }
@@ -186,7 +177,7 @@ class DiscovererSet extends VDBDiscovererSet
 
     private function getLinkText(Resource $resource, $uri)
     {
-        $item = $resource->getCrawler()->filterXpath('//a[@href="' . $uri . '"]');
+        $item = $resource->getCrawler()->filterXpath('//a[@href="' . $uri->getPath() . '"]');
         if ($item->count()) {
             return  trim($item->text());
         }
