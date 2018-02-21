@@ -35,7 +35,8 @@ class GetSparePartByUrl extends Command
         $siteConfig = $parser->getSiteConfig("euro_auto_spare_parts");
 
         while ($link = EuroAutoLinks::whereNull('is_recived')->limit(20)->get()->random(1)->first()) {
-            $siteConfig['items_list_url'] = "http://" . $link->root_model_link;
+            $siteConfig['items_list_url'] = $this->normalizeUrl($link->root_model_link);
+
             $this->info(sprintf("Start crawl url: %s", $siteConfig['items_list_url']));
             $spider = SpiderManager::getSpiderFromConfig($siteConfig);
             // TODO Solve it
@@ -49,5 +50,14 @@ class GetSparePartByUrl extends Command
             $link->is_recived = true;
             $link->save();
         }
+    }
+
+    private function normalizeUrl($link)
+    {
+        $urlInfo = parse_url($link);
+        if (!array_key_exists("scheme", $urlInfo) || empty($urlInfo["scheme"])) {
+            $link = "http://" . $link;
+        }
+        return $link;
     }
 }
