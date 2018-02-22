@@ -2,8 +2,7 @@
 
 namespace App\Parser\Spider;
 
-use App\Events\ParserErrorEvent;
-use App\Events\ParserInfoEvent;
+use App\Events\SparePartParserEvent;
 use App\Parser\Spider\Attributes\DetailPageParser;
 use App\Parser\Spider\Filter\UriFilter as SimpleUriFilter;
 use App\Parser\Spider\Filter\Prefetch\UriFilter;
@@ -19,7 +18,7 @@ use Illuminate\Support\Facades\Event as laravelEvent;
 
 class SparePartsSpider implements SpiderInterface
 {
-    private $id_session;
+    private $idSession;
     private $config;
     /** @var PhpSpider $spider */
     private $spider;
@@ -31,7 +30,7 @@ class SparePartsSpider implements SpiderInterface
         }
         $this->config = $config;
         $this->spider = $this->getSpider();
-        $this->id_session = $this->getSessionId();
+        $this->idSession = $this->getSessionId();
         $this->setRequestHandler();
         $this->setPersistenceHandler();
 
@@ -42,14 +41,14 @@ class SparePartsSpider implements SpiderInterface
 
     public function crawl()
     {
-        laravelEvent::fire(new ParserInfoEvent(sprintf("%s: Start crawl", $this->config['url'])));
+        laravelEvent::fire(new SparePartParserEvent(sprintf("%s: Start crawl", $this->config['url'])));
         $statsHandler = $this->getStatHandler();
         try {
             $this->spider->crawl();
-            laravelEvent::fire(new ParserInfoEvent(sprintf("%s: PERSISTED URL: %d", $this->config['url'], count($statsHandler->getPersisted()))));
-            laravelEvent::fire(new ParserInfoEvent(sprintf("%s: End crawl\n\n", $this->config['url'])));
+            laravelEvent::fire(new SparePartParserEvent(sprintf("%s: PERSISTED URL: %d", $this->config['url'], count($statsHandler->getPersisted()))));
+            laravelEvent::fire(new SparePartParserEvent(sprintf("%s: End crawl\n\n", $this->config['url'])));
         } catch (\Exception $e) {
-            laravelEvent::fire(new ParserErrorEvent(sprintf("%s: Crawl finish with error: %s in %s line %s", $this->config['url'], $e->getMessage(), $e->getFile(), $e->getLine())));
+            laravelEvent::fire(new SparePartParserEvent(sprintf("%s: Crawl finish with error: %s in %s line %s", $this->config['url'], $e->getMessage(), $e->getFile(), $e->getLine())));
         }
     }
 
@@ -98,11 +97,6 @@ class SparePartsSpider implements SpiderInterface
         $this->spider->getDownloader()->getDispatcher()->addListener(SpiderEvents::SPIDER_CRAWL_POST_REQUEST, $callback);
     }
 
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
     private function setRequestHandler()
     {
         $this->spider->getDownloader()->setRequestHandler(new GuzzleRequestWIthProxyHandler());
@@ -115,7 +109,7 @@ class SparePartsSpider implements SpiderInterface
                 new DetailPageParser(
                     $this->config['selectors']),
                     $this->config,
-                    $this->id_session,
+                    $this->idSession,
                     new SimpleUriFilter([$this->config['url_pattern_detail']])
             )
         );

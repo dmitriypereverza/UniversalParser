@@ -32,5 +32,9 @@ class LogServiceProvider extends ServiceProvider
         $this->app->bind('file.logger', function ($app) {
             return new Logger(new FileLogger(getenv('PARSER_LOG_FILE')));
         });
+
+        $this->app->bind('file.spare_parts.logger', function ($app) {
+            return new Logger(new FileLogger(getenv('SPARE_PART_PARSER_LOG_FILE')));
+        });
     }
 }
