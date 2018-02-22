@@ -1,31 +1,20 @@
 <?php
 namespace App\Parser\Spider\QueueManager;
 
-use App\Models\Links;
 use App\Models\TemporarySearchResults;
 use VDB\Spider\QueueManager\QueueManagerInterface;
 use VDB\Spider\Uri\DiscoveredUri;
-use VDB\Spider\Exception\QueueException;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use VDB\Spider\Event\SpiderEvents;
 use VDB\Uri\Uri;
 
 class UpdateDBQueueManager implements QueueManagerInterface
 {
-    /** @var int The maximum size of the process queue for this spider. 0 means infinite */
-    public $maxQueueSize = 0;
-
+    use DispatcherTrait;
     /** @var int The traversal algorithm to use. Choose from the class constants */
     private $traversalAlgorithm = self::ALGORITHM_DEPTH_FIRST;
-
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
-
     /** @var array The list of URIs to process */
     private $traversalQueue = array();
-
     private $siteConfigName;
 
     function __construct($siteConfigName)
@@ -61,28 +50,6 @@ class UpdateDBQueueManager implements QueueManagerInterface
     public function getTraversalAlgorithm()
     {
         return $this->traversalAlgorithm;
-    }
-
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     * @return $this
-     */
-    public function setDispatcher(EventDispatcherInterface $eventDispatcher)
-    {
-        $this->dispatcher = $eventDispatcher;
-
-        return $this;
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    public function getDispatcher()
-    {
-        if (!$this->dispatcher) {
-            $this->dispatcher = new EventDispatcher();
-        }
-        return $this->dispatcher;
     }
 
     /**

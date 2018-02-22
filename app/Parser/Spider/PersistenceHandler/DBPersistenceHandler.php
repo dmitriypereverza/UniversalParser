@@ -11,15 +11,14 @@ use VDB\Spider\Resource;
 
 class DBPersistenceHandler implements PersistenceHandlerInterface
 {
-    /** @var Resource[] */
-    private $resources = array();
-    private $config;
-    private $sessionId;
+    use PersistenceHandlerTrait;
+    protected $config;
+    protected $sessionId;
     /** @var $urlFilter UriFilter */
-    private $urlFilter;
+    protected $urlFilter;
     /** @var $attributeParser AttributeParserInterface */
-    private $attributeParser;
-    private $carDefiner;
+    protected $attributeParser;
+    protected $carDefiner;
 
     public function __construct(AttributeParserInterface $attributeParser, $config, $sessionId, $urlFilter)
     {
@@ -28,11 +27,6 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
         $this->urlFilter = $urlFilter;
         $this->attributeParser = $attributeParser;
         $this->carDefiner = new CarDefiner();
-    }
-
-    public function count()
-    {
-        return count($this->resources);
     }
 
     public function persist(Resource $resource)
@@ -52,14 +46,14 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
         }
     }
 
-    private function modifyAndSaveParseElement($values)
+    protected function modifyAndSaveParseElement($values)
     {
         if ($modifiedVars = $this->modifiedSelectorsValue($values)) {
             TemporarySearchResults::insertIfNotExist($modifiedVars, $this->config['url'], $this->sessionId);
         }
     }
 
-    private function modifiedSelectorsValue($selectorVals)
+    protected function modifiedSelectorsValue($selectorVals)
     {
         $result = [];
         $result['url'] = $selectorVals['url'];
@@ -153,54 +147,5 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
     private function getSelectorParam($string, $selector)
     {
         return array_key_exists($string, $selector) ? $selector[$string] : '';
-    }
-
-    /**
-     * @param string $spiderId
-     *
-     * @return void
-     */
-    public function setSpiderId($spiderId)
-    {
-    }
-
-    /**
-     * @return Resource
-     */
-    public function current()
-    {
-        return current($this->resources);
-    }
-
-    /**
-     * @return Resource|false
-     */
-    public function next()
-    {
-        next($this->resources);
-    }
-
-    /**
-     * @return int
-     */
-    public function key()
-    {
-        return key($this->resources);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function valid()
-    {
-        return (bool)current($this->resources);
-    }
-
-    /**
-     * @return void
-     */
-    public function rewind()
-    {
-        reset($this->resources);
     }
 }

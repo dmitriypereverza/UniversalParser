@@ -35,7 +35,7 @@ class TreeLinksSpider implements SpiderInterface
         $this->setPersistenceHandler();
 
         $depth && $this->setMaxDepth($depth);
-        $this->setReuestDelay($requestDelay);
+        $this->setRequestDelay($requestDelay);
     }
 
     public function crawl()
@@ -67,14 +67,13 @@ class TreeLinksSpider implements SpiderInterface
                 exit();
             }
         );
-
         return $spider;
     }
 
     /**
      * @param integer $delay Delay in milliseconds
      */
-    private function setReuestDelay($delay)
+    private function setRequestDelay($delay)
     {
         $this->spider->getDownloader()->getDispatcher()->addListener(SpiderEvents::SPIDER_CRAWL_PRE_REQUEST, [
                 new PolitenessPolicyListener($delay),
