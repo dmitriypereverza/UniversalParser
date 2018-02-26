@@ -22,7 +22,7 @@ class GetSparePartByUrl extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Get spare parts by EuroAuto links.';
 
     /**
      * Execute the console command.
@@ -50,6 +50,8 @@ class GetSparePartByUrl extends Command
             $link->is_recived = true;
             $link->save();
         }
+
+        $this->line("All spare parts from EuroAuto links is received");
     }
 
     private function normalizeUrl($link)
