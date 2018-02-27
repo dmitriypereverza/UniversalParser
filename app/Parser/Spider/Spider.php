@@ -39,7 +39,12 @@ class Spider implements SpiderInterface
         $this->config = $config;
         $this->spider = $this->getSpider();
         $this->setRequestHandler(new GuzzleRequestWIthProxyHandler());
-        $this->setPersistenceHandler(new DBPersistenceHandler($this->getSelectorParser(), $this->config, $this->getSessionId()));
+        $this->setPersistenceHandler(new DBPersistenceHandler(
+            $this->getSelectorParser(),
+            $this->config,
+            $this->getSessionId(),
+            new SimpleUriFilter([$this->config['url_pattern_detail']]))
+        );
 
         $this->setMaxDepth($this->config['max_depth'] ?? self::DEFAULT_MAX_DEPTH);
         $this->setMaxQueueSize($this->config['max_query_size'] ?? self::DEFAULT_QUERY_SIZE);
@@ -131,7 +136,7 @@ class Spider implements SpiderInterface
 
     private function setPersistenceHandler(PersistenceHandlerInterface $persistenceHandler)
     {
-        $this->spider->getDownloader()->setPersistenceHandler($persistenceHandler, new SimpleUriFilter([$this->config['url_pattern_detail']]));
+        $this->spider->getDownloader()->setPersistenceHandler($persistenceHandler);
     }
 
     /**
