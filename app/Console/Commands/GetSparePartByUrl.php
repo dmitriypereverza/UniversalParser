@@ -39,12 +39,6 @@ class GetSparePartByUrl extends Command
 
             $this->info(sprintf("Start crawl url: %s", $siteConfig['items_list_url']));
             $spider = SpiderManager::getSpiderFromConfig($siteConfig);
-            // TODO Solve it
-            //        $scheduler = new Scheduler($siteConfig);
-            //        $scheduler->setParserLoop($spider);
-            //        if ($needUpdate) {
-            //            $spider->setUpdateMode();
-            //        }
             $spider->crawl();
             $this->info(sprintf("Crawl ended url: %s", $siteConfig['items_list_url']));
             $link->is_recived = true;
