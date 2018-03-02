@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Parser;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\EuroAutoLinks;
+use App\Models\Models;
 use App\Models\PackageConnection;
+use App\Models\RefModels;
 use App\Models\TemporarySearchResults;
 use App\Models\Version;
 use Illuminate\Http\Request;
@@ -155,5 +159,65 @@ class ParserController extends Controller
                 'error' => $e->getMessage()
             ]), 400);
         }
+    }
+
+    public function zapchastiEvent(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'action' => 'required',
+            'brand_id' => 'required|numeric',
+            'model_id' => 'required|numeric',
+            'generation_id' => 'numeric|nullable',
+            'type_id' => 'numeric|nullable',
+        ]);
+        if ($validation->fails()) {
+            return response($validation->errors()->toArray(), 400);
+        }
+
+        $params = json_decode($request->getContent(), true);
+        if ($params['action'] != 'insert' && $params['action'] != 'delete') {
+            return response(json_encode([
+                'error' => sprintf("Action: \"%s\" is not define", $params['action'])
+            ]), 400);
+        }
+
+        $link = null;
+        $action = $params['action'];
+        unset($params['action']);
+
+        $brand = Brand::where('r_brand_id', $params['brand_id'])->first();
+        $model = Models::where('r_model_id', $params['model_id'])->first();
+        if (!$brand || !$model) {
+            return response(json_encode([
+                'error' => "Brand or model not found"
+            ]), 400);
+        }
+        $paramsForQuery = [];
+        $paramsForQuery['brand_id'] = $brand->id;
+        $paramsForQuery['model_id'] = $model->id;
+        $paramsForQuery['body_id'] = $params['type_id'];
+        $paramsForQuery['generation_id'] = $params['generation_id'];
+        $paramsForQuery['engine_id'] = $params['engine_id'];
+
+        $car = RefModels::where(array_filter($paramsForQuery))->first();
+        if (!$car) {
+            return response(json_encode([
+                'error' => "Car not found"
+            ]), 400);
+        }
+
+        $link = EuroAutoLinks::whereRootModelLink($car->parse_link)->first();
+        if (!$link) {
+            return response(json_encode([
+                'error' => sprintf("Link not found", $car->parse_link)
+            ]), 400);
+        }
+
+        if ($link->is_recived) {
+            return response(json_encode([
+                'status' => 'ok',
+            ]));
+        }
+        return response(json_encode(['error' => 'Spare parts not found']), 400);
     }
 }
