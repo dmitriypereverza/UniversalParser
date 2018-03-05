@@ -41,9 +41,10 @@ class TemporarySearchResults extends Model
      * @param $result
      * @param $siteUrl
      * @param $sessionId
+     * @param $zapchastiCarId
      * @return bool
      */
-    public static function insertIfNotExist($result, $siteUrl, $sessionId)
+    public static function insertIfNotExist($result, $siteUrl, $sessionId, $zapchastiCarId = null)
     {
         if (!is_array($result)) {
             throw new InvalidArgumentException('Не найдены данные для записи в таблицу');
@@ -55,6 +56,7 @@ class TemporarySearchResults extends Model
 
         unset($result['url']);
         $tmpTable->hash = md5(serialize($result));
+        $tmpTable->zapchasti_car_id = $zapchastiCarId;
 
         if (!self::isRowExist($tmpTable)) {
             return $tmpTable->save();

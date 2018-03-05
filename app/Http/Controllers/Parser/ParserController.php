@@ -8,6 +8,7 @@ use App\Models\EuroAutoLinks;
 use App\Models\Models;
 use App\Models\PackageConnection;
 use App\Models\RefModels;
+use App\Models\SpareParts;
 use App\Models\TemporarySearchResults;
 use App\Models\Version;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 class ParserController extends Controller
 {
     const DEFAULT_COUNT_IN_PACKAGE = 100;
+    const ZAPCHASTY_ACTIONS = ['insert', 'delete'];
 
     public function getVersion()
     {
@@ -165,6 +167,7 @@ class ParserController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'action' => 'required',
+            'car_id' => 'numeric|nullable',
             'brand_id' => 'required|numeric',
             'model_id' => 'required|numeric',
             'generation_id' => 'numeric|nullable',
@@ -175,15 +178,19 @@ class ParserController extends Controller
         }
 
         $params = json_decode($request->getContent(), true);
-        if ($params['action'] != 'insert' && $params['action'] != 'delete') {
+        if (!in_array($params['action'], self::ZAPCHASTY_ACTIONS)) {
             return response(json_encode([
                 'error' => sprintf("Action: \"%s\" is not define", $params['action'])
             ]), 400);
         }
-
-        $link = null;
         $action = $params['action'];
         unset($params['action']);
+        if ($action == 'delete') {
+            $this->markAdsForDelete($params['car_id']);
+            return response(json_encode([
+                'status' => 'ok'
+            ]));
+        }
 
         $brand = Brand::where('r_brand_id', $params['brand_id'])->first();
         $model = Models::where('r_model_id', $params['model_id'])->first();
@@ -214,10 +221,58 @@ class ParserController extends Controller
         }
 
         if ($link->is_recived) {
-            return response(json_encode([
-                'status' => 'ok',
-            ]));
+            if ($action == 'insert') {
+                $this->addNewSparePartsByLink($car, $params['car_id']);
+                return response(json_encode([
+                    'status' => 'ok',
+                ]));
+            }
         }
-        return response(json_encode(['error' => 'Spare parts not found']), 400);
+        return response(json_encode(['error' => 'Spare parts not yet received']), 400);
+    }
+
+    /**
+     * @param RefModels $car
+     * @param $carId
+     * @return array
+     * @internal param $link
+     * @internal param $car
+     */
+    private function addNewSparePartsByLink($car, $carId)
+    {
+        $spareParts = SpareParts::where(
+            'root_model_link',
+                'LIKE',
+                '%' . $car->parse_link
+        )->get();
+        $sessionId = md5($car->parse_link . microtime(true));
+        $urlParts = explode('\\', $car->parse_link);
+
+        /** @var SpareParts $sparePart */
+        foreach ($spareParts as $sparePart) {
+            $results = [
+                'url' => $sparePart->ref_model_link,
+                'zapchasty_car_id' => $carId,
+                'title' => $sparePart->title,
+                'category' => $sparePart->category,
+                'brand_id' => $car->brand_id,
+                'model_id' => $car->model_id,
+                'img_url' => $sparePart->img_url,
+                'article' => $sparePart->article,
+
+            ];
+            TemporarySearchResults::insertIfNotExist($results, $urlParts[0], $sessionId, $carId);
+        }
+    }
+
+    private function markAdsForDelete($zapchastiCarId)
+    {
+        $sessionId = md5($zapchastiCarId . microtime(true));
+        $spareParts = TemporarySearchResults::where('zapchasti_car_id', $zapchastiCarId)
+            ->whereNull('old_content')
+            ->get();
+        foreach ($spareParts as $sparePart) {
+            TemporarySearchResults::insertRowForDelete($sparePart->id, $sessionId);
+        }
     }
 }
