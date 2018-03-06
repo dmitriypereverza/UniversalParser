@@ -16,13 +16,14 @@ class SparePartsPersistenceHandler extends DBPersistenceHandler implements Persi
                 $this->config['items_list_url'],
                 $modifiedVars['url'],
                 $modifiedVars['sparePartsCategoryName'],
-                $modifiedVars['sparePartsName'],
+                $modifiedVars['title'],
+                $modifiedVars['sparePart'],
                 $modifiedVars['articul'],
                 $modifiedVars['img']
             );
             Event::fire(new SparePartParserEvent(sprintf("Save spare part --> %s:%s",
                 $modifiedVars['sparePartsCategoryName'],
-                $modifiedVars['sparePartsName']
+                $modifiedVars['title']
             )));
         }
     }

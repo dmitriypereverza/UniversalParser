@@ -20,15 +20,15 @@ class SpareParts extends Model
      * @param string $rootLink
      * @param string $link
      * @param $category
-     * @param $spareName
+     * @param $adName
      * @param $article
      * @param $img
      * @return Model|void
      */
-    public static function updateOrCreate($rootLink ,$link, $category, $spareName, $article, $img) {
+    public static function updateOrCreate($rootLink , $link, $category, $adName, $sparePart, $article, $img) {
         $spare = self::where('ref_model_link', $link)
             ->where('category', $category)
-            ->where('title', $spareName)
+            ->where('title', $adName)
             ->get()
             ->first();
 
@@ -36,8 +36,9 @@ class SpareParts extends Model
             $spare = new SpareParts();
             $spare->root_model_link = $rootLink;
             $spare->ref_model_link = $link;
-            $spare->title = $spareName;
+            $spare->title = $adName;
             $spare->category = $category;
+            $spare->spare_part = $sparePart;
         }
         $spare->article = $article ?? null;
         $spare->img_url = $img ?? null;

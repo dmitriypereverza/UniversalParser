@@ -998,13 +998,15 @@ euro_auto_spare_parts:
       articul:
         value: '//div[@class="snippet-card__article text-right"][1]'
         optional: True
-      sparePartsName:
+      title:
         value: '//div[@class="catalog-auto__side-content"]/h1'
         composition:
           pattern: '%s %s'
           params:
             - articul
-            - sparePartsName
+            - title
+      sparePart:
+        value: '//ol[@class="breadcrumb"]/li[last()]'
       sparePartsCategoryName:
         value: '//ol[@class="breadcrumb"]/li[last()-1]'
       img:
