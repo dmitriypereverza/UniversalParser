@@ -32,6 +32,8 @@ use InvalidArgumentException;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereNeedDelete($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereNeedUpdate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereOldContent($value)
+ * @property int|null $zapchasti_car_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereZapchastiCarId($value)
  */
 class TemporarySearchResults extends Model
 {

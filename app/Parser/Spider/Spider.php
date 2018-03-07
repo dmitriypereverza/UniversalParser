@@ -160,9 +160,17 @@ class Spider implements SpiderInterface
         $spider = new PhpSpider(trim($firstCollectedUrl->url, '"'));
         $spider->setQueueManager(new UpdateDBQueueManager($this->config['url']));
         $selectorParser = isset($this->config['selectors']['row']) ? new TableParser($this->config['selectors']) : new DetailPageParser($this->config['selectors']);
-        $spider->getDownloader()->setPersistenceHandler(new DBPersistenceHandlerForUpdate($selectorParser, $this->config, $this->getSessionId(), new SimpleUriFilter([$this->config['url_pattern_detail']])));
-        $spider->getDownloader()->setRequestHandler(new GuzzleRequestWIthProxyHandler($this->getSessionId()));
-
+        $spider->getDownloader()->setPersistenceHandler(
+            new DBPersistenceHandlerForUpdate(
+                $selectorParser,
+                $this->config,
+                $this->getSessionId(),
+                new SimpleUriFilter([$this->config['url_pattern_detail']])
+            )
+        );
+        $spider->getDownloader()->setRequestHandler(
+            new GuzzleRequestWIthProxyHandler($this->getSessionId())
+        );
         return $spider;
     }
 }

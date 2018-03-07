@@ -254,6 +254,7 @@ class ParserController extends Controller
                 'url' => $sparePart->ref_model_link,
                 'zapchasty_car_id' => $carId,
                 'title' => $sparePart->title,
+                'sparePart' => $sparePart->spare_part,
                 'category' => $sparePart->category,
                 'brand_id' => $car->brand_id,
                 'model_id' => $car->model_id,

@@ -11,6 +11,23 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $created_at
  * @property int $id
  * @property \Carbon\Carbon $updated_at
+ * @property string $root_model_link
+ * @property string $ref_model_link
+ * @property string $category
+ * @property string $title
+ * @property string|null $article
+ * @property string|null $img_url
+ * @property string|null $spare_part
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereArticle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereImgUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereRefModelLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereRootModelLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereSparePart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpareParts whereUpdatedAt($value)
  */
 class SpareParts extends Model
 {
