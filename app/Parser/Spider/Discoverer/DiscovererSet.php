@@ -86,8 +86,8 @@ class DiscovererSet extends VDBDiscovererSet
             $parentUrl = Links::getOrCreateLinkByUrl($resource->getUri());
             $url = Links::getOrCreateLinkByUrl($uri);
             $url->referer()->attach($parentUrl->id);
-//            $url->text = $this->getLinkText($resource, $uri);
-//            $url->depth = $parentUrl->depth + 1;
+            $url->text = $this->getLinkText($resource, $uri);
+            $url->depth = $parentUrl->depth + 1;
             $url->save();
         }
 

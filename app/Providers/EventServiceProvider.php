@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\ParserTreeMakerEvent' => [
             'App\Listeners\ParserTreeMakerListener',
+        ],
+        'App\Events\SparePartParserEvent' => [
+            'App\Listeners\SparePartParserListener',
         ]
     ];
 

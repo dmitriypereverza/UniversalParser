@@ -28,6 +28,12 @@ use InvalidArgumentException;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereVersion($value)
  * @mixin \Eloquent
+ * @property int|null $old_content
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereNeedDelete($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereNeedUpdate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereOldContent($value)
+ * @property int|null $zapchasti_car_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TemporarySearchResults whereZapchastiCarId($value)
  */
 class TemporarySearchResults extends Model
 {
@@ -37,9 +43,10 @@ class TemporarySearchResults extends Model
      * @param $result
      * @param $siteUrl
      * @param $sessionId
+     * @param $zapchastiCarId
      * @return bool
      */
-    public static function insertIfNotExist($result, $siteUrl, $sessionId)
+    public static function insertIfNotExist($result, $siteUrl, $sessionId, $zapchastiCarId = null)
     {
         if (!is_array($result)) {
             throw new InvalidArgumentException('Не найдены данные для записи в таблицу');
@@ -51,6 +58,7 @@ class TemporarySearchResults extends Model
 
         unset($result['url']);
         $tmpTable->hash = md5(serialize($result));
+        $tmpTable->zapchasti_car_id = $zapchastiCarId;
 
         if (!self::isRowExist($tmpTable)) {
             return $tmpTable->save();

@@ -38,9 +38,6 @@ class StatusDefinerWIthProxyHandler implements RequestHandlerInterface
             'http_errors' => false
         ]);
         $this->saveInDb($uri, $response);
-        if ($response->getStatusCode() != 200) {
-            throw new \LogicException('Page not found');
-        }
         return new Resource($uri, $response);
     }
 

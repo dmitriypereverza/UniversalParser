@@ -32,5 +32,8 @@ Route::group(['prefix' => 'parser', 'namespace' => 'Parser', 'middleware' => ['a
 
     Route::post('get_package_by_number', 'ParserController@getPackageByNumber')
         ->name('parser.package.get');
+
+    Route::post('zapchasti_event', 'ParserController@zapchastiEvent')
+        ->name('parser.zapchasti.event');
 });
 

@@ -10,6 +10,17 @@ use InvalidArgumentException;
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application where($value, $value)
  * @mixin \Eloquent
+ * @property int $id
+ * @property string $name
+ * @property string $synonym_name
+ * @property string $slug
+ * @property int|null $r_brand_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Models[] $models
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Brand whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Brand whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Brand whereRBrandId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Brand whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Brand whereSynonymName($value)
  */
 class Brand extends Model
 {

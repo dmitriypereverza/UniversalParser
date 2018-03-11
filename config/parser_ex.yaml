@@ -984,3 +984,31 @@ lr-zap:
       price:
         value: '//tr[th="Стоимость"]/td'
         regexp: '/\d\s?\d+(\s?\d+)?/'
+
+euro_auto_spare_parts:
+  active: true
+  url: http://euroauto.ru
+  class: App\Parser\Spider\SparePartsSpider
+  items_list_url: http://euroauto.ru
+  url_pattern: /http:\/\/euroauto\.ru\/auto\/cars\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+\/$/
+  url_pattern_detail: /http:\/\/euroauto\.ru\/auto\/cars\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+\/[^\/]+\/$/
+  items_list_selector: .//div[@class="catalog-auto__side-category"]//a
+  max_depth: 2
+  selectors:
+      articul:
+        value: '//div[@class="snippet-card__article text-right"][1]'
+        optional: True
+      title:
+        value: '//div[@class="catalog-auto__side-content"]/h1'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      sparePart:
+        value: '//ol[@class="breadcrumb"]/li[last()]'
+      sparePartsCategoryName:
+        value: '//ol[@class="breadcrumb"]/li[last()-1]'
+      img:
+        value: '//div[@class="item-img"]/img/@content'
+        optional: True

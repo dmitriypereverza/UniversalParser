@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatrVersionTable extends Migration
+class CreateEuroAutoLinksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreatrVersionTable extends Migration
      */
     public function up()
     {
-        Schema::create('versions', function (Blueprint $table) {
+        Schema::create('euroavto_links', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('version')->unique();
-            $table->integer('element_count')->default(0);
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->nullable();
+            $table->string('root_model_link');
+            $table->boolean('is_recived')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -29,6 +28,6 @@ class CreatrVersionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('versions');
+        Schema::dropIfExists('euroavto_links');
     }
 }

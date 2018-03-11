@@ -8,6 +8,19 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application where($value, $value)
  * @mixin \Eloquent
+ * @property int $id
+ * @property int $car_make_id
+ * @property string $name
+ * @property string $slug
+ * @property string $synonym_name
+ * @property int|null $r_model_id
+ * @property-read \App\Models\Brand $brand
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Models whereCarMakeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Models whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Models whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Models whereRModelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Models whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Models whereSynonymName($value)
  */
 class Models extends Model
 {
@@ -15,6 +28,6 @@ class Models extends Model
 
     public function brand()
     {
-        return $this->belongsTo('App\Brand');
+        return $this->belongsTo(Brand::class);
     }
 }
