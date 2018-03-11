@@ -1,22 +1,13 @@
 <?php
 namespace App\Parser\Spider\Attributes;
-
 use Symfony\Component\DomCrawler\Crawler;
 use \VDB\Spider\Resource;
 
 /**
  * @author d.pereverza@worksolutions.ru
  */
-class TableParser implements AttributeParserInterface
+class TableParser extends BaseAttributeParser
 {
-    /**  @var array $selectors */
-    private $selectors;
-
-    public function __construct($selectors)
-    {
-        $this->selectors = $selectors;
-    }
-
     /**
      * @param Resource $resource
      * @return array
@@ -28,12 +19,12 @@ class TableParser implements AttributeParserInterface
         unset($selectors['row']);
 
         $resultElements = [];
+        /** @var Crawler $rowCrawler */
         foreach ($this->getRows($resource, $rowSelector) as $rowCrawler) {
             if ($element = $this->getElementSelectorsValue($rowCrawler, $selectors)) {
                 $resultElements[] = $element;
             }
         }
-
         return $resultElements;
     }
 
@@ -55,31 +46,17 @@ class TableParser implements AttributeParserInterface
     }
 
     /**
-     * @param Crawler $resourceCrawler
+     * @param Crawler $crawler
      * @param $selectors
      * @return array
      */
-    private function getElementSelectorsValue(Crawler $resourceCrawler, $selectors)
+    private function getElementSelectorsValue(Crawler $crawler, $selectors)
     {
-        $result['url'] = $resourceCrawler->getUri();
+        $result['url'] = $crawler->getUri();
         foreach ($selectors as $key => $selector) {
-            $result[$key] = $this->getSelectorContent($resourceCrawler, $selector['value']);
+            $result[$key] = $this->getSelectorContent($crawler, $selector['value']);
         }
         return $result;
-    }
-
-    /**
-     * @param Crawler $crawler
-     * @param $selector
-     * @return string
-     */
-    private function getSelectorContent(Crawler $crawler, $selector)
-    {
-        $item = $crawler->filterXpath($selector);
-        if ($item->count()) {
-            $trimmedText = trim($item->text());
-            return preg_replace('|\s+|', ' ', $trimmedText);
-        }
     }
 
     /**

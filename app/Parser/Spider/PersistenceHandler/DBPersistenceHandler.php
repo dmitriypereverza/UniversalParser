@@ -4,7 +4,7 @@ namespace App\Parser\Spider\PersistenceHandler;
 
 use App\Models\TemporarySearchResults;
 use App\Parser\CarDefiner;
-use App\Parser\Spider\Attributes\AttributeParserInterface;
+use App\Parser\Spider\Attributes\BaseAttributeParser;
 use App\Parser\Spider\Filter\UriFilter;
 use VDB\Spider\PersistenceHandler\PersistenceHandlerInterface;
 use VDB\Spider\Resource;
@@ -16,11 +16,11 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
     protected $sessionId;
     /** @var $urlFilter UriFilter */
     protected $urlFilter;
-    /** @var $attributeParser AttributeParserInterface */
+    /** @var $attributeParser BaseAttributeParser */
     protected $attributeParser;
     protected $carDefiner;
 
-    public function __construct(AttributeParserInterface $attributeParser, $config, $sessionId, $urlFilter)
+    public function __construct(BaseAttributeParser $attributeParser, $config, $sessionId, $urlFilter)
     {
         $this->config = $config;
         $this->sessionId = $sessionId;
@@ -115,7 +115,6 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
                 $content = '';
             }
         }
-
         $replace = $this->getSelectorParam('preg_replace', $selector);
         if ($replace) {
             $content = preg_replace($selector['preg_replace']['pattern'], $selector['preg_replace']['replace'], $content);

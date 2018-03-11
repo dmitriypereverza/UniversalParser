@@ -1,44 +1,24 @@
 <?php
-
 namespace App\Parser\Spider\Attributes;
-
-use App\Parser\CarDefiner;
-use VDB\Spider\Resource;
+use \VDB\Spider\Resource;
 
 /**
  * @author d.pereverza@worksolutions.ru
  */
-class DetailPageParser implements AttributeParserInterface
+class DetailPageParser extends BaseAttributeParser
 {
-    /**  @var array $selectors */
-    private $selectors;
-
-    public function __construct($selectors)
-    {
-        $this->selectors = $selectors;
-    }
-
+    /**
+     * @param \VDB\Spider\Resource $resource
+     * @return array
+     */
     public function getSelectorsValue(Resource $resource)
     {
-        $result['url'] = $resource->getCrawler()->getUri();
+        $crawler = $resource->getCrawler();
+        $result['url'] = $crawler->getUri();
         foreach ($this->selectors as $key => $selector) {
-            $result[$key] = $this->getSelectorContent($resource, $selector['value']);
+            $result[$key] = $this->getSelectorContent($crawler, $selector['value']);
         }
         return $result;
-    }
-
-    /**
-     * @param Resource $resource
-     * @param $selector
-     * @return string
-     */
-    private function getSelectorContent($resource, $selector)
-    {
-        $item = $resource->getCrawler()->filterXpath($selector);
-        if ($item->count()) {
-            $trimmedText = trim($item->text());
-            return preg_replace('/\s+/', ' ', $trimmedText);
-        }
     }
 
     /**

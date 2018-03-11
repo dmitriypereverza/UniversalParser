@@ -16,31 +16,7 @@ class DBPersistenceHandlerForUpdate extends DBPersistenceHandler
                 ->get()
                 ->toArray();
             foreach ($existingItem as $item) {
-                $decodedContent = (array)json_decode($item['content']);
-                if ($this->isEqualByParameters($decodedContent, $modifiedVars, ['url', 'title'])) {
-                    $arrayDiff = array_diff_assoc($modifiedVars, $decodedContent);
-                    if (!$arrayDiff) {
-                        continue;
-                    }
-                    if ($paramKeys = array_intersect($this->config['updateParams'], array_keys($decodedContent))) {
-                        $isNeedUpdate = false;
-                        foreach ($paramKeys as $updateParam) {
-                            if (isset($arrayDiff[$updateParam])) {
-                                $decodedContent[$updateParam] = $arrayDiff[$updateParam];
-                                $isNeedUpdate = true;
-                            }
-                        }
-                        if (!$isNeedUpdate) {
-                            continue;
-                        }
-                        TemporarySearchResults::insertRowForUpdate(
-                            $decodedContent,
-                            $item['id'],
-                            $this->config['url'],
-                            $this->sessionId
-                        );
-                    }
-                }
+                $this->makeUpdateRecord($item, $modifiedVars);
             }
         }
     }
@@ -60,6 +36,39 @@ class DBPersistenceHandlerForUpdate extends DBPersistenceHandler
         $currentVars = $getParamsFromArray($params, $modifiedVars);
         if (md5(serialize($storedContent)) == md5(serialize($currentVars))) {
             return true;
+        }
+    }
+
+    /**
+     * @param $item
+     * @param $modifiedVars
+     */
+    private function makeUpdateRecord($item, $modifiedVars)
+    {
+        $decodedContent = (array)json_decode($item['content']);
+        if ($this->isEqualByParameters($decodedContent, $modifiedVars, ['url', 'title'])) {
+            $arrayDiff = array_diff_assoc($modifiedVars, $decodedContent);
+            if (!$arrayDiff) {
+                return;
+            }
+            if ($paramKeys = array_intersect($this->config['updateParams'], array_keys($decodedContent))) {
+                $isNeedUpdate = false;
+                foreach ($paramKeys as $updateParam) {
+                    if (isset($arrayDiff[$updateParam])) {
+                        $decodedContent[$updateParam] = $arrayDiff[$updateParam];
+                        $isNeedUpdate = true;
+                    }
+                }
+                if (!$isNeedUpdate) {
+                    return;
+                }
+                TemporarySearchResults::insertRowForUpdate(
+                    $decodedContent,
+                    $item['id'],
+                    $this->config['url'],
+                    $this->sessionId
+                );
+            }
         }
     }
 }

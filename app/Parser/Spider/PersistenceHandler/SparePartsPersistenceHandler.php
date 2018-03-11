@@ -1,13 +1,11 @@
 <?php
-
 namespace App\Parser\Spider\PersistenceHandler;
 
 use App\Events\SparePartParserEvent;
 use App\Models\SpareParts;
-use VDB\Spider\PersistenceHandler\PersistenceHandlerInterface;
 use Illuminate\Support\Facades\Event;
 
-class SparePartsPersistenceHandler extends DBPersistenceHandler implements PersistenceHandlerInterface
+class SparePartsPersistenceHandler extends DBPersistenceHandler
 {
     public function modifyAndSaveParseElement($values)
     {
