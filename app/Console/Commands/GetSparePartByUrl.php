@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\EuroAutoLinks;
-use App\Models\RefModels;
+use App\Models\SpareParts;
 use App\Parser\ParsersConfig;
 use App\Parser\Spider\SpiderManager;
 use Illuminate\Console\Command;
@@ -36,12 +36,15 @@ class GetSparePartByUrl extends Command
 
         while ($link = EuroAutoLinks::whereNull('is_recived')->limit(20)->get()->random(1)->first()) {
             $siteConfig['items_list_url'] = $this->normalizeUrl($link->root_model_link);
-
             $this->info(sprintf("Start crawl url: %s", $siteConfig['items_list_url']));
             $spider = SpiderManager::getSpiderFromConfig($siteConfig);
             $spider->crawl();
             $this->info(sprintf("Crawl ended url: %s", $siteConfig['items_list_url']));
-            $link->is_recived = true;
+            $successRecived = false;
+            if (SpareParts::where('root_model_link', $siteConfig['items_list_url'])->count()) {
+                $successRecived = true;
+            }
+            $link->is_recived = $successRecived;
             $link->save();
         }
 
