@@ -1040,3 +1040,28 @@ nnk_auto:
         value: '//span[@id="price-field"]'
         regexp: '/[0-9]+((?=\.))?/'
         optional: True
+
+kupibamper:
+  active: true
+  url: https://www.kupibamper.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://www.kupibamper.ru
+  url_pattern: /https:\/\/www\.kupibamper\.ru\/shop_new\/shop\/[^\#\.\?]+$/
+  url_pattern_detail: /https:\/\/www\.kupibamper\.ru\/shop_new\/shop\/[^\#\.\?]+\/$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//table[@id="product-features"]/tr[td="Оригинальный номер"]/td[2]'
+        regexp: '/[^\\n]+/'
+        optional: True
+      title:
+        value: '//h1[@class="caption-name product"]'
+      img:
+        value: '//div[@class="image general"]/a/@href'
+        isRelativePath: True
+        optional: True
+      price:
+        value: '//span[@class="price nowrap"]/text()'
+        regexp: '/[0-9\s]+((?=\.))?/'
+        optional: True
