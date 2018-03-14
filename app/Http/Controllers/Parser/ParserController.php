@@ -223,6 +223,7 @@ class ParserController extends Controller
         if ($link->is_recived) {
             if ($action == 'insert') {
                 $this->addNewSparePartsByLink($car, $params['car_id']);
+                \Artisan::call('versions:set');
                 return response(json_encode([
                     'status' => 'ok',
                 ]));
