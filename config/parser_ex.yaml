@@ -1065,3 +1065,27 @@ kupibamper:
         value: '//span[@class="price nowrap"]/text()'
         regexp: '/[0-9\s]+((?=\.))?/'
         optional: True
+
+bamper-himki:
+  active: true
+  url: http://bamper-himki.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://bamper-himki.ru/catalog/
+  url_pattern: /http:\/\/bamper-himki\.ru\/[^\#\.\?]+$/
+  url_pattern_detail: /http:\/\/bamper-himki\.ru\/[^\#\.\?]+$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//ul/li[text()="Код: "]/strong'
+        regexp: '/[^\\n]+/'
+        optional: True
+      title:
+        value: '//div[@class="page-title"]/h1'
+      img:
+        value: '//img[@class="mobile_img_wide alignnone"]/@src'
+        isRelativePath: True
+      price:
+        value: '//ul/li[text()="Цена: "]/strong'
+        regexp: '/[0-9\s]+((?=\.))?/'
+        optional: True
