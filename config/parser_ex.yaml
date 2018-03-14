@@ -1012,3 +1012,31 @@ euro_auto_spare_parts:
       img:
         value: '//div[@class="item-img"]/img/@content'
         optional: True
+
+nnk_auto:
+  active: true
+  url: http://www.nnk-auto.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://www.nnk-auto.ru
+  url_pattern: /http:\/\/www\.nnk-auto\.ru\/collection\/[^#\.\?]+$/
+  url_pattern_detail: /http:\/\/www\.nnk-auto\.ru\/collection\/[^\/]+\/[^\/]+\/[^\/#\.\?]+$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//div[@class="short-description std"][1]/text()'
+        optional: True
+      title:
+        value: '//div[@class="product-name"]/h2'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      img:
+        value: '//div[@class="product-img-box"]/a/@href'
+        optional: True
+      price:
+        value: '//span[@id="price-field"]'
+        regexp: '/[0-9]+((?=\.))?/'
+        optional: True
