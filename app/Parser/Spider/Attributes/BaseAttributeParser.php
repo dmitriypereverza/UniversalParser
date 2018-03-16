@@ -1,6 +1,7 @@
 <?php
 namespace App\Parser\Spider\Attributes;
 use Symfony\Component\DomCrawler\Crawler;
+use \VDB\Spider\Resource;
 
 /**
  * @author d.pereverza@worksolutions.ru
