@@ -1012,3 +1012,80 @@ euro_auto_spare_parts:
       img:
         value: '//div[@class="item-img"]/img/@content'
         optional: True
+
+nnk_auto:
+  active: true
+  url: http://www.nnk-auto.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://www.nnk-auto.ru
+  url_pattern: /http:\/\/www\.nnk-auto\.ru\/collection\/[^#\.\?]+$/
+  url_pattern_detail: /http:\/\/www\.nnk-auto\.ru\/collection\/[^\/]+\/[^\/]+\/[^\/#\.\?]+$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//div[@class="short-description std"][1]/text()'
+        optional: True
+      title:
+        value: '//div[@class="product-name"]/h2'
+        composition:
+          pattern: '%s %s'
+          params:
+            - articul
+            - title
+      img:
+        value: '//div[@class="product-img-box"]/a/@href'
+        optional: True
+      price:
+        value: '//span[@id="price-field"]'
+        regexp: '/[0-9]+((?=\.))?/'
+        optional: True
+
+kupibamper:
+  active: true
+  url: https://www.kupibamper.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: https://www.kupibamper.ru
+  url_pattern: /https:\/\/www\.kupibamper\.ru\/shop_new\/shop\/[^\#\.\?]+$/
+  url_pattern_detail: /https:\/\/www\.kupibamper\.ru\/shop_new\/shop\/[^\#\.\?]+\/$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//table[@id="product-features"]/tr[td="Оригинальный номер"]/td[2]'
+        regexp: '/[^\\n]+/'
+        optional: True
+      title:
+        value: '//h1[@class="caption-name product"]'
+      img:
+        value: '//div[@class="image general"]/a/@href'
+        isRelativePath: True
+        optional: True
+      price:
+        value: '//span[@class="price nowrap"]/text()'
+        regexp: '/[0-9\s]+((?=\.))?/'
+        optional: True
+
+bamper-himki:
+  active: true
+  url: http://bamper-himki.ru
+  class: App\Parser\Spider\Spider
+  items_list_url: http://bamper-himki.ru/catalog/
+  url_pattern: /http:\/\/bamper-himki\.ru\/[^\#\.\?]+$/
+  url_pattern_detail: /http:\/\/bamper-himki\.ru\/[^\#\.\?]+$/
+  items_list_selector: .//a
+  max_depth: 4
+  selectors:
+      articul:
+        value: '//ul/li[text()="Код: "]/strong'
+        regexp: '/[^\\n]+/'
+        optional: True
+      title:
+        value: '//div[@class="page-title"]/h1'
+      img:
+        value: '//img[@class="mobile_img_wide alignnone"]/@src'
+        isRelativePath: True
+      price:
+        value: '//ul/li[text()="Цена: "]/strong'
+        regexp: '/[0-9\s]+((?=\.))?/'
+        optional: True
