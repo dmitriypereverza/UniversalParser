@@ -52,6 +52,15 @@ class TemporarySearchResults extends Model
             throw new InvalidArgumentException('Не найдены данные для записи в таблицу');
         }
         $tmpTable = new TemporarySearchResults;
+        if ($zapchastiCarId) {
+            $lastId = self::max('id');
+            echo 'last id' . $lastId . "\n";
+            if ($lastId >= 50000000) {
+                $tmpTable->id = $lastId + 1;
+            } else {
+                $tmpTable->id = 50000000;
+            }
+        }
         $tmpTable->config_site_name = $siteUrl;
         $tmpTable->id_session = $sessionId;
         $tmpTable->content = json_encode($result);
