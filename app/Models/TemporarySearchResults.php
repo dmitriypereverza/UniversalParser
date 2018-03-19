@@ -54,7 +54,6 @@ class TemporarySearchResults extends Model
         $tmpTable = new TemporarySearchResults;
         if ($zapchastiCarId) {
             $lastId = self::max('id');
-            echo 'last id' . $lastId . "\n";
             if ($lastId >= 50000000) {
                 $tmpTable->id = $lastId + 1;
             } else {
