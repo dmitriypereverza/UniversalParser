@@ -13,6 +13,7 @@ use App\Models\TemporarySearchResults;
 use App\Models\Version;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\Process\Process;
 
 class ParserController extends Controller
 {
@@ -277,4 +278,54 @@ class ParserController extends Controller
             TemporarySearchResults::insertRowForDelete($sparePart->id, $sessionId);
         }
     }
+
+    public function mastersStatus(Request $request)
+    {
+        $replicStatusIOCommand = sprintf(
+            "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_IO_Running | awk '{ print $2 }'",
+            env('DB_USERNAME'),
+            env('DB_PASSWORD'),
+            env('DB_DATABASE'));
+        $replicStatusSQLCommand = sprintf(
+            "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_SQL_Running | awk '{ print $2 }'",
+            env('DB_USERNAME'),
+            env('DB_PASSWORD'),
+            env('DB_DATABASE'));
+
+        $IOOutput = explode("\n", $this->getOutputCommand($replicStatusIOCommand));
+        $SQLOutput = explode("\n", $this->getOutputCommand($replicStatusSQLCommand));
+
+        $responseData = [];
+        $isEmptyOutput = function ($command) {
+            return empty($this->getOutputCommand($command));
+        };
+        foreach ($IOOutput as $k => $value) {
+            if (!$value) {
+                continue;
+            }
+            $responseData[] = [
+                'Slave_IO_Running' => $value,
+                'Slave_SQL_Running' => $SQLOutput[$k],
+                "netstat -lnpt | grep 3306" . ($k + 1) => $isEmptyOutput("netstat -lnpt | grep 3306" . ($k + 1)) ? 'No' : 'Yes',
+            ];
+        }
+
+        return \GuzzleHttp\json_encode($responseData);
+    }
+
+    /**
+     * @param $replicStatusIOCommand
+     * @return string
+     */
+    protected function getOutputCommand($replicStatusIOCommand)
+    {
+        $process = new Process($replicStatusIOCommand);
+        $process->run();
+        if (!$process->isSuccessful()) {
+            return '';
+        }
+        return $process->getOutput();
+    }
+
+
 }
