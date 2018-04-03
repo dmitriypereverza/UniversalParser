@@ -279,7 +279,7 @@ class ParserController extends Controller
         }
     }
 
-    public function mastersStatus(Request $request)
+    public function mastersStatus()
     {
         $replicStatusIOCommand = sprintf(
             "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_IO_Running | awk '{ print $2 }'",
@@ -287,7 +287,7 @@ class ParserController extends Controller
             env('DB_PASSWORD'),
             env('DB_DATABASE'));
         $replicStatusSQLCommand = sprintf(
-            "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_SQL_Running | awk '{ print $2 }'",
+            "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_SQL_Running: | awk '{ print $2 }'",
             env('DB_USERNAME'),
             env('DB_PASSWORD'),
             env('DB_DATABASE'));
