@@ -282,12 +282,12 @@ class ParserController extends Controller
     public function mastersStatus(Request $request)
     {
         $replicStatusIOCommand = sprintf(
-            "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_IO_Running | awk '{ print $1 \" \" $2 }'",
+            "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_IO_Running | awk '{ print $2 }'",
             env('DB_USERNAME'),
             env('DB_PASSWORD'),
             env('DB_DATABASE'));
         $replicStatusSQLCommand = sprintf(
-            "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_SQL_Running | awk '{ print $1 \" \" $2 }'",
+            "mysql -u%s -p%s %s -e 'SHOW SLAVE STATUS\G' | grep Slave_SQL_Running | awk '{ print $2 }'",
             env('DB_USERNAME'),
             env('DB_PASSWORD'),
             env('DB_DATABASE'));
@@ -300,10 +300,13 @@ class ParserController extends Controller
             return empty($this->getOutputCommand($command));
         };
         foreach ($IOOutput as $k => $value) {
+            if (!$value) {
+                continue;
+            }
             $responseData[] = [
                 'Slave_IO_Running' => $value,
                 'Slave_SQL_Running' => $SQLOutput[$k],
-                'tunnel_is_running' => $isEmptyOutput("netstat -lnpt | grep 3306" . ($k + 1)) ? 'No' : 'Yes',
+                "netstat -lnpt | grep 3306" . ($k + 1) => $isEmptyOutput("netstat -lnpt | grep 3306" . ($k + 1)) ? 'No' : 'Yes',
             ];
         }
 
