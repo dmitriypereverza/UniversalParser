@@ -275,7 +275,7 @@ class ParserController extends Controller
             ->whereNull('old_content')
             ->get();
         foreach ($spareParts as $sparePart) {
-            TemporarySearchResults::insertRowForDelete($sparePart->id, $sessionId);
+            TemporarySearchResults::insertRowForDelete($sparePart->id, $sessionId, $zapchastiCarId);
         }
     }
 

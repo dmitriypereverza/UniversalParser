@@ -53,12 +53,7 @@ class TemporarySearchResults extends Model
         }
         $tmpTable = new TemporarySearchResults;
         if ($zapchastiCarId) {
-            $lastId = self::max('id');
-            if ($lastId >= 50000000) {
-                $tmpTable->id = $lastId + 1;
-            } else {
-                $tmpTable->id = 50000000;
-            }
+            $tmpTable->id = self::getAvailableId();
         }
         $tmpTable->config_site_name = $siteUrl;
         $tmpTable->id_session = $sessionId;
@@ -103,10 +98,13 @@ class TemporarySearchResults extends Model
      * @param $sessionId
      * @return bool
      */
-    public static function insertRowForDelete($idToDelete, $sessionId)
+    public static function insertRowForDelete($idToDelete, $sessionId, $zapchastiCarId = null)
     {
         TemporarySearchResults::whereId($idToDelete)->update(['old_content' => 1]);
         $tmpTable = new TemporarySearchResults;
+        if ($zapchastiCarId) {
+            $tmpTable->id = self::getAvailableId();
+        }
         $tmpTable->need_delete = $idToDelete;
         $tmpTable->version = 0;
         $tmpTable->id_session = $sessionId;
@@ -164,5 +162,19 @@ class TemporarySearchResults extends Model
             ->limit($countResult)
             ->get()
             ->toJson();
+    }
+
+    /**
+     * @return int
+     */
+    private static function getAvailableId()
+    {
+        $lastId = self::max('id');
+        if ($lastId >= 50000000) {
+            $id = $lastId + 1;
+        } else {
+            $id = 50000000;
+        }
+        return $id;
     }
 }
