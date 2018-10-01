@@ -14,5 +14,5 @@ storagelogs/
 .env
 _ide_helper*
 public/phpinfo.php
-/config/parser.yaml
-/config/schedule.yaml
+config/parser.yaml
+config/schedule.yaml
