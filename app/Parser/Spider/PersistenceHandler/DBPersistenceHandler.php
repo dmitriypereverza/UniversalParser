@@ -2,10 +2,12 @@
 
 namespace App\Parser\Spider\PersistenceHandler;
 
+use App\Events\ParserInfoEvent;
 use App\Models\TemporarySearchResults;
 use App\Parser\CarDefiner;
 use App\Parser\Spider\Attributes\BaseAttributeParser;
 use App\Parser\Spider\Filter\UriFilter;
+use Illuminate\Support\Facades\Event;
 use VDB\Spider\PersistenceHandler\PersistenceHandlerInterface;
 use VDB\Spider\Resource;
 
@@ -32,8 +34,10 @@ class DBPersistenceHandler implements PersistenceHandlerInterface
     public function persist(Resource $resource)
     {
         if (!$this->urlFilter->match($resource->getUri())) {
+            Event::fire(new ParserInfoEvent(sprintf('Pass -> %s', $resource->getUri())));
             return;
         }
+        Event::fire(new ParserInfoEvent(sprintf('Match detail -> %s', $resource->getUri())));
         $this->resources[] = $resource->getUri();
         $selectorVals = $this->attributeParser->getSelectorsValue($resource);
         if (!$this->attributeParser->isMultipleElements()) {
