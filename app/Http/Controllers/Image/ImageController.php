@@ -23,7 +23,7 @@ class ImageController extends Controller
         try {
             $image = $requestHandler->requestByStringUrl($remouteUrl);
         } catch (ClientException $e) {
-            return response('Image not found', 404);
+            return response('Error' . $e->getMessage(), 404);
         }
 
         return response()

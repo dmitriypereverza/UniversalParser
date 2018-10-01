@@ -1089,3 +1089,29 @@ bamper-himki:
         value: '//ul/li[text()="Цена: "]/strong'
         regexp: '/[0-9\s]+((?=\.))?/'
         optional: True
+
+  isuzu-bogdan:
+    active: true
+    url: http://www.isuzu-bogdan.ru/
+    class: App\Parser\Spider\Spider
+    items_list_url: http://www.isuzu-bogdan.ru/shop/product/pnevmopodushka-bogdan-turtsiya
+    url_pattern: /http:\/\/www\.isuzu-bogdan\.ru\/shop\/[^\#\.\?]+$/
+    url_pattern_detail: /http:\/\/www\.isuzu-bogdan\.ru\/shop\/product\/[^\#\.\?]+$/
+    items_list_selector: .//a
+    max_depth: 4
+    selectors:
+        articul:
+          value: '//div[@class="shop2-product-article"]/text()'
+          optional: True
+        title:
+          value: '//div[@class="site_topic"]/h1'
+        img:
+          value: '//a[@class="light_gallery"][1]/@href'
+          isRelativePath: True
+        price:
+          value: '//div[@class="price-current"]/strong'
+          regexp: '/[0-9\s]+((?=\.))?/u'
+          preg_replace:
+            pattern: '/\s/u'
+            replace: ''
+          optional: True

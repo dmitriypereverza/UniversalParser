@@ -17,7 +17,7 @@ class UriFilter implements UriFilterInterface
     public function match($uri)
     {
         foreach ($this->regexes as $regex) {
-            if (preg_match($regex, $uri)) {
+            if (preg_match($regex, $uri->toString())) {
                 return true;
             }
         }
